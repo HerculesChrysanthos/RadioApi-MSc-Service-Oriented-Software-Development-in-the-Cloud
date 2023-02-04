@@ -1,0 +1,36 @@
+<diagram program="umletino" version="15.0.0"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>390</x><y>270</y><w>240</w><h>120</h></coordinates><panel_attributes>Advertisement
+--
+duration: int
+startDate: Date
+endDate: Date
+transmissionTimeZone: string
+numRepetitions: int</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>60</x><y>200</y><w>190</w><h>130</h></coordinates><panel_attributes>MusicLibrary
+--
+genre:string
+title:string
+duration: int
+artist: string
+yearOfProduction: int
+
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>60</x><y>50</y><w>190</w><h>70</h></coordinates><panel_attributes>Playlist
+--
+broadcastTime:Time
+timeZone:string
+
+
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>420</x><y>70</y><w>190</w><h>130</h></coordinates><panel_attributes>Broadcast
+--
+duration: int
+startTime: Time
+day: string
+showType: string
+
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>130</x><y>570</y><w>100</w><h>30</h></coordinates><panel_attributes>Producer</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>270</x><y>570</y><w>100</w><h>30</h></coordinates><panel_attributes>Registered User</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>170</x><y>450</y><w>160</w><h>80</h></coordinates><panel_attributes>User
+--
+username: string
+password: string
+email: string
+</panel_attributes><additional_attributes></additional_attributes></element></diagram>
