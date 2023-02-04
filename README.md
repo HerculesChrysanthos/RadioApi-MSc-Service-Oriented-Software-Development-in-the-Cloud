@@ -3,4 +3,4 @@ Team3 project repository
 
 [Εκφώνηση Εργασίας](docs/markdown/ekfonisi.md)
 
-[Περιγραφή της λειτουργικότητας του λογισμοκού](docs/markdown/leitourgies.md)
+[Περιγραφή της λειτουργικότητας του λογισμικού](docs/markdown/leitourgies.md)
