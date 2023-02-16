@@ -1,32 +1,27 @@
-<diagram program="umletino" version="15.0.0"><zoom_level>10</zoom_level><help_text>Space for diagram notesομ</help_text><element><id>UMLClass</id><coordinates><x>120</x><y>20</y><w>140</w><h>100</h></coordinates><panel_attributes>Χρήστης
+<diagram program="umletino" version="15.0.0"><zoom_level>10</zoom_level><help_text>Space for diagram notesομ</help_text><element><id>UMLClass</id><coordinates><x>40</x><y>20</y><w>140</w><h>100</h></coordinates><panel_attributes>Χρήστης
 --
 username: String
 password: String
 email: String
-role: Ρόλος</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>50</x><y>320</y><w>110</w><h>80</h></coordinates><panel_attributes>&lt;&lt;Enumeration&gt;&gt;
+role: Ρόλος</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>50</x><y>140</y><w>110</w><h>80</h></coordinates><panel_attributes>&lt;&lt;Enumeration&gt;&gt;
 Ρόλος
 --
 USER
-PRODUCER</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>110</x><y>110</y><w>80</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>60;10;10;70</additional_attributes></element><element><id>Relation</id><coordinates><x>190</x><y>110</y><w>80</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;60;70</additional_attributes></element><element><id>UMLClass</id><coordinates><x>70</x><y>180</y><w>100</w><h>40</h></coordinates><panel_attributes>Παραγωγός
---</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>200</x><y>180</y><w>100</w><h>40</h></coordinates><panel_attributes>Απλός Χρήστης
---</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>300</x><y>280</y><w>150</w><h>120</h></coordinates><panel_attributes>Τραγούδι
+PRODUCER</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>260</x><y>260</y><w>150</w><h>80</h></coordinates><panel_attributes>ΜετάδοσηΤραγουδιού
 --
-title: String
-genre: String
-artist: String
-year: String
-duration: int</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>370</x><y>10</y><w>150</w><h>120</h></coordinates><panel_attributes>Εκπομπή
+broadcastDate: Date
+broadcastTime: Date</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>270</x><y>20</y><w>150</w><h>120</h></coordinates><panel_attributes>Εκπομπή
 --
 duration: int
 startingDate: Date
 startingTime: Date
-type: ΤύποςΕκπομπής</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>480</x><y>280</y><w>150</w><h>120</h></coordinates><panel_attributes>Διαφήμιση
+type: ΤύποςΕκπομπής</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>550</x><y>240</y><w>170</w><h>120</h></coordinates><panel_attributes>Διαφήμιση
 --
 duration: int
 startingDate: Date
 endingDate: Date
 repPerZone: int
-zone: ΖώνηΜετάδοσης</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>50</x><y>420</y><w>110</w><h>140</h></coordinates><panel_attributes>&lt;&lt;Enumeration&gt;&gt;
+zone: ΖώνηΜετάδοσης</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>50</x><y>370</y><w>110</w><h>140</h></coordinates><panel_attributes>&lt;&lt;Enumeration&gt;&gt;
 ΖώνηΜετάδοση
 --
 EarlyMorning
@@ -34,16 +29,32 @@ Morning
 Noon
 Afternoon
 PrimeTime
-LateNight</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>50</x><y>580</y><w>110</w><h>90</h></coordinates><panel_attributes>&lt;&lt;Enumeration&gt;&gt;
+LateNight</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>50</x><y>240</y><w>110</w><h>110</h></coordinates><panel_attributes>&lt;&lt;Enumeration&gt;&gt;
 ΤύποςΕκπομπής
 --
 NEWS
 PLAYLIST
-SPORTS</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>370</x><y>120</y><w>120</w><h>180</h></coordinates><panel_attributes>lt=-
-m1=*
+SPORTS
+PODCAST</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>320</x><y>130</y><w>100</w><h>150</h></coordinates><panel_attributes>lt=-
+m1=0...4
 m2=*
-περιέχει &gt;</panel_attributes><additional_attributes>60;10;10;160</additional_attributes></element><element><id>Relation</id><coordinates><x>440</x><y>120</y><w>150</w><h>180</h></coordinates><panel_attributes>lt=-
-m1=*
+μεταδίδει &gt;</panel_attributes><additional_attributes>10;10;10;130</additional_attributes></element><element><id>Relation</id><coordinates><x>410</x><y>50</y><w>170</w><h>50</h></coordinates><panel_attributes>lt=-
+m1=0...4
 m2=*
-περιέχει &gt;</panel_attributes><additional_attributes>10;10;120;160</additional_attributes></element><element><id>UMLClass</id><coordinates><x>560</x><y>30</y><w>100</w><h>60</h></coordinates><panel_attributes>Playlist
---</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>510</x><y>50</y><w>70</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;50;10</additional_attributes></element></diagram>
+μεταδίδει &gt;</panel_attributes><additional_attributes>10;20;150;20</additional_attributes></element><element><id>UMLClass</id><coordinates><x>260</x><y>460</y><w>150</w><h>120</h></coordinates><panel_attributes>Τραγούδι
+--
+title: String
+genre: String
+artist: String
+year: String
+duration: int</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>320</x><y>330</y><w>120</w><h>150</h></coordinates><panel_attributes>lt=-
+m1=0...1
+m2=*
+Μεταδίδεται &gt;</panel_attributes><additional_attributes>10;130;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>560</x><y>10</y><w>150</w><h>90</h></coordinates><panel_attributes>ΜετάδοσηΔιαφήμισης
+--
+broadcastDate: Date
+broadcastTime: DatebroadcastDate: Date
+broadcastTime: Date</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>630</x><y>90</y><w>120</w><h>170</h></coordinates><panel_attributes>lt=-
+m1=0...1
+m2=*
+Μεταδίδεται &gt;</panel_attributes><additional_attributes>10;150;10;10</additional_attributes></element></diagram>
