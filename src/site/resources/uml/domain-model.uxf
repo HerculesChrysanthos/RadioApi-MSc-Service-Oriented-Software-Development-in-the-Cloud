@@ -1,4 +1,4 @@
-<diagram program="umletino" version="15.0.0"><zoom_level>10</zoom_level><help_text>Space for diagram notesομ</help_text><element><id>UMLClass</id><coordinates><x>40</x><y>10</y><w>140</w><h>100</h></coordinates><panel_attributes>Χρήστης
+<diagram program="umletino" version="15.0.0"><zoom_level>10</zoom_level><help_text>Space for diagram notesομ.*</help_text><element><id>UMLClass</id><coordinates><x>40</x><y>10</y><w>140</w><h>100</h></coordinates><panel_attributes>Χρήστης
 --
 username: String
 password: String
@@ -36,11 +36,11 @@ NEWS
 PLAYLIST
 SPORTS
 PODCAST</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>320</x><y>120</y><w>100</w><h>150</h></coordinates><panel_attributes>lt=-
-m1=0...4
-m2=*
+m1=1
+m2=1...*
 μεταδίδει &gt;</panel_attributes><additional_attributes>10;10;10;130</additional_attributes></element><element><id>Relation</id><coordinates><x>410</x><y>40</y><w>170</w><h>50</h></coordinates><panel_attributes>lt=-
-m1=*
-m2=*
+m1=1
+m2=1...*
 μεταδίδει &gt;</panel_attributes><additional_attributes>10;20;150;20</additional_attributes></element><element><id>UMLClass</id><coordinates><x>260</x><y>450</y><w>150</w><h>120</h></coordinates><panel_attributes>Τραγούδι
 --
 title: String
@@ -48,12 +48,12 @@ genre: String
 artist: String
 year: String
 duration: int</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>320</x><y>320</y><w>120</w><h>150</h></coordinates><panel_attributes>lt=-
-m1=0...1
+m1=1
 m2=*
 Μεταδίδεται &gt;</panel_attributes><additional_attributes>10;130;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>560</x><y>0</y><w>150</w><h>90</h></coordinates><panel_attributes>ΜετάδοσηΔιαφήμισης
 --
 broadcastDate: Date
 broadcastTime: Date</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>630</x><y>80</y><w>120</w><h>170</h></coordinates><panel_attributes>lt=-
-m1=0...1
+m1=1
 m2=*
 Μεταδίδεται &gt;</panel_attributes><additional_attributes>10;150;10;10</additional_attributes></element></diagram>
