@@ -1,5 +1,5 @@
 package gr.aueb.radio.enums;
 
-public enum BroadcastType {
+public enum BroadcastTypeEnum {
     NEWS, PLAYLIST, SPORTS, PODCAST
 }
