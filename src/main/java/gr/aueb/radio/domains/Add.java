@@ -1,10 +1,10 @@
 package gr.aueb.radio.domains;
 
 import gr.aueb.radio.enums.ZoneEnum;
-import gr.aueb.radio.utils.DateUtil;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -13,7 +13,7 @@ import java.util.Set;
 public class Add {
 
     @Id
-    @Column(name="Add_id")
+    @Column(name="id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer AddId;
 
@@ -23,28 +23,28 @@ public class Add {
     @Column(name="repPerZone", unique = false, nullable = false, length = 50)
     private Integer repPerZone;
 
-    @Column(name="StartingDate",unique = false)
-    private   LocalDate StartingDate ;
+    @Column(name="startingDate",unique = false)
+    private   LocalDate startingDate ;
 
-    @Column(name="EndingDate", unique = false)
-    private LocalDate EndingDate ;
+    @Column(name="endingDate", unique = false)
+    private LocalDate endingDate ;
 
     @Enumerated(EnumType.STRING)
     @Column(name="TimeZone")
     private ZoneEnum TimeZone;
 
-    @OneToMany(mappedBy = "add", fetch = FetchType.LAZY)
-    private Set<BroadcastAdd> BroadcastAdd ;
+    @OneToMany(mappedBy = "add", fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Set<BroadcastAdd> broadcastAdds = new HashSet<BroadcastAdd>();
 
 
     public Add() {
     }
 
-    public Add( Integer duration, Integer repPerZone, LocalDate StartingDate, LocalDate EndingDate, ZoneEnum TimeZone) {
+    public Add( Integer duration, Integer repPerZone, LocalDate startingDate, LocalDate endingDate, ZoneEnum TimeZone) {
         this.duration = duration;
         this.repPerZone = repPerZone;
-        this.StartingDate = StartingDate;
-        this.EndingDate = EndingDate;
+        this.startingDate = startingDate;
+        this.endingDate = endingDate;
         this.TimeZone = TimeZone;
     }
     public Integer getId() {
@@ -65,16 +65,14 @@ public class Add {
         this.repPerZone = repPerZone;
     }
 
-    public LocalDate getStartingDate() { return StartingDate;}
+    public LocalDate getStartingDate() { return startingDate;}
 
-    public void setStartingDate(String date){this.StartingDate = DateUtil.setDate(date); }
-
+    public void setStartingDate(LocalDate date){this.startingDate = date; }
     public LocalDate getEndingDate() {
-        return EndingDate;
+        return endingDate;
     }
 
-    public void setEndingDate(String date){this.EndingDate = DateUtil.setDate(date); }
-
+    public void setEndingDate(LocalDate date){this.endingDate = date; }
 
     public ZoneEnum getTimeZone() {
         return TimeZone;
@@ -82,5 +80,20 @@ public class Add {
 
     public void setTimeZone(ZoneEnum TimeZone) {
         this.TimeZone = TimeZone;
+    }
+    /*  μεταδόσεις της διαφήμισης  */
+
+//    public void setBroadcastAdds(Set<BroadcastAdd> broadcastAdds) {
+//        this.broadcastAdds = broadcastAdds;
+//    }
+
+    public Set<BroadcastAdd> getBroadcastAdds() {
+        return broadcastAdds;
+    }
+
+    public void addBroadcastadd (BroadcastAdd broadcastadd ) {
+        if (broadcastadd != null) {
+            broadcastadd.setAdd(this);
+        }
     }
 }
