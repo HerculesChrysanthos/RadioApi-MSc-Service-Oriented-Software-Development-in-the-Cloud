@@ -8,20 +8,21 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 public class AddsTest {
 
     Add add;
-    BroadcastAdd broadcastAdd;
 
     private static Integer duration =  29;
     private static Integer repPerZone = 1;
     private static LocalDate startingDate = DateUtil.setDate("01-01-2022");
 
     private static LocalDate endingDate = DateUtil.setDate("01-03-2022");
-    private static ZoneEnum TimeZone = ZoneEnum.EarlyMorning;
+    private static ZoneEnum timeZone = ZoneEnum.EarlyMorning;
 
     private static LocalDate broadcastDate= DateUtil.setDate("01-01-2022");
 
@@ -29,16 +30,12 @@ public class AddsTest {
 
     @BeforeEach
     public void setUp() {
-        broadcastAdd = new BroadcastAdd();
         add = new Add();
-
-        broadcastAdd.setBroadcastDate(broadcastDate);
-        broadcastAdd.setBroadcastTime(broadcastTime);
         add.setDuration(duration);
         add.setRepPerZone(repPerZone);
         add.setStartingDate(startingDate);
         add.setEndingDate(endingDate);
-        add.setTimeZone(TimeZone);
+        add.setTimezone(timeZone);
 
     }
 
@@ -48,26 +45,31 @@ public class AddsTest {
         assertEquals(add.getRepPerZone(), repPerZone);
         assertEquals(add.getStartingDate(), startingDate);
         assertEquals(add.getEndingDate(), endingDate);
-        assertEquals(add.getTimeZone(), TimeZone);
+        assertEquals(add.getTimezone(), timeZone);
     }
 
-//    @Test
-//    public void checkRepsPerZone () {
-//        to be added
-//    }
     @Test
-    public void addingSameBroadcastaddInTwoAdds() {
-        Add add3 = new Add();
-        add3.addBroadcastadd(broadcastAdd);
-        broadcastAddComp(add);
-        broadcastAddComp(add3);
+    public void addValidAddBroadcast(){
+        AddBroadcast addBroadcast = new AddBroadcast(broadcastDate, broadcastTime);
+        add.addBroadcastAdd(addBroadcast);
+        List<AddBroadcast> broadcasts = add.getBroadcastAdds();
+        assertNotNull(broadcasts);
+        assertEquals(1, broadcasts.size());
+    }
+
+    @Test
+    public void addInvalidAddBroadcast(){
+        add.addBroadcastAdd(null);
+        List<AddBroadcast> broadcasts = add.getBroadcastAdds();
+        assertEquals(0, broadcasts.size());
     }
 
 
-    private void broadcastAddComp(Add add) {
-        for(BroadcastAdd  broadcastAdd: add.getBroadcastAdds()) {
-            Assertions.assertSame(  add, broadcastAdd.getAdd());
-        }
+    @Test
+    public void equalsObjectTest(){
+        Assertions.assertTrue(add.equals(add));
+        assertFalse(add.equals(null));
+        assertFalse(add.equals(String.class));
     }
 
 }

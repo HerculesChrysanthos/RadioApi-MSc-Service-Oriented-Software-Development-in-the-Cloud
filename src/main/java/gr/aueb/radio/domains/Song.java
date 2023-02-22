@@ -1,18 +1,10 @@
 package gr.aueb.radio.domains;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.JoinColumn;
-import gr.aueb.radio.domains.Transmission;
+import javax.persistence.*;
+import java.util.*;
 
 @Entity
-@Table(name="song")
+@Table(name="songs")
 public class Song {
     @Id
     @Column(name="id")
@@ -34,14 +26,13 @@ public class Song {
     @Column(name = "genre", nullable = false, length = 50)
     private String genre;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "transmission_id")
-    private Transmission transmission;
+    @OneToMany(mappedBy = "song", fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<SongBroadcast> songBroadcasts = new ArrayList<>();
 
     public Song() {
     }
 
-    public Song(String title, String genre, int duration, String artist, int year) {
+    public Song(String title, String genre, Integer duration, String artist, Integer year) {
         this.title = title;
         this.artist = artist;
         this.duration = duration;
@@ -49,16 +40,18 @@ public class Song {
         this.genre = genre;
     }
     
-    public void setTransmission(Transmission transmission) {
-        this.transmission = transmission;
+    public void addSongBroadcast(SongBroadcast songBroadcast) {
+        if(songBroadcast != null){
+            this.songBroadcasts.add(songBroadcast);
+        }
     }
 
-    public Transmission getTransmission() {
-        return transmission;
+    public List<SongBroadcast> getSongBroadcasts() {
+        return this.songBroadcasts;
     }
 
     public String getTitle() {
-        return title;
+        return this.title;
     }
 
     public void setTitle(String title) {
@@ -66,35 +59,48 @@ public class Song {
     }
 
     public String getArtist() {
-        return artist;
+        return this.artist;
     }
 
     public void setArtist(String artist) {
         this.artist = artist;
     }
 
-    public int getDuration() {
-        return duration;
+    public Integer getDuration() {
+        return this.duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 
     public String getGenre() {
-        return genre;
+        return this.genre;
     }
 
     public void setGenre(String genre) {
         this.genre = genre;
     }
 
-    public int getYear() {
-        return year;
+    public Integer getYear() {
+        return this.year;
     }
 
-    public void setYear(int year) {
+    public void setYear(Integer year) {
         this.year = year;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Song song = (Song) o;
+        return this.title.equals(song.title) && this.artist.equals(song.artist);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, artist);
     }
 }
 

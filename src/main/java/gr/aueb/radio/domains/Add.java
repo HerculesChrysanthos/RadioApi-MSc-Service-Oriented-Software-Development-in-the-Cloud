@@ -4,8 +4,7 @@ import gr.aueb.radio.enums.ZoneEnum;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -15,85 +14,103 @@ public class Add {
     @Id
     @Column(name="id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer AddId;
+    private Integer id;
 
-    @Column(name="duration", unique = false, nullable = false, length = 50)
+    @Column(name="duration", unique = false, nullable = false)
     private Integer duration;
 
-    @Column(name="repPerZone", unique = false, nullable = false, length = 50)
+    @Column(name="rep_per_zone", unique = false, nullable = false)
     private Integer repPerZone;
 
-    @Column(name="startingDate",unique = false)
-    private   LocalDate startingDate ;
+    @Column(name="starting_date",unique = false, nullable = false)
+    private LocalDate startingDate ;
 
-    @Column(name="endingDate", unique = false)
+    @Column(name="ending_date", unique = false, nullable = false)
     private LocalDate endingDate ;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="TimeZone")
-    private ZoneEnum TimeZone;
+    @Column(name="timezone")
+    private ZoneEnum timezone;
 
     @OneToMany(mappedBy = "add", fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Set<BroadcastAdd> broadcastAdds = new HashSet<BroadcastAdd>();
+    private List<AddBroadcast> addBroadcasts = new ArrayList<>();
 
 
     public Add() {
     }
 
-    public Add( Integer duration, Integer repPerZone, LocalDate startingDate, LocalDate endingDate, ZoneEnum TimeZone) {
+    public Add( Integer duration, Integer repPerZone, LocalDate startingDate, LocalDate endingDate, ZoneEnum timezone) {
         this.duration = duration;
         this.repPerZone = repPerZone;
         this.startingDate = startingDate;
         this.endingDate = endingDate;
-        this.TimeZone = TimeZone;
+        this.timezone = timezone;
     }
-    public Integer getId() {
-        return AddId;
+
+    public Integer getId(){
+        return this.id;
     }
 
     public Integer getDuration() {
-        return duration;
+        return this.duration;
     }
 
     public void setDuration(Integer duration) {
         this.duration = duration;
     }
 
-    public Integer getRepPerZone() { return repPerZone; }
+    public Integer getRepPerZone() {
+        return this.repPerZone;
+    }
 
     public void setRepPerZone(Integer repPerZone) {
         this.repPerZone = repPerZone;
     }
 
-    public LocalDate getStartingDate() { return startingDate;}
+    public LocalDate getStartingDate() {
+        return this.startingDate;
+    }
 
-    public void setStartingDate(LocalDate date){this.startingDate = date; }
+    public void setStartingDate(LocalDate startingDate) {
+        this.startingDate = startingDate;
+    }
+
     public LocalDate getEndingDate() {
-        return endingDate;
+        return this.endingDate;
     }
 
-    public void setEndingDate(LocalDate date){this.endingDate = date; }
-
-    public ZoneEnum getTimeZone() {
-        return TimeZone;
+    public void setEndingDate(LocalDate endingDate) {
+        this.endingDate = endingDate;
     }
 
-    public void setTimeZone(ZoneEnum TimeZone) {
-        this.TimeZone = TimeZone;
-    }
-    /*  μεταδόσεις της διαφήμισης  */
-
-//    public void setBroadcastAdds(Set<BroadcastAdd> broadcastAdds) {
-//        this.broadcastAdds = broadcastAdds;
-//    }
-
-    public Set<BroadcastAdd> getBroadcastAdds() {
-        return broadcastAdds;
+    public ZoneEnum getTimezone() {
+        return this.timezone;
     }
 
-    public void addBroadcastadd (BroadcastAdd broadcastadd ) {
-        if (broadcastadd != null) {
-            broadcastadd.setAdd(this);
+    public void setTimezone(ZoneEnum timezone) {
+        this.timezone = timezone;
+    }
+
+    public List<AddBroadcast> getBroadcastAdds() {
+        return this.addBroadcasts;
+    }
+
+    public void addBroadcastAdd (AddBroadcast addBroadcast) {
+        if (addBroadcast != null) {
+            this.addBroadcasts.add(addBroadcast);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Add add = (Add) o;
+        return add.duration == this.duration && this.startingDate.equals(add.startingDate) && this.endingDate.equals(add.endingDate) && this.timezone == add.getTimezone();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash( duration, startingDate, endingDate, timezone);
     }
 }
