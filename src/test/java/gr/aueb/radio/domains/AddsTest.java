@@ -64,14 +64,6 @@ public class AddsTest {
         assertEquals(0, broadcasts.size());
     }
 
-
-    @Test
-    public void equalsObjectTest(){
-        Assertions.assertTrue(add.equals(add));
-        assertFalse(add.equals(null));
-        assertFalse(add.equals(String.class));
-    }
-
 }
 
 

@@ -97,20 +97,8 @@ public class Add {
 
     public void addBroadcastAdd (AddBroadcast addBroadcast) {
         if (addBroadcast != null) {
+            addBroadcast.setAdd(this);
             this.addBroadcasts.add(addBroadcast);
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Add add = (Add) o;
-        return add.duration == this.duration && this.startingDate.equals(add.startingDate) && this.endingDate.equals(add.endingDate) && this.timezone == add.getTimezone();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash( duration, startingDate, endingDate, timezone);
     }
 }

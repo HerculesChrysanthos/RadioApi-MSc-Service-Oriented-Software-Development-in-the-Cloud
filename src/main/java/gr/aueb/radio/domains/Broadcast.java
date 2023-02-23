@@ -38,10 +38,10 @@ public class Broadcast {
 
     public Broadcast() {}
 
-    public Broadcast(Integer duration, String startingDate, String startingTime, BroadcastEnum type) {
+    public Broadcast(Integer duration, LocalDate startingDate, LocalTime startingTime, BroadcastEnum type) {
         this.duration = duration;
-        this.startingDate = DateUtil.setDate(startingDate);
-        this.startingTime = DateUtil.setTime(startingTime);
+        this.startingDate = startingDate;
+        this.startingTime = startingTime;
         this.type = type;
     }
 
@@ -61,16 +61,16 @@ public class Broadcast {
         return startingDate;
     }
 
-    public void setStartingDate(String startingDate) {
-        this.startingDate = DateUtil.setDate(startingDate);
+    public void setStartingDate(LocalDate startingDate) {
+        this.startingDate = startingDate;
     }
 
     public LocalTime getStartingTime() {
         return startingTime;
     }
 
-    public void setStartingTime(String startingTime) {
-        this.startingTime = DateUtil.setTime(startingTime);
+    public void setStartingTime(LocalTime startingTime) {
+        this.startingTime = startingTime;
     }
 
     public BroadcastEnum getType() {
@@ -81,17 +81,37 @@ public class Broadcast {
         this.type = type;
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Broadcast broadcast = (Broadcast) o;
-        return this.startingDate.equals(broadcast.startingDate) && this.startingTime.equals(broadcast.startingTime);
+    public List<AddBroadcast> getAddBroadcasts(){
+        return this.addBroadcasts;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.startingDate, this.startingTime);
+    public List<SongBroadcast> getSongBroadcasts(){
+        return this.songBroadcasts;
     }
+
+    public void createAddBroadcast(Add add, LocalTime time){
+        AddBroadcast addBroadcast = new AddBroadcast(this.startingDate, time);
+        addBroadcast.setBroadcast(this);
+        add.addBroadcastAdd(addBroadcast);
+        this.addBroadcasts.add(addBroadcast);
+    }
+
+    public void createSongBroadcast(Song song, LocalTime time){
+        SongBroadcast songBroadcast = new SongBroadcast(this.startingDate, time);
+        songBroadcast.setBroadcast(this);
+        song.addSongBroadcast(songBroadcast);
+        this.songBroadcasts.add(songBroadcast);
+    }
+
+    public Integer getAllocatedTime(){
+        Integer totalTime = 0;
+        for (SongBroadcast songBroadcast : this.songBroadcasts){
+            totalTime += songBroadcast.getSong().getDuration();
+        }
+        for (AddBroadcast addBroadcast : this.addBroadcasts){
+            totalTime += addBroadcast.getAdd().getDuration();
+        }
+        return totalTime;
+    }
+
 }

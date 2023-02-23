@@ -42,6 +42,7 @@ public class Song {
     
     public void addSongBroadcast(SongBroadcast songBroadcast) {
         if(songBroadcast != null){
+            songBroadcast.setSong(this);
             this.songBroadcasts.add(songBroadcast);
         }
     }
@@ -90,17 +91,5 @@ public class Song {
         this.year = year;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Song song = (Song) o;
-        return this.title.equals(song.title) && this.artist.equals(song.artist);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(title, artist);
-    }
 }
 

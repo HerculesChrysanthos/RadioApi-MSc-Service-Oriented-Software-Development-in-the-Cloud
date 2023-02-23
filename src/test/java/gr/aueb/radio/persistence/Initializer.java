@@ -2,8 +2,10 @@ package gr.aueb.radio.persistence;
 
 
 import gr.aueb.radio.domains.Add;
-import gr.aueb.radio.domains.AddBroadcast;
+import gr.aueb.radio.domains.Broadcast;
+import gr.aueb.radio.domains.Song;
 import gr.aueb.radio.domains.User;
+import gr.aueb.radio.enums.BroadcastEnum;
 import gr.aueb.radio.enums.RoleEnum;
 import gr.aueb.radio.enums.ZoneEnum;
 import gr.aueb.radio.utils.DateUtil;
@@ -11,7 +13,6 @@ import gr.aueb.radio.utils.JPAUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Query;
 
 public class Initializer {
     public void  dropData() {
@@ -19,13 +20,12 @@ public class Initializer {
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.begin();
 
-        Query query = entityManager.createNativeQuery("delete from users");
-        Query query2 = entityManager.createNativeQuery("delete from adds");
-        Query query3 = entityManager.createNativeQuery("delete from add_broadcasts");
-
-        query.executeUpdate();
-        query2.executeUpdate();
-        query3.executeUpdate();
+        entityManager.createNativeQuery("delete from users").executeUpdate();
+        entityManager.createNativeQuery("delete from add_broadcasts").executeUpdate();
+        entityManager.createNativeQuery("delete from song_broadcasts").executeUpdate();
+        entityManager.createNativeQuery("delete from adds").executeUpdate();
+        entityManager.createNativeQuery("delete from songs").executeUpdate();
+        entityManager.createNativeQuery("delete from broadcasts").executeUpdate();
         entityTransaction.commit();
         entityManager.close();
     }
@@ -38,8 +38,15 @@ public class Initializer {
         Add add1 = new Add(25, 1, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-03-2022") , ZoneEnum.EarlyMorning);
         Add add2 = new Add(25, 1, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-04-2022"), ZoneEnum.Morning);
 
-        AddBroadcast addBroadcast1 = new AddBroadcast(DateUtil.setDate("01-01-2022"), DateUtil.setTime("14:42"));
-        AddBroadcast addBroadcast2 = new AddBroadcast(DateUtil.setDate("23-04-2022"), DateUtil.setTime("06:58"));
+        Song song1 = new Song("title", "genre", 45, "artist", 2023);
+        Song song2 = new Song("title1", "genre2", 160, "artist1", 2023);
+
+        Broadcast broadcast = new Broadcast(500, DateUtil.setDate("01-02-2022") , DateUtil.setTime("03:00"), BroadcastEnum.PLAYLIST);
+        broadcast.createSongBroadcast(song2, DateUtil.setTime("03:00"));
+        broadcast.createAddBroadcast(add1, DateUtil.setTime("05:40"));
+        broadcast.createSongBroadcast(song1, DateUtil.setTime("06:10"));
+        broadcast.createAddBroadcast(add2, DateUtil.setTime("07:00"));
+
 
         EntityManager entityManager = JPAUtil.createEntityManager();
         EntityTransaction entityTransaction = entityManager.getTransaction();
@@ -48,16 +55,13 @@ public class Initializer {
         entityManager.persist(producer);
         entityManager.persist(user);
 
-
-
-        entityManager.persist(addBroadcast1);
-        entityManager.persist(addBroadcast2);
-
-        add1.addBroadcastAdd(addBroadcast1);
         entityManager.persist(add1);
-
-        add2.addBroadcastAdd(addBroadcast2);
         entityManager.persist(add2);
+
+        entityManager.persist(song1);
+        entityManager.persist(song2);
+
+        entityManager.persist(broadcast);
 
         entityTransaction.commit();
         entityManager.close();

@@ -5,10 +5,6 @@ import java.time.LocalTime;
 
 import javax.persistence.*;
 
-import lombok.Getter;
-import lombok.Setter;
-
-
 @Entity
 @Table(name ="song_broadcasts")
 public class SongBroadcast {
