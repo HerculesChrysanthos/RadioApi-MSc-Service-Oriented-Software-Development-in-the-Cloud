@@ -58,6 +58,16 @@ public class SongTest {
     }
 
     @Test
+    public void removeSongBroadcast(){
+        song.addSongBroadcast(songBroadcast);
+        List<SongBroadcast> broadcasts = song.getSongBroadcasts();
+        assertEquals(1, broadcasts.size());
+        song.removeSongBroadcast(songBroadcast);
+        song.getSongBroadcasts();
+        assertEquals(0, broadcasts.size());
+    }
+
+    @Test
     public void addInvalidSongBroadcastTest() {
         song.addSongBroadcast(null);
         List<SongBroadcast> broadcasts = song.getSongBroadcasts();
@@ -66,44 +76,73 @@ public class SongTest {
 
     @Test
     public void setTitleTest() {
-      String newTitle = "New Title";
-      song.setTitle(newTitle);
-      assertEquals(newTitle, song.getTitle());
+        String newTitle = "New Title";
+        song.setTitle(newTitle);
+        assertEquals(newTitle, song.getTitle());
    }
 
    @Test
    public void setGenreTest() {
-     String newGenre = "New Genre";
-     song.setGenre(newGenre);
-      assertEquals(newGenre, song.getGenre());
+        String newGenre = "New Genre";
+        song.setGenre(newGenre);
+        assertEquals(newGenre, song.getGenre());
    }
-   
-   @Test
-   public void setArtistTest() {
-     String newArtist = "New Artist";
-     song.setArtist(newArtist);
-     assertEquals(newArtist, song.getArtist());
-}
+
+    @Test
+    public void setArtistTest() {
+        String newArtist = "New Artist";
+        song.setArtist(newArtist);
+        assertEquals(newArtist, song.getArtist());
+    }
 
     @Test
     public void setYearTest() {
-      Integer newYear = 2022;
-      song.setYear(newYear);
-      assertEquals(newYear, song.getYear());
-}
+        Integer newYear = 2022;
+        song.setYear(newYear);
+        assertEquals(newYear, song.getYear());
+    }
 
-@Test
-public void setDurationTest() {
-    int newDuration = 240;
-    song.setDuration(newDuration);
-    assertEquals(newDuration, song.getDuration());
-}
+    @Test
+    public void setDurationTest() {
+        int newDuration = 240;
+        song.setDuration(newDuration);
+        assertEquals(newDuration, song.getDuration());
+    }
 
-@Test
-public void equalsTest() {
-    Song song2 = new Song("Title", "Genre", 300, "Artist", 2021);
-    assertFalse(song.equals(song2));
-}
+    @Test
+    public void equalsTest() {
+        Song song2 = new Song("Title", "Genre", 300, "Artist", 2021);
+        assertFalse(song.equals(song2));
+    }
+
+    @Test
+    public void rateConstraintsTest(){
+        SongBroadcast broadcast1 = new SongBroadcast(DateUtil.setDate("01-01-2023"), DateUtil.setTime("01:00"));
+        SongBroadcast broadcast2 = new SongBroadcast(DateUtil.setDate("01-01-2023"), DateUtil.setTime("02:30"));
+        SongBroadcast broadcast3 = new SongBroadcast(DateUtil.setDate("01-01-2023"), DateUtil.setTime("04:00"));
+        song.addSongBroadcast(broadcast1);
+        song.addSongBroadcast(broadcast2);
+        song.addSongBroadcast(broadcast3);
+        assertTrue(song.toBeBroadcasted(DateUtil.setDate("01-01-2023"), DateUtil.setTime("05:30")));
+
+        SongBroadcast broadcast4 = new SongBroadcast(DateUtil.setDate("01-01-2023"), DateUtil.setTime("05:30"));
+        song.addSongBroadcast(broadcast4);
+        assertEquals(4, song.getSongBroadcasts().size());
+        assertFalse(song.toBeBroadcasted(DateUtil.setDate("01-01-2023"), DateUtil.setTime("08:00")));
+    }
+
+    @Test
+    public void timeConstraintsTest(){
+        SongBroadcast broadcast1 = new SongBroadcast(DateUtil.setDate("01-01-2023"), DateUtil.setTime("10:00"));
+        SongBroadcast broadcast2 = new SongBroadcast(DateUtil.setDate("01-01-2023"), DateUtil.setTime("12:00"));
+        song.addSongBroadcast(broadcast1);
+        song.addSongBroadcast(broadcast2);
+        assertTrue(song.toBeBroadcasted(DateUtil.setDate("01-01-2023"), DateUtil.setTime("05:30")));
+        assertTrue(song.toBeBroadcasted(DateUtil.setDate("01-01-2023"), DateUtil.setTime("15:30")));
+        assertFalse(song.toBeBroadcasted(DateUtil.setDate("01-01-2023"), DateUtil.setTime("11:00")));
+        assertFalse(song.toBeBroadcasted(DateUtil.setDate("01-01-2023"), DateUtil.setTime("11:30")));
+        assertTrue(song.toBeBroadcasted(DateUtil.setDate("01-02-2023"), DateUtil.setTime("05:30")));
+    }
 
 }
 
