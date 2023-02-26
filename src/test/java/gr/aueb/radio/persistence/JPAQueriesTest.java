@@ -1,6 +1,8 @@
 package gr.aueb.radio.persistence;
 
 import gr.aueb.radio.domains.*;
+import gr.aueb.radio.enums.ZoneEnum;
+import gr.aueb.radio.utils.DateUtil;
 import gr.aueb.radio.utils.JPAUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -74,5 +76,51 @@ public class JPAQueriesTest {
         List<SongBroadcast> songBroadcasts = broadcast.getSongBroadcasts();
         assertEquals(2, songBroadcasts.size());
         assertTrue(broadcast.getAllocatedTime() > 0);
+    }
+
+    @Test
+    public void restrictSongBroadcastCreation(){
+        List<Broadcast> broadcasts = entityManager.createQuery("select broadcast from Broadcast broadcast").getResultList();
+        Broadcast broadcast = broadcasts.get(0);
+        List<SongBroadcast> songBroadcasts = broadcast.getSongBroadcasts();
+        Integer listOfSongs = songBroadcasts.size();
+        // total duration restriction
+        // no broadcast is added
+        Song invalidSong1 = new Song("title", "genre", 190, "artist", 2023);
+        broadcast.createSongBroadcast(invalidSong1, DateUtil.setTime("02:40"));
+        assertEquals(listOfSongs, broadcast.getSongBroadcasts().size());
+        // repeated song restriction
+        // no broadcast is added
+        Song repeatedSong = songBroadcasts.get(1).getSong();
+        broadcast.createSongBroadcast(repeatedSong, DateUtil.setTime("02:00"));
+        assertEquals(listOfSongs, broadcast.getSongBroadcasts().size());
+        // occurrence song restriction
+        // no broadcast is added
+        Song invalidSong2 = new Song("title", "genre", 5, "artist", 2023);
+        broadcast.createSongBroadcast(repeatedSong, DateUtil.setTime("00:45"));
+        assertEquals(listOfSongs, broadcast.getSongBroadcasts().size());
+    }
+
+    @Test
+    public void restrictAddBroadcastCreation(){
+        List<Broadcast> broadcasts = entityManager.createQuery("select broadcast from Broadcast broadcast").getResultList();
+        Broadcast broadcast = broadcasts.get(0);
+        List<AddBroadcast> addBroadcasts = broadcast.getAddBroadcasts();
+        Integer listOfAdds = addBroadcasts.size();
+        // total duration restriction
+        // no broadcast is added
+        Add invalidAdd1 = new Add(190, 0, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-03-2022") , ZoneEnum.LateNight);
+        broadcast.createAddBroadcast(invalidAdd1, DateUtil.setTime("02:40"));
+        assertEquals(listOfAdds, broadcast.getAddBroadcasts().size());
+        // invalid timezone restriction
+        // no broadcast is added
+        Add invalidAdd2 = new Add(5, 0, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-03-2022") , ZoneEnum.Afternoon);
+        broadcast.createAddBroadcast(invalidAdd2, DateUtil.setTime("02:40"));
+        assertEquals(listOfAdds, broadcast.getAddBroadcasts().size());
+        // occurrence song restriction
+        // no broadcast is added
+        Add invalidAdd3 = new Add(5, 0, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-03-2022") , ZoneEnum.LateNight);
+        broadcast.createAddBroadcast(invalidAdd3, DateUtil.setTime("00:15"));
+        assertEquals(listOfAdds, broadcast.getAddBroadcasts().size());
     }
 }
