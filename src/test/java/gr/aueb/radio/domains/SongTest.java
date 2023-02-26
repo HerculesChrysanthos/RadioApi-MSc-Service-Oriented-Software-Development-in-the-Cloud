@@ -19,7 +19,7 @@ public class SongTest {
     private static LocalTime localTime = DateUtil.setTime("01:01");
     private static String title = "Title";
     private static String genre = "Genre";
-    private static int duration = 180;
+    private static int duration = 30;
     private static String artist = "Artist";
     private static Integer year = 2021;
 
