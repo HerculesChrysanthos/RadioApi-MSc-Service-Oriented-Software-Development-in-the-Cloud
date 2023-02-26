@@ -102,6 +102,33 @@ public class Broadcast {
         song.addSongBroadcast(songBroadcast);
         this.songBroadcasts.add(songBroadcast);
     }
+    public void setAddBroadcasts(List<AddBroadcast> addBroadcasts) {
+        this.addBroadcasts = addBroadcasts;
+    }
+
+    public void addAddBroadcast(AddBroadcast addBroadcast) {
+        addBroadcast.setBroadcast(this);
+        this.addBroadcasts.add(addBroadcast);
+    }
+
+    public void removeAddBroadcast(AddBroadcast addBroadcast) {
+        this.addBroadcasts.remove(addBroadcast);
+        addBroadcast.setBroadcast(null);
+    }
+
+    public void setSongBroadcasts(List<SongBroadcast> songBroadcasts) {
+        this.songBroadcasts = songBroadcasts;
+    }
+
+    public void addSongBroadcast(SongBroadcast songBroadcast) {
+        songBroadcast.setBroadcast(this);
+        this.songBroadcasts.add(songBroadcast);
+    }
+
+    public void removeSongBroadcast(SongBroadcast songBroadcast) {
+        this.songBroadcasts.remove(songBroadcast);
+        songBroadcast.setBroadcast(null);
+    }
 
     public Integer getAllocatedTime(){
         Integer totalTime = 0;

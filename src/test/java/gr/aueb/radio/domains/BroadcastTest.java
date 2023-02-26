@@ -37,4 +37,27 @@ public class BroadcastTest {
         assertEquals(time, broadcast.getStartingTime());
         assertEquals(BroadcastEnum.PLAYLIST, broadcast.getType());
     }
+    
+    @Test
+    public void addValidSongBroadcastTest() {
+        Song song = new Song("Title", "Genre", 180, "Artist", 2021);
+        SongBroadcast songBroadcast = new SongBroadcast(date, time);
+        songBroadcast.setSong(song);
+        broadcast.addSongBroadcast(songBroadcast);
+        List<SongBroadcast> broadcasts = broadcast.getSongBroadcasts();
+        assertNotNull(broadcasts);
+        assertEquals(1, broadcasts.size());
+    }
+
+    @Test
+    public void removeValidSongBroadcastTest() {
+        Song song = new Song("Title", "Genre", 180, "Artist", 2021);
+        SongBroadcast songBroadcast = new SongBroadcast(date, time);
+        songBroadcast.setSong(song);
+        broadcast.addSongBroadcast(songBroadcast);
+        broadcast.removeSongBroadcast(songBroadcast);
+        List<SongBroadcast> broadcasts = broadcast.getSongBroadcasts();
+        assertEquals(0, broadcasts.size());
+    }
+   
 }

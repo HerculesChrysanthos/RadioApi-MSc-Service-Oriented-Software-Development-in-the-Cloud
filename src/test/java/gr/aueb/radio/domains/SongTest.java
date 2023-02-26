@@ -63,4 +63,48 @@ public class SongTest {
         List<SongBroadcast> broadcasts = song.getSongBroadcasts();
         assertEquals(0, broadcasts.size());
     }
+
+    @Test
+    public void setTitleTest() {
+      String newTitle = "New Title";
+      song.setTitle(newTitle);
+      assertEquals(newTitle, song.getTitle());
+   }
+
+   @Test
+   public void setGenreTest() {
+     String newGenre = "New Genre";
+     song.setGenre(newGenre);
+      assertEquals(newGenre, song.getGenre());
+   }
+   
+   @Test
+   public void setArtistTest() {
+     String newArtist = "New Artist";
+     song.setArtist(newArtist);
+     assertEquals(newArtist, song.getArtist());
 }
+
+    @Test
+    public void setYearTest() {
+      Integer newYear = 2022;
+      song.setYear(newYear);
+      assertEquals(newYear, song.getYear());
+}
+
+@Test
+public void setDurationTest() {
+    int newDuration = 240;
+    song.setDuration(newDuration);
+    assertEquals(newDuration, song.getDuration());
+}
+
+@Test
+public void equalsTest() {
+    Song song2 = new Song("Title", "Genre", 300, "Artist", 2021);
+    assertFalse(song.equals(song2));
+}
+
+}
+
+   
