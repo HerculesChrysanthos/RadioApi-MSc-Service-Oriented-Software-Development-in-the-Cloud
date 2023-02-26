@@ -39,24 +39,41 @@ public class BroadcastTest {
     }
     
     @Test
-    public void addValidSongBroadcastTest() {
-        Song song = new Song("Title", "Genre", 180, "Artist", 2021);
-        SongBroadcast songBroadcast = new SongBroadcast(date, time);
-        songBroadcast.setSong(song);
-        broadcast.addSongBroadcast(songBroadcast);
+    public void createValidSongBroadcastTest() {
+        Song song = new Song("Title", "Genre", 10, "Artist", 2021);
+        broadcast.createSongBroadcast(song, DateUtil.setTime("00:00"));
         List<SongBroadcast> broadcasts = broadcast.getSongBroadcasts();
+        assertNotNull(broadcasts);
+    }
+
+    @Test
+    public void removeValidSongBroadcastTest() {
+        Song song = new Song("Title", "Genre", 10, "Artist", 2021);
+        broadcast.createSongBroadcast(song, DateUtil.setTime("00:00"));
+        List<SongBroadcast> broadcasts = broadcast.getSongBroadcasts();
+        assertEquals(1, broadcasts.size());
+        SongBroadcast songBroadcast = broadcasts.get(0);
+        broadcast.removeSongBroadcast(songBroadcast);
+        assertEquals(0, broadcasts.size());
+    }
+
+    @Test
+    public void createValidAddBroadcastTest() {
+        Add add = new Add(5, 0, DateUtil.setDate("01-01-2023"), DateUtil.setDate("01-05-2023"), ZoneEnum.LateNight);
+        broadcast.createAddBroadcast(add, DateUtil.setTime("00:00"));
+        List<AddBroadcast> broadcasts = broadcast.getAddBroadcasts();
         assertNotNull(broadcasts);
         assertEquals(1, broadcasts.size());
     }
 
     @Test
-    public void removeValidSongBroadcastTest() {
-        Song song = new Song("Title", "Genre", 180, "Artist", 2021);
-        SongBroadcast songBroadcast = new SongBroadcast(date, time);
-        songBroadcast.setSong(song);
-        broadcast.addSongBroadcast(songBroadcast);
-        broadcast.removeSongBroadcast(songBroadcast);
-        List<SongBroadcast> broadcasts = broadcast.getSongBroadcasts();
+    public void removeValidAddBroadcastTest() {
+        Add add = new Add(5, 0, DateUtil.setDate("01-01-2023"), DateUtil.setDate("01-05-2023"), ZoneEnum.LateNight);
+        broadcast.createAddBroadcast(add, DateUtil.setTime("01:00"));
+        List<AddBroadcast> broadcasts = broadcast.getAddBroadcasts();
+        assertEquals(1, broadcasts.size());
+        AddBroadcast addBroadcast = broadcasts.get(0);
+        broadcast.removeAddBroadcast(addBroadcast);
         assertEquals(0, broadcasts.size());
     }
    
