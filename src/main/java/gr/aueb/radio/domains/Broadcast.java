@@ -1,6 +1,7 @@
 package gr.aueb.radio.domains;
 
 import gr.aueb.radio.enums.BroadcastEnum;
+import gr.aueb.radio.enums.ZoneEnum;
 import gr.aueb.radio.utils.DateUtil;
 
 import javax.persistence.*;
@@ -30,6 +31,8 @@ public class Broadcast {
     @Column(name="type")
     private BroadcastEnum type;
 
+    private ZoneEnum timezone;
+
     @OneToMany(mappedBy = "broadcast", fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<AddBroadcast> addBroadcasts = new ArrayList<>();
 
@@ -43,6 +46,7 @@ public class Broadcast {
         this.startingDate = startingDate;
         this.startingTime = startingTime;
         this.type = type;
+        this.timezone = DateUtil.calculateTimezone(this.startingTime);
     }
 
     public Integer getId() {
@@ -71,6 +75,7 @@ public class Broadcast {
 
     public void setStartingTime(LocalTime startingTime) {
         this.startingTime = startingTime;
+        this.timezone = DateUtil.calculateTimezone(this.startingTime);
     }
 
     public BroadcastEnum getType() {
@@ -102,32 +107,44 @@ public class Broadcast {
         song.addSongBroadcast(songBroadcast);
         this.songBroadcasts.add(songBroadcast);
     }
-    public void setAddBroadcasts(List<AddBroadcast> addBroadcasts) {
-        this.addBroadcasts = addBroadcasts;
-    }
-
-    public void addAddBroadcast(AddBroadcast addBroadcast) {
-        addBroadcast.setBroadcast(this);
-        this.addBroadcasts.add(addBroadcast);
-    }
 
     public void removeAddBroadcast(AddBroadcast addBroadcast) {
         this.addBroadcasts.remove(addBroadcast);
         addBroadcast.setBroadcast(null);
     }
 
-    public void setSongBroadcasts(List<SongBroadcast> songBroadcasts) {
-        this.songBroadcasts = songBroadcasts;
-    }
-
-    public void addSongBroadcast(SongBroadcast songBroadcast) {
-        songBroadcast.setBroadcast(this);
-        this.songBroadcasts.add(songBroadcast);
-    }
-
     public void removeSongBroadcast(SongBroadcast songBroadcast) {
         this.songBroadcasts.remove(songBroadcast);
         songBroadcast.setBroadcast(null);
+    }
+
+    private boolean checkForOccurrence(LocalTime startingTime, Integer duration){
+        for (SongBroadcast sb : this.songBroadcasts){
+            LocalTime sbStartingTime = sb.getBroadcastTime();
+            LocalTime sbEndingTime = sb.getBroadcastTime().plusMinutes(sb.getSong().getDuration());
+            if(DateUtil.between(sbStartingTime, startingTime, sbEndingTime)){
+                return true;
+            }
+
+            LocalTime endingTime = startingTime.plusMinutes(duration);
+            if(DateUtil.between(sbStartingTime, endingTime, sbEndingTime)){
+                return true;
+            }
+        }
+
+        for (AddBroadcast ab : this.addBroadcasts){
+            LocalTime abStartingTime = ab.getBroadcastTime();
+            LocalTime abEndingTime = ab.getBroadcastTime().plusMinutes(ab.getAdd().getDuration());
+            if(DateUtil.between(abStartingTime, startingTime, abEndingTime)){
+                return true;
+            }
+
+            LocalTime endingTime = startingTime.plusMinutes(duration);
+            if(DateUtil.between(abStartingTime, endingTime, abEndingTime)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public Integer getAllocatedTime(){
