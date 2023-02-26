@@ -1,6 +1,10 @@
 package gr.aueb.radio.domains;
 
+import gr.aueb.radio.utils.DateUtil;
+
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 @Entity
@@ -28,7 +32,6 @@ public class Song {
 
     @OneToMany(mappedBy = "song", fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<SongBroadcast> songBroadcasts = new ArrayList<>();
-
     public Song() {
     }
 
@@ -39,7 +42,11 @@ public class Song {
         this.year = year;
         this.genre = genre;
     }
-    
+
+    public Integer getId(){
+        return this.id;
+    }
+
     public void addSongBroadcast(SongBroadcast songBroadcast) {
         if(songBroadcast != null){
             songBroadcast.setSong(this);
@@ -89,6 +96,63 @@ public class Song {
 
     public void setYear(Integer year) {
         this.year = year;
+    }
+
+    private List<SongBroadcast> getBroadcastsOfDay(LocalDate date){
+        List<SongBroadcast> broadcastsOfDay = new ArrayList<>();
+        for (SongBroadcast b : this.songBroadcasts){
+            if(b.getBroadcastDate().isEqual(date)){
+                broadcastsOfDay.add(b);
+            }
+        }
+        return broadcastsOfDay;
+    }
+
+    private boolean checkForPrevOccurrence(List<SongBroadcast> broadcasts, LocalTime time){
+        for (SongBroadcast b : broadcasts) {
+            // b.startingtime < time < b.endingtime
+            LocalTime starting = b.getBroadcastTime();
+            LocalTime ending = b.getBroadcastTime().plusMinutes(this.duration);
+            if (DateUtil.between(starting, time, ending)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkForNextOccurrence(List<SongBroadcast> broadcasts, LocalTime time){
+        for (SongBroadcast b : broadcasts){
+            // time < b.startingtime
+            LocalTime starting = b.getBroadcastTime();
+            if(DateUtil.between(time.minusHours(1), starting, time)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public boolean toBeBroadcasted(LocalDate date, LocalTime time){
+        // 1 hour before starting time
+        LocalTime previousHour = time.minusHours(1);
+        // 1 hour after starting time
+        LocalTime nextHour = time.plusHours(1);
+        // Filter from list and extract broadcasts from date
+        List<SongBroadcast> broadcastsOfDay = getBroadcastsOfDay(date);
+        if (broadcastsOfDay.size() == 4){
+            return false;
+        }
+
+        // Check for occurrence in last hour
+        if (checkForPrevOccurrence(broadcastsOfDay, previousHour) || checkForNextOccurrence(broadcastsOfDay, nextHour)){
+            return false;
+        }
+        return true;
+    }
+
+    public void removeSongBroadcast(SongBroadcast songBroadcast){
+        songBroadcast.setSong(null);
+        this.songBroadcasts.remove(songBroadcast);
     }
 
 }
