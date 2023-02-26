@@ -2,7 +2,6 @@ package gr.aueb.radio.domains;
 
 import gr.aueb.radio.enums.ZoneEnum;
 import gr.aueb.radio.utils.DateUtil;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +12,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class AddsTest {
+public class AddTest {
 
     Add add;
 
@@ -61,6 +60,17 @@ public class AddsTest {
     public void addInvalidAddBroadcast(){
         add.addBroadcastAdd(null);
         List<AddBroadcast> broadcasts = add.getBroadcastAdds();
+        assertEquals(0, broadcasts.size());
+    }
+
+    @Test
+    public void removeAddBroadcast(){
+        AddBroadcast addBroadcast = new AddBroadcast(broadcastDate, broadcastTime);
+        add.addBroadcastAdd(addBroadcast);
+        List<AddBroadcast> broadcasts = add.getBroadcastAdds();
+        assertEquals(1, broadcasts.size());
+        add.removeAddBroadcast(addBroadcast);
+        broadcasts = add.getBroadcastAdds();
         assertEquals(0, broadcasts.size());
     }
 
