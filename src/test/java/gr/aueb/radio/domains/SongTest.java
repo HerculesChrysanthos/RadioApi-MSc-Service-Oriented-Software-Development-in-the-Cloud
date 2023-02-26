@@ -63,7 +63,7 @@ public class SongTest {
         List<SongBroadcast> broadcasts = song.getSongBroadcasts();
         assertEquals(1, broadcasts.size());
         song.removeSongBroadcast(songBroadcast);
-        song.getSongBroadcasts();
+        broadcasts = song.getSongBroadcasts();
         assertEquals(0, broadcasts.size());
     }
 
