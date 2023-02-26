@@ -12,34 +12,34 @@ import java.util.*;
 public class Add {
 
     @Id
-    @Column(name="id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Column(name="duration", unique = false, nullable = false)
+    @Column(name = "duration", unique = false, nullable = false)
     private Integer duration;
 
-    @Column(name="rep_per_zone", unique = false, nullable = false)
+    @Column(name = "rep_per_zone", unique = false, nullable = false)
     private Integer repPerZone;
 
-    @Column(name="starting_date",unique = false, nullable = false)
-    private LocalDate startingDate ;
+    @Column(name = "starting_date", unique = false, nullable = false)
+    private LocalDate startingDate;
 
-    @Column(name="ending_date", unique = false, nullable = false)
-    private LocalDate endingDate ;
+    @Column(name = "ending_date", unique = false, nullable = false)
+    private LocalDate endingDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="timezone")
+    @Column(name = "timezone")
     private ZoneEnum timezone;
 
-    @OneToMany(mappedBy = "add", fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "add", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<AddBroadcast> addBroadcasts = new ArrayList<>();
 
 
     public Add() {
     }
 
-    public Add( Integer duration, Integer repPerZone, LocalDate startingDate, LocalDate endingDate, ZoneEnum timezone) {
+    public Add(Integer duration, Integer repPerZone, LocalDate startingDate, LocalDate endingDate, ZoneEnum timezone) {
         this.duration = duration;
         this.repPerZone = repPerZone;
         this.startingDate = startingDate;
@@ -47,7 +47,7 @@ public class Add {
         this.timezone = timezone;
     }
 
-    public Integer getId(){
+    public Integer getId() {
         return this.id;
     }
 
@@ -95,10 +95,16 @@ public class Add {
         return this.addBroadcasts;
     }
 
-    public void addBroadcastAdd (AddBroadcast addBroadcast) {
+    public void addBroadcastAdd(AddBroadcast addBroadcast) {
         if (addBroadcast != null) {
             addBroadcast.setAdd(this);
             this.addBroadcasts.add(addBroadcast);
         }
     }
+
+    public void removeAddBroadcast(AddBroadcast addBroadcast) {
+        addBroadcast.setAdd(null);
+        this.addBroadcasts.remove(addBroadcast);
+    }
+
 }

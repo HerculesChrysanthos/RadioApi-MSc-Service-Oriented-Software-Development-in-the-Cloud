@@ -6,9 +6,9 @@ import gr.aueb.radio.utils.DateUtil;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="broadcasts")
@@ -95,6 +95,15 @@ public class Broadcast {
     }
 
     public void createAddBroadcast(Add add, LocalTime time){
+        if(add.getTimezone() != this.timezone){
+            return;
+        }
+        if(checkForOccurrence(time, add.getDuration())){
+            return;
+        }
+        if(getAllocatedTime() + add.getDuration() > this.duration){
+            return;
+        }
         AddBroadcast addBroadcast = new AddBroadcast(this.startingDate, time);
         addBroadcast.setBroadcast(this);
         add.addBroadcastAdd(addBroadcast);
@@ -102,6 +111,15 @@ public class Broadcast {
     }
 
     public void createSongBroadcast(Song song, LocalTime time){
+        if(!song.toBeBroadcasted(this.startingDate, time)){
+            return;
+        }
+        if(checkForOccurrence(time, song.getDuration())){
+            return;
+        }
+        if(getAllocatedTime() + song.getDuration() > this.duration){
+            return;
+        }
         SongBroadcast songBroadcast = new SongBroadcast(this.startingDate, time);
         songBroadcast.setBroadcast(this);
         song.addSongBroadcast(songBroadcast);
