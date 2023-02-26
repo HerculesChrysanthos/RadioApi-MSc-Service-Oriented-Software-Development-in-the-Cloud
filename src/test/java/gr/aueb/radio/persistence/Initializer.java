@@ -35,17 +35,17 @@ public class Initializer {
         User producer = new User("producer", "producer", "producer@email.com", RoleEnum.PRODUCER);
         User user = new User("user", "user", "user@email.com", RoleEnum.USER);
 
-        Add add1 = new Add(25, 1, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-03-2022") , ZoneEnum.EarlyMorning);
-        Add add2 = new Add(25, 1, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-04-2022"), ZoneEnum.Morning);
+        Add add1 = new Add(15, 0, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-03-2022") , ZoneEnum.LateNight);
+        Add add2 = new Add(30, 0, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-04-2022"), ZoneEnum.LateNight);
 
-        Song song1 = new Song("title", "genre", 45, "artist", 2023);
-        Song song2 = new Song("title1", "genre2", 160, "artist1", 2023);
+        Song song1 = new Song("title", "genre", 25, "artist", 2023);
+        Song song2 = new Song("title1", "genre2", 10, "artist1", 2023);
 
-        Broadcast broadcast = new Broadcast(500, DateUtil.setDate("01-02-2022") , DateUtil.setTime("03:00"), BroadcastEnum.PLAYLIST);
-        broadcast.createSongBroadcast(song2, DateUtil.setTime("03:00"));
-        broadcast.createAddBroadcast(add1, DateUtil.setTime("05:40"));
-        broadcast.createSongBroadcast(song1, DateUtil.setTime("06:10"));
-        broadcast.createAddBroadcast(add2, DateUtil.setTime("07:00"));
+        Broadcast broadcast = new Broadcast(200, DateUtil.setDate("01-02-2022") , DateUtil.setTime("00:00"), BroadcastEnum.PLAYLIST);
+        broadcast.createSongBroadcast(song1, DateUtil.setTime("00:00"));
+        broadcast.createAddBroadcast(add1, DateUtil.setTime("00:40"));
+        broadcast.createSongBroadcast(song2, DateUtil.setTime("01:10"));
+        broadcast.createAddBroadcast(add2, DateUtil.setTime("01:50"));
 
 
         EntityManager entityManager = JPAUtil.createEntityManager();
