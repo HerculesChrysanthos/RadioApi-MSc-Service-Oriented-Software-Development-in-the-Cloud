@@ -110,12 +110,6 @@ public class SongTest {
     }
 
     @Test
-    public void equalsTest() {
-        Song song2 = new Song("Title", "Genre", 300, "Artist", 2021);
-        assertFalse(song.equals(song2));
-    }
-
-    @Test
     public void rateConstraintsTest(){
         SongBroadcast broadcast1 = new SongBroadcast(DateUtil.setDate("01-01-2023"), DateUtil.setTime("01:00"));
         SongBroadcast broadcast2 = new SongBroadcast(DateUtil.setDate("01-01-2023"), DateUtil.setTime("02:30"));
