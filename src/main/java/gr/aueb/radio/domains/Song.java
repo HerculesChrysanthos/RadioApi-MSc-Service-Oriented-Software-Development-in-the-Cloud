@@ -21,7 +21,7 @@ public class Song {
     @Column(name = "artist", nullable = false, length = 50)
     private String artist;
 
-    @Column(name = "year", nullable = false)
+    @Column(name = "releaseYear", nullable = false)
     private Integer year;
 
     @Column(name = "duration", nullable = false)

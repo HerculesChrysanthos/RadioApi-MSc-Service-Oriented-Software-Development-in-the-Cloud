@@ -1,34 +1,33 @@
 package gr.aueb.radio.persistence;
 
+import gr.aueb.radio.IntegrationBase;
 import gr.aueb.radio.domains.*;
 import gr.aueb.radio.enums.ZoneEnum;
 import gr.aueb.radio.utils.DateUtil;
-import gr.aueb.radio.utils.JPAUtil;
-import org.junit.jupiter.api.BeforeEach;
+import io.quarkus.test.TestTransaction;
+import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class JPAQueriesTest {
+@QuarkusTest
+public class JPAQueriesTest extends IntegrationBase {
+    @Inject
     EntityManager entityManager;
 
-    @BeforeEach
-    public void setUp(){
-        Initializer initializer = new Initializer();
-        initializer.initializeData();
-        entityManager = JPAUtil.getCurrentEntityManager();
-    }
-
     @Test
+    @TestTransaction
     public void userListTest(){
         List<User> users = entityManager.createQuery("select u from User u").getResultList();
         assertEquals(2, users.size());
     }
 
     @Test
+    @TestTransaction
     public void songListTest(){
         List<Song> songs = entityManager.createQuery("select song from Song song").getResultList();
         assertEquals(2, songs.size());
@@ -39,6 +38,7 @@ public class JPAQueriesTest {
     }
 
     @Test
+    @TestTransaction
     public void addListTest(){
         List<Add> adds = entityManager.createQuery("select add from Add add").getResultList();
         assertEquals(2, adds.size());
@@ -49,6 +49,7 @@ public class JPAQueriesTest {
     }
 
     @Test
+    @TestTransaction
     public void addBroadcastListTest(){
         List<AddBroadcast> addBroadcasts = entityManager.createQuery("select ab from AddBroadcast ab").getResultList();
         assertEquals(2, addBroadcasts.size());
@@ -58,6 +59,7 @@ public class JPAQueriesTest {
     }
 
     @Test
+    @TestTransaction
     public void songBroadcastListTest(){
         List<SongBroadcast> songBroadcasts = entityManager.createQuery("select sb from SongBroadcast sb").getResultList();
         assertEquals(2, songBroadcasts.size());
@@ -67,6 +69,7 @@ public class JPAQueriesTest {
     }
 
     @Test
+    @TestTransaction
     public void broadcastListTest(){
         List<Broadcast> broadcasts = entityManager.createQuery("select broadcast from Broadcast broadcast").getResultList();
         assertEquals(1, broadcasts.size());
@@ -79,6 +82,7 @@ public class JPAQueriesTest {
     }
 
     @Test
+    @TestTransaction
     public void restrictSongBroadcastCreation(){
         List<Broadcast> broadcasts = entityManager.createQuery("select broadcast from Broadcast broadcast").getResultList();
         Broadcast broadcast = broadcasts.get(0);
@@ -102,6 +106,7 @@ public class JPAQueriesTest {
     }
 
     @Test
+    @TestTransaction
     public void restrictAddBroadcastCreation(){
         List<Broadcast> broadcasts = entityManager.createQuery("select broadcast from Broadcast broadcast").getResultList();
         Broadcast broadcast = broadcasts.get(0);
