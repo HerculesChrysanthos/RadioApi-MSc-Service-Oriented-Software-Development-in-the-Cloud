@@ -64,6 +64,14 @@ public class AddTest {
     }
 
     @Test
+    public void toBeBroadcastedTest(){
+        AddBroadcast addBroadcast = new AddBroadcast(broadcastDate, broadcastTime);
+        assertTrue(add.toBeBroadcasted());
+        add.addBroadcastAdd(addBroadcast);
+        assertFalse(add.toBeBroadcasted());
+    }
+
+    @Test
     public void removeAddBroadcast(){
         AddBroadcast addBroadcast = new AddBroadcast(broadcastDate, broadcastTime);
         add.addBroadcastAdd(addBroadcast);

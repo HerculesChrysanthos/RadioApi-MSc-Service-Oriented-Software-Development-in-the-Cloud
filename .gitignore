@@ -15,6 +15,6 @@ buildNumber.properties
 .project
 .settings/
 .vscode/
-test.mv.db
-test.trace.db
+*.mv.db
+*.trace.db
 .idea/

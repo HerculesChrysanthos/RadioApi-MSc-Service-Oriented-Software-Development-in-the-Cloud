@@ -107,4 +107,8 @@ public class Add {
         this.addBroadcasts.remove(addBroadcast);
     }
 
+    public boolean toBeBroadcasted(){
+        return this.addBroadcasts.size() < this.repPerZone;
+    }
+
 }

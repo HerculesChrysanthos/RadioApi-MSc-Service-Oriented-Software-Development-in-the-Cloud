@@ -25,7 +25,7 @@ public class DateUtilTest {
     }
 
     @Test
-    public void betweenTest(){
+    public void betweenTestLocalTime(){
         LocalTime start = DateUtil.setTime("12:30");
         LocalTime end = DateUtil.setTime("13:30");
         assertTrue(DateUtil.between(start, DateUtil.setTime("12:30"), end));
@@ -33,6 +33,79 @@ public class DateUtilTest {
         assertTrue(DateUtil.between(start, DateUtil.setTime("13:30"), end));
         assertFalse(DateUtil.between(start, DateUtil.setTime("11:30"), end));
         assertFalse(DateUtil.between(start, DateUtil.setTime("14:30"), end));
+    }
+
+    @Test
+    public void betweenTestLocalDateTime(){
+        LocalDate date = DateUtil.setDate("01-01-2022");
+        LocalTime start = DateUtil.setTime("12:30");
+        LocalTime end = DateUtil.setTime("13:30");
+        LocalTime middle = DateUtil.setTime("12:30");
+        assertTrue(DateUtil.between(date.atTime(start),date.atTime(middle), date.atTime(end)));
+        middle = DateUtil.setTime("13:00");
+        assertTrue(DateUtil.between(date.atTime(start),date.atTime(middle), date.atTime(end)));
+        middle = DateUtil.setTime("13:30");
+        assertTrue(DateUtil.between(date.atTime(start),date.atTime(middle), date.atTime(end)));
+        middle = DateUtil.setTime("11:30");
+        assertFalse(DateUtil.between(date.atTime(start),date.atTime(middle), date.atTime(end)));
+        middle = DateUtil.setTime("14:30");
+        assertFalse(DateUtil.between(date.atTime(start),date.atTime(middle), date.atTime(end)));
+    }
+
+    @Test
+    public void betweenTestCloseOpenLocalTime(){
+        LocalTime start = DateUtil.setTime("12:30");
+        LocalTime end = DateUtil.setTime("13:30");
+        assertTrue(DateUtil.betweenCloseOpen(start, DateUtil.setTime("12:30"), end));
+        assertTrue(DateUtil.betweenCloseOpen(start, DateUtil.setTime("13:00"), end));
+        assertFalse(DateUtil.betweenCloseOpen(start, DateUtil.setTime("13:30"), end));
+        assertFalse(DateUtil.betweenCloseOpen(start, DateUtil.setTime("11:30"), end));
+        assertFalse(DateUtil.betweenCloseOpen(start, DateUtil.setTime("14:30"), end));
+    }
+
+    @Test
+    public void betweenTestCloseOpenLocalDateTime(){
+        LocalDate date = DateUtil.setDate("01-01-2022");
+        LocalTime start = DateUtil.setTime("12:30");
+        LocalTime end = DateUtil.setTime("13:30");
+        LocalTime middle = DateUtil.setTime("12:30");
+        assertTrue(DateUtil.betweenCloseOpen(date.atTime(start),date.atTime(middle), date.atTime(end)));
+        middle = DateUtil.setTime("13:00");
+        assertTrue(DateUtil.betweenCloseOpen(date.atTime(start),date.atTime(middle), date.atTime(end)));
+        middle = DateUtil.setTime("13:30");
+        assertFalse(DateUtil.betweenCloseOpen(date.atTime(start),date.atTime(middle), date.atTime(end)));
+        middle = DateUtil.setTime("11:30");
+        assertFalse(DateUtil.betweenCloseOpen(date.atTime(start),date.atTime(middle), date.atTime(end)));
+        middle = DateUtil.setTime("14:30");
+        assertFalse(DateUtil.betweenCloseOpen(date.atTime(start),date.atTime(middle), date.atTime(end)));
+    }
+
+    @Test
+    public void betweenTestOpenCloseLocalTime(){
+        LocalTime start = DateUtil.setTime("12:30");
+        LocalTime end = DateUtil.setTime("13:30");
+        assertFalse(DateUtil.betweenOpenClose(start, DateUtil.setTime("12:30"), end));
+        assertTrue(DateUtil.betweenOpenClose(start, DateUtil.setTime("13:00"), end));
+        assertTrue(DateUtil.betweenOpenClose(start, DateUtil.setTime("13:30"), end));
+        assertFalse(DateUtil.betweenOpenClose(start, DateUtil.setTime("11:30"), end));
+        assertFalse(DateUtil.betweenOpenClose(start, DateUtil.setTime("14:30"), end));
+    }
+
+    @Test
+    public void betweenTestOpenCloseLocalDateTime(){
+        LocalDate date = DateUtil.setDate("01-01-2022");
+        LocalTime start = DateUtil.setTime("12:30");
+        LocalTime end = DateUtil.setTime("13:30");
+        LocalTime middle = DateUtil.setTime("12:30");
+        assertFalse(DateUtil.betweenOpenClose(date.atTime(start),date.atTime(middle), date.atTime(end)));
+        middle = DateUtil.setTime("13:00");
+        assertTrue(DateUtil.betweenOpenClose(date.atTime(start),date.atTime(middle), date.atTime(end)));
+        middle = DateUtil.setTime("13:30");
+        assertTrue(DateUtil.betweenOpenClose(date.atTime(start),date.atTime(middle), date.atTime(end)));
+        middle = DateUtil.setTime("11:30");
+        assertFalse(DateUtil.betweenOpenClose(date.atTime(start),date.atTime(middle), date.atTime(end)));
+        middle = DateUtil.setTime("14:30");
+        assertFalse(DateUtil.betweenOpenClose(date.atTime(start),date.atTime(middle), date.atTime(end)));
     }
 
     @ParameterizedTest
