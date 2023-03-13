@@ -1,7 +1,7 @@
 package gr.aueb.radio.resources;
 
 import gr.aueb.radio.IntegrationBase;
-import gr.aueb.radio.Static;
+import gr.aueb.radio.Fixture;
 import gr.aueb.radio.domains.User;
 import gr.aueb.radio.persistence.UserRepository;
 import gr.aueb.radio.representations.UserRepresentation;
@@ -25,7 +25,7 @@ public class UserResourceTest extends IntegrationBase {
     @TestTransaction
     public void getUserTest(){
         User validUser = userRepository.listAll().get(0);
-        String url = Static.API_ROOT + "/users" + "/" + validUser.getId();
+        String url = Fixture.API_ROOT + Fixture.USERS_PATH + "/" + validUser.getId();
         UserRepresentation userRepresentation = when()
                 .get(url)
                 .then().statusCode(Status.OK.getStatusCode())
@@ -39,7 +39,7 @@ public class UserResourceTest extends IntegrationBase {
     @Test
     @TestTransaction
     public void notFoundUserTest(){
-        String url = Static.API_ROOT + "/users" + "/" + 2023;
+        String url = Fixture.API_ROOT + Fixture.USERS_PATH + "/" + 2023;
         when().get(url).then().statusCode(Status.NOT_FOUND.getStatusCode());
     }
 
@@ -51,7 +51,7 @@ public class UserResourceTest extends IntegrationBase {
         userToCreate.username = validUser.getUsername();
         userToCreate.password = validUser.getPassword();
         userToCreate.email = validUser.getEmail();
-        String url = Static.API_ROOT + "/users";
+        String url = Fixture.API_ROOT + Fixture.USERS_PATH;
         given().contentType(ContentType.JSON)
                 .body(userToCreate)
                 .when()
@@ -66,7 +66,7 @@ public class UserResourceTest extends IntegrationBase {
         userToCreate.username = "usertest";
         userToCreate.password = "usertest";
         userToCreate.email = "usertest@email.com";
-        String url = Static.API_ROOT + "/users";
+        String url = Fixture.API_ROOT + Fixture.USERS_PATH;
         UserRepresentation userRepresentation = given()
                 .contentType(ContentType.JSON)
                 .body(userToCreate)

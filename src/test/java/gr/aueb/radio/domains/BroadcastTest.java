@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -49,17 +50,18 @@ public class BroadcastTest {
     @Test
     public void removeValidSongBroadcastTest() {
         Song song = new Song("Title", "Genre", 10, "Artist", 2021);
-        broadcast.createSongBroadcast(song, DateUtil.setTime("00:00"));
+        SongBroadcast songBroadcast = broadcast.createSongBroadcast(song, DateUtil.setTime("00:00"));
+        assertNotNull(songBroadcast);
         List<SongBroadcast> broadcasts = broadcast.getSongBroadcasts();
         assertEquals(1, broadcasts.size());
-        SongBroadcast songBroadcast = broadcasts.get(0);
+        songBroadcast = broadcasts.get(0);
         broadcast.removeSongBroadcast(songBroadcast);
         assertEquals(0, broadcasts.size());
     }
 
     @Test
     public void createValidAddBroadcastTest() {
-        Add add = new Add(5, 0, DateUtil.setDate("01-01-2023"), DateUtil.setDate("01-05-2023"), ZoneEnum.LateNight);
+        Add add = new Add(5, 1, DateUtil.setDate("01-01-2023"), DateUtil.setDate("01-05-2023"), ZoneEnum.LateNight);
         broadcast.createAddBroadcast(add, DateUtil.setTime("00:00"));
         List<AddBroadcast> broadcasts = broadcast.getAddBroadcasts();
         assertNotNull(broadcasts);
@@ -68,7 +70,7 @@ public class BroadcastTest {
 
     @Test
     public void removeValidAddBroadcastTest() {
-        Add add = new Add(5, 0, DateUtil.setDate("01-01-2023"), DateUtil.setDate("01-05-2023"), ZoneEnum.LateNight);
+        Add add = new Add(5, 1, DateUtil.setDate("01-01-2023"), DateUtil.setDate("01-05-2023"), ZoneEnum.LateNight);
         broadcast.createAddBroadcast(add, DateUtil.setTime("01:00"));
         List<AddBroadcast> broadcasts = broadcast.getAddBroadcasts();
         assertEquals(1, broadcasts.size());
@@ -76,5 +78,11 @@ public class BroadcastTest {
         broadcast.removeAddBroadcast(addBroadcast);
         assertEquals(0, broadcasts.size());
     }
-   
+
+    @Test
+    public void getEndingTimeTest(){
+        LocalDateTime expectedTime = date.atTime(time).plusMinutes(duration);
+        LocalDateTime endingTime = broadcast.getBroadcastEndingDateTime();
+        assertTrue(expectedTime.isEqual(endingTime));
+    }
 }

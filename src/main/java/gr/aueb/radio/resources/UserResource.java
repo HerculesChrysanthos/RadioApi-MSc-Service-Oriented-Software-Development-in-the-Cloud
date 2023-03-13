@@ -1,14 +1,12 @@
 package gr.aueb.radio.resources;
 
 import gr.aueb.radio.domains.User;
-import gr.aueb.radio.enums.RoleEnum;
 import gr.aueb.radio.exceptions.NotFoundException;
 import gr.aueb.radio.exceptions.RadioException;
 import gr.aueb.radio.mappers.UserMapper;
 import gr.aueb.radio.representations.UserRepresentation;
 import gr.aueb.radio.services.UserService;
 
-import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -31,7 +29,7 @@ public class UserResource {
 
     @GET
     @Path("/{id}")
-    public Response register(@PathParam("id") Integer id){
+    public Response getUser(@PathParam("id") Integer id){
         try {
             UserRepresentation userRepresentation = userService.findUser(id);
             return Response.ok().entity(userRepresentation).build();

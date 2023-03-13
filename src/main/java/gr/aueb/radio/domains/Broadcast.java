@@ -3,15 +3,18 @@ package gr.aueb.radio.domains;
 import gr.aueb.radio.enums.BroadcastEnum;
 import gr.aueb.radio.enums.ZoneEnum;
 import gr.aueb.radio.utils.DateUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name="broadcasts")
+@Slf4j
 public class Broadcast {
     @Id
     @Column(name="id")
@@ -21,10 +24,10 @@ public class Broadcast {
     @Column(name="duration", nullable = false)
     private Integer duration;
 
-    @Column(name="startingDate", nullable = false)
+    @Column(name="starting_date", nullable = false)
     private LocalDate startingDate;
 
-    @Column(name="startingTime", nullable = false)
+    @Column(name="starting_time", nullable = false)
     private LocalTime startingTime;
 
     @Enumerated(EnumType.STRING)
@@ -46,7 +49,6 @@ public class Broadcast {
         this.startingDate = startingDate;
         this.startingTime = startingTime;
         this.type = type;
-        this.timezone = DateUtil.calculateTimezone(this.startingTime);
     }
 
     public Integer getId() {
@@ -94,36 +96,58 @@ public class Broadcast {
         return this.songBroadcasts;
     }
 
-    public void createAddBroadcast(Add add, LocalTime time){
+    public AddBroadcast createAddBroadcast(Add add, LocalTime time){
+        this.timezone = DateUtil.calculateTimezone(this.startingTime);
         if(add.getTimezone() != this.timezone){
-            return;
+            log.info("Broadcast timezone restriction");
+            return null;
+        }
+        if(!add.toBeBroadcasted()){
+            log.info("Rep per_zone_restriction");
+            return null;
         }
         if(checkForOccurrence(time, add.getDuration())){
-            return;
+            log.info("Broadcast occurrence restriction");
+            return null;
         }
         if(getAllocatedTime() + add.getDuration() > this.duration){
-            return;
+            log.info("Broadcast duration restriction");
+            return null;
+        }
+        if (this.exceedsLimits(time, add.getDuration())){
+            log.info("Broadcast limit restriction");
+            return null;
         }
         AddBroadcast addBroadcast = new AddBroadcast(this.startingDate, time);
         addBroadcast.setBroadcast(this);
         add.addBroadcastAdd(addBroadcast);
         this.addBroadcasts.add(addBroadcast);
+        return addBroadcast;
     }
 
-    public void createSongBroadcast(Song song, LocalTime time){
+    public SongBroadcast createSongBroadcast(Song song, LocalTime time){
+
         if(!song.toBeBroadcasted(this.startingDate, time)){
-            return;
+            log.info("Broadcast song broadcast restriction");
+            return null;
         }
         if(checkForOccurrence(time, song.getDuration())){
-            return;
+            log.info("Broadcast occurrence restriction");
+            return null;
         }
         if(getAllocatedTime() + song.getDuration() > this.duration){
-            return;
+            log.info("Broadcast duration restriction");
+            return null;
+        }
+        if (this.exceedsLimits(time, song.getDuration())){
+            log.info("Broadcast limit restriction");
+            return null;
         }
         SongBroadcast songBroadcast = new SongBroadcast(this.startingDate, time);
         songBroadcast.setBroadcast(this);
         song.addSongBroadcast(songBroadcast);
         this.songBroadcasts.add(songBroadcast);
+        return  songBroadcast;
     }
 
     public void removeAddBroadcast(AddBroadcast addBroadcast) {
@@ -137,32 +161,58 @@ public class Broadcast {
     }
 
     private boolean checkForOccurrence(LocalTime startingTime, Integer duration){
+        // Starting time of song/add broadcast
+        LocalDateTime startingDateTime = this.startingDate.atTime(startingTime);
+        // Ending time of song/add broadcast
+        LocalDateTime endingDateTime = startingDateTime.plusMinutes(duration);
         for (SongBroadcast sb : this.songBroadcasts){
-            LocalTime sbStartingTime = sb.getBroadcastTime();
-            LocalTime sbEndingTime = sb.getBroadcastTime().plusMinutes(sb.getSong().getDuration());
-            if(DateUtil.between(sbStartingTime, startingTime, sbEndingTime)){
+            LocalDateTime sbStartingTime = this.startingDate.atTime(sb.getBroadcastTime());
+            LocalDateTime sbEndingTime = sb.getBroadcastEndingDateTime();
+            if(DateUtil.between(sbStartingTime, startingDateTime, sbEndingTime)){
                 return true;
             }
 
-            LocalTime endingTime = startingTime.plusMinutes(duration);
-            if(DateUtil.between(sbStartingTime, endingTime, sbEndingTime)){
+            if(DateUtil.between(sbStartingTime, endingDateTime, sbEndingTime)){
                 return true;
             }
         }
 
         for (AddBroadcast ab : this.addBroadcasts){
-            LocalTime abStartingTime = ab.getBroadcastTime();
-            LocalTime abEndingTime = ab.getBroadcastTime().plusMinutes(ab.getAdd().getDuration());
-            if(DateUtil.between(abStartingTime, startingTime, abEndingTime)){
+            LocalDateTime abStartingTime = this.startingDate.atTime(ab.getBroadcastTime());
+            LocalDateTime abEndingTime = ab.getBroadcastEndingDateTime();
+            if(DateUtil.between(abStartingTime, startingDateTime, abEndingTime)){
                 return true;
             }
 
-            LocalTime endingTime = startingTime.plusMinutes(duration);
-            if(DateUtil.between(abStartingTime, endingTime, abEndingTime)){
+            if(DateUtil.between(abStartingTime, endingDateTime, abEndingTime)){
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean exceedsLimits(LocalTime startingTime, Integer duration){
+        // Starting time of song/add broadcast
+        LocalDateTime startingDateTime = this.startingDate.atTime(startingTime);
+        // Ending time of song/add broadcast
+        LocalDateTime endingDateTime = startingDateTime.plusMinutes(duration);
+
+        LocalDateTime broadcastStartingTime = this.startingDate.atTime(this.startingTime);
+        LocalDateTime broadcastEndingTime =broadcastStartingTime.plusMinutes(this.duration);
+        // check that the starting time of a (add|song)broadcast is before or after the starting time of the broadcast itself
+        if (!DateUtil.betweenCloseOpen(broadcastStartingTime, startingDateTime, broadcastEndingTime)){
+            return true;
+        }
+        // check that the ending time of a (add|song)broadcast is before or after the starting time of the broadcast itself
+        if (!DateUtil.betweenOpenClose(startingDateTime, endingDateTime, broadcastEndingTime)){
+            return true;
+        }
+        return false;
+    }
+
+    public LocalDateTime getBroadcastEndingDateTime(){
+        LocalDateTime startingDate = this.startingDate.atTime(this.startingTime);
+        return startingDate.plusMinutes(this.duration);
     }
 
     public Integer getAllocatedTime(){

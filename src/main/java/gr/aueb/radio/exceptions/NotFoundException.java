@@ -1,6 +1,6 @@
 package gr.aueb.radio.exceptions;
 
-public class NotFoundException extends RadioException {
+public class NotFoundException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
