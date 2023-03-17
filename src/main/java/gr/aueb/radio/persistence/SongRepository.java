@@ -25,22 +25,13 @@ public class SongRepository implements PanacheRepositoryBase<Song, Integer> {
 
     public List<Song> findSongsByArtist(String artist) {
         PanacheQuery<Song> query = find("select s from Song s where s.artist = :artist", Parameters.with("artist", artist).map());
-        try {
-            return query.list();
-        } catch(NoResultException ex) {
-            return null;
-        }
+        return query.list();
 
     }
 
     public List<Song> findSongsByGenre(String genre) {
         PanacheQuery<Song> query = find("select s from Song s where s.genre = :genre", Parameters.with("genre", genre).map());
-        try {
-            return query.list();
-        } catch(NoResultException ex) {
-            return null;
-        }
-
+        return query.list();
     }
 
     public List<Song> searchSongByTitleAndArtist(String title, String artist) {
@@ -48,5 +39,6 @@ public class SongRepository implements PanacheRepositoryBase<Song, Integer> {
             Parameters.with("title", title).and("artist", artist).map());
         return query.list();
     }
+
 
 }
