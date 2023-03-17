@@ -81,6 +81,13 @@ public class DateUtil {
         return false;
     }
 
+    public static boolean between(LocalDate starting, LocalDate middle, LocalDate ending) {
+        if ((starting.equals(middle) || starting.isBefore(middle)) && (ending.equals(middle) || ending.isAfter(middle))) {
+            return true;
+        }
+        return false;
+    }
+
     public static ZoneEnum calculateTimezone(LocalTime startingTime){
         if (DateUtil.betweenCloseOpen(LocalTime.of(0,0), startingTime,LocalTime.of(6,0))){
             return ZoneEnum.LateNight;

@@ -21,7 +21,7 @@ public class BroadcastRepository implements PanacheRepositoryBase<Broadcast, Int
         Map<String, Object> params = new HashMap<>();
         params.put("date", date);
         params.put("id", id);
-        return find("select b from Broadcast b where b.startingDate=:date and b.id != :id", params).list();
+        return find("select b from Broadcast b where b.startingDate=:date and b.id != :id", params).list();  // exclude from check when update
     }
 
 }

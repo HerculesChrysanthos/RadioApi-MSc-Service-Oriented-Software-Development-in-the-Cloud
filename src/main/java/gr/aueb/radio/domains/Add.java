@@ -1,10 +1,12 @@
 package gr.aueb.radio.domains;
 
 import gr.aueb.radio.enums.ZoneEnum;
+import gr.aueb.radio.utils.DateUtil;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -107,7 +109,10 @@ public class Add {
         this.addBroadcasts.remove(addBroadcast);
     }
 
-    public boolean toBeBroadcasted(){
+    public boolean toBeBroadcasted(LocalDate date){
+        if (!DateUtil.between(this.startingDate, date, this.endingDate)){
+            return false;
+        }
         return this.addBroadcasts.size() < this.repPerZone;
     }
 
