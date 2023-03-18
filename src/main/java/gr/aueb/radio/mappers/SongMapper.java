@@ -11,8 +11,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "cdi",
-injectionStrategy = InjectionStrategy.CONSTRUCTOR,
-		uses = {SongBroadcastMapper.class})
+injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class SongMapper {
 
     public abstract SongRepresentation toRepresentation(Song song);
@@ -21,3 +20,4 @@ public abstract class SongMapper {
     public abstract List<SongRepresentation> toRepresentationList(List<Song> songs);
 
 }
+
