@@ -10,8 +10,8 @@ import java.util.List;
 
 
 @Entity
-@Table (name = "adds")
-public class Add {
+@Table (name = "ads")
+public class Ad {
 
     @Id
     @Column(name = "id")
@@ -34,14 +34,14 @@ public class Add {
     @Column(name = "timezone")
     private ZoneEnum timezone;
 
-    @OneToMany(mappedBy = "add", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<AddBroadcast> addBroadcasts = new ArrayList<>();
+    @OneToMany(mappedBy = "ad", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<AdBroadcast> adBroadcasts = new ArrayList<>();
 
 
-    public Add() {
+    public Ad() {
     }
 
-    public Add(Integer duration, Integer repPerZone, LocalDate startingDate, LocalDate endingDate, ZoneEnum timezone) {
+    public Ad(Integer duration, Integer repPerZone, LocalDate startingDate, LocalDate endingDate, ZoneEnum timezone) {
         this.duration = duration;
         this.repPerZone = repPerZone;
         this.startingDate = startingDate;
@@ -93,27 +93,28 @@ public class Add {
         this.timezone = timezone;
     }
 
-    public List<AddBroadcast> getBroadcastAdds() {
-        return this.addBroadcasts;
+    public List<AdBroadcast> getBroadcastAds() {
+        return this.adBroadcasts;
     }
 
-    public void addBroadcastAdd(AddBroadcast addBroadcast) {
-        if (addBroadcast != null) {
-            addBroadcast.setAdd(this);
-            this.addBroadcasts.add(addBroadcast);
+    public void addBroadcastAd(AdBroadcast adBroadcast) {
+        if (adBroadcast != null) {
+            adBroadcast.setAd(this);
+            this.adBroadcasts.add(adBroadcast);
         }
     }
 
-    public void removeAddBroadcast(AddBroadcast addBroadcast) {
-        addBroadcast.setAdd(null);
-        this.addBroadcasts.remove(addBroadcast);
+    public void removeAdBroadcast(AdBroadcast adBroadcast) {
+        adBroadcast.setAd(null);
+        this.adBroadcasts.remove(adBroadcast);
     }
 
     public boolean toBeBroadcasted(LocalDate date){
         if (!DateUtil.between(this.startingDate, date, this.endingDate)){
             return false;
         }
-        return this.addBroadcasts.size() < this.repPerZone;
+        return this.adBroadcasts.size() < this.repPerZone;
     }
+
 
 }

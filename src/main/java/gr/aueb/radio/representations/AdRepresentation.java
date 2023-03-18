@@ -10,6 +10,6 @@ public class AdRepresentation {
     public Integer repPerZone;
     public String startingDate;
     public String endingDate;
-    public ZoneEnum timeZone;
+    public ZoneEnum timezone;
 
 }

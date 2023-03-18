@@ -1,6 +1,6 @@
 package gr.aueb.radio.services;
 
-import gr.aueb.radio.domains.Add;
+import gr.aueb.radio.domains.Ad;
 import gr.aueb.radio.enums.ZoneEnum;
 import gr.aueb.radio.exceptions.NotFoundException;
 import gr.aueb.radio.exceptions.RadioException;
@@ -23,17 +23,17 @@ public class AdService {
 
 
     @Transactional
-    public AdRepresentation findAdd(Integer id) {
-        Add add = adRepository.findById(id);
-        if (add == null) {
-            throw new NotFoundException("Add not found");
+    public AdRepresentation findAd(Integer id) {
+        Ad ad = adRepository.findById(id);
+        if (ad == null) {
+            throw new NotFoundException("Ad not found");
         }
-        return adMapper.toRepresentation(add);
+        return adMapper.toRepresentation(ad);
     }
 
     @Transactional
     public List<AdRepresentation> search(ZoneEnum timezone) {
-        List<Add> adsByTimezone;
+        List<Ad> adsByTimezone;
         if (timezone == null) {
             adsByTimezone = adRepository.listAll();
         } else {
@@ -43,15 +43,15 @@ public class AdService {
     }
 
     @Transactional
-    public Add create(AdRepresentation adRepresentation) {
-        Add add = adMapper.toModel(adRepresentation);
-        if (adRepository.findById(add.getId()) != null) {
-            throw new RadioException("Add already exists");
+    public Ad create(AdRepresentation adRepresentation) {
+        Ad ad = adMapper.toModel(adRepresentation);
+        if (adRepository.findById(ad.getId()) != null) {
+            throw new RadioException("Ad already exists");
         }
         else {
         }
-        adRepository.persist(add);
-        return add;
+        adRepository.persist(ad);
+        return ad;
     }
 }
 

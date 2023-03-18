@@ -6,5 +6,5 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 public class AdBroadcastRepresentation {
     public String broadcastDate;
     public String broadcastTime;
-    public AdRepresentation add;
+    public AdRepresentation ad;
 }

@@ -37,7 +37,7 @@ public class Broadcast {
     private ZoneEnum timezone;
 
     @OneToMany(mappedBy = "broadcast", fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<AddBroadcast> addBroadcasts = new ArrayList<>();
+    private List<AdBroadcast> adBroadcasts = new ArrayList<>();
 
     @OneToMany(mappedBy = "broadcast", fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<SongBroadcast> songBroadcasts = new ArrayList<>();
@@ -88,41 +88,41 @@ public class Broadcast {
         this.type = type;
     }
 
-    public List<AddBroadcast> getAddBroadcasts(){
-        return this.addBroadcasts;
+    public List<AdBroadcast> getAdBroadcasts(){
+        return this.adBroadcasts;
     }
 
     public List<SongBroadcast> getSongBroadcasts(){
         return this.songBroadcasts;
     }
 
-    public AddBroadcast createAddBroadcast(Add add, LocalTime time){
+    public AdBroadcast createAdBroadcast(Ad ad, LocalTime time){
         this.timezone = DateUtil.calculateTimezone(this.startingTime);
-        if(add.getTimezone() != this.timezone){
+        if(ad.getTimezone() != this.timezone){
             log.info("Broadcast timezone restriction");
             return null;
         }
-        if(!add.toBeBroadcasted()){
+        if(!ad.toBeBroadcasted(this.startingDate)){
             log.info("Rep per_zone_restriction");
             return null;
         }
-        if(checkForOccurrence(time, add.getDuration())){
+        if(checkForOccurrence(time, ad.getDuration())){
             log.info("Broadcast occurrence restriction");
             return null;
         }
-        if(getAllocatedTime() + add.getDuration() > this.duration){
+        if(getAllocatedTime() + ad.getDuration() > this.duration){
             log.info("Broadcast duration restriction");
             return null;
         }
-        if (this.exceedsLimits(time, add.getDuration())){
+        if (this.exceedsLimits(time, ad.getDuration())){
             log.info("Broadcast limit restriction");
             return null;
         }
-        AddBroadcast addBroadcast = new AddBroadcast(this.startingDate, time);
-        addBroadcast.setBroadcast(this);
-        add.addBroadcastAdd(addBroadcast);
-        this.addBroadcasts.add(addBroadcast);
-        return addBroadcast;
+        AdBroadcast adBroadcast = new AdBroadcast(this.startingDate, time);
+        adBroadcast.setBroadcast(this);
+        ad.addBroadcastAd(adBroadcast);
+        this.adBroadcasts.add(adBroadcast);
+        return adBroadcast;
     }
 
     public SongBroadcast createSongBroadcast(Song song, LocalTime time){
@@ -150,9 +150,9 @@ public class Broadcast {
         return  songBroadcast;
     }
 
-    public void removeAddBroadcast(AddBroadcast addBroadcast) {
-        this.addBroadcasts.remove(addBroadcast);
-        addBroadcast.setBroadcast(null);
+    public void removeAdBroadcast(AdBroadcast adBroadcast) {
+        this.adBroadcasts.remove(adBroadcast);
+        adBroadcast.setBroadcast(null);
     }
 
     public void removeSongBroadcast(SongBroadcast songBroadcast) {
@@ -177,7 +177,7 @@ public class Broadcast {
             }
         }
 
-        for (AddBroadcast ab : this.addBroadcasts){
+        for (AdBroadcast ab : this.adBroadcasts){
             LocalDateTime abStartingTime = this.startingDate.atTime(ab.getBroadcastTime());
             LocalDateTime abEndingTime = ab.getBroadcastEndingDateTime();
             if(DateUtil.between(abStartingTime, startingDateTime, abEndingTime)){
@@ -220,8 +220,8 @@ public class Broadcast {
         for (SongBroadcast songBroadcast : this.songBroadcasts){
             totalTime += songBroadcast.getSong().getDuration();
         }
-        for (AddBroadcast addBroadcast : this.addBroadcasts){
-            totalTime += addBroadcast.getAdd().getDuration();
+        for (AdBroadcast adBroadcast : this.adBroadcasts){
+            totalTime += adBroadcast.getAd().getDuration();
         }
         return totalTime;
     }

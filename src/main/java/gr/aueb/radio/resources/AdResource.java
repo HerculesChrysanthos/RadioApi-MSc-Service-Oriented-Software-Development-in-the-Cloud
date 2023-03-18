@@ -1,6 +1,6 @@
 package gr.aueb.radio.resources;
 
-import gr.aueb.radio.domains.Add;
+import gr.aueb.radio.domains.Ad;
 import gr.aueb.radio.enums.ZoneEnum;
 import gr.aueb.radio.exceptions.NotFoundException;
 import gr.aueb.radio.exceptions.RadioException;
@@ -32,7 +32,7 @@ public class AdResource {
         @Path("/{id}")
         public Response getAd(@PathParam("id") Integer id) {
                 try {
-                        AdRepresentation adRepresentation = adService.findAdd(id);
+                        AdRepresentation adRepresentation = adService.findAd(id);
                         return Response.ok().entity(adRepresentation).build();
                 } catch (NotFoundException nfe) {
                         return Response.status(Response.Status.NOT_FOUND).build();
@@ -46,11 +46,11 @@ public class AdResource {
         }
 
         @POST
-        public Response createAdd(@PathParam("id") Integer id, AdRepresentation adrepresentation) {
+        public Response createAd(AdRepresentation adrepresentation) {
                 try {
-                        Add add = adService.create(adrepresentation);
-                        URI uri = UriBuilder.fromResource(UserResource.class).path(String.valueOf(add.getId())).build();
-                        return Response.created(uri).entity(adMapper.toRepresentation(add)).build();
+                        Ad ad = adService.create(adrepresentation);
+                        URI uri = UriBuilder.fromResource(UserResource.class).path(String.valueOf(ad.getId())).build();
+                        return Response.created(uri).entity(adMapper.toRepresentation(ad)).build();
                 }catch (RadioException re){
                         return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), re.getMessage()).build();
                 }

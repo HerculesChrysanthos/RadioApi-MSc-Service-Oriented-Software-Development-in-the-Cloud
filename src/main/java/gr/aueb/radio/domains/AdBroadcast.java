@@ -7,7 +7,7 @@ import java.time.LocalTime;
 
 @Entity
 @Table (name = "add_broadcasts")
-public class AddBroadcast {
+public class AdBroadcast {
 
     @Id
     @Column(name = "id")
@@ -22,15 +22,15 @@ public class AddBroadcast {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "add_id")
-    private Add add;
+    private Ad ad;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "broadcast_id")
     private Broadcast broadcast;
 
-    public AddBroadcast() {}
+    public AdBroadcast() {}
 
-    public AddBroadcast(LocalDate broadcastDate, LocalTime broadcastTime){
+    public AdBroadcast(LocalDate broadcastDate, LocalTime broadcastTime){
         this.broadcastDate = broadcastDate;
         this.broadcastTime = broadcastTime;
     }
@@ -50,13 +50,13 @@ public class AddBroadcast {
     public void setBroadcastDate(LocalDate broadcastDate) {
         this.broadcastDate = broadcastDate;
     }
-    public Add getAdd() {
-        return this.add;
+    public Ad getAd() {
+        return this.ad;
     }
 
 
-    public void setAdd(Add add) {
-        this.add = add;
+    public void setAd(Ad ad) {
+        this.ad = ad;
     }
 
     public Broadcast getBroadcast() {
@@ -69,6 +69,6 @@ public class AddBroadcast {
 
     public LocalDateTime getBroadcastEndingDateTime(){
         LocalDateTime startingLocalDateTime = this.broadcastDate.atTime(this.broadcastTime);
-        return startingLocalDateTime.plusMinutes(this.add.getDuration());
+        return startingLocalDateTime.plusMinutes(this.ad.getDuration());
     }
 }

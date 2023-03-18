@@ -41,21 +41,21 @@ public class JPAQueriesTest extends IntegrationBase {
     @Test
     @TestTransaction
     public void addListTest(){
-        List<Add> adds = entityManager.createQuery("select add from Add add").getResultList();
-        assertEquals(2, adds.size());
-        for (Add add : adds) {
-            List<AddBroadcast> addBroadcasts = add.getBroadcastAdds();
-            assertEquals(1, addBroadcasts.size());
+        List<Ad> ads = entityManager.createQuery("select add from Add add").getResultList();
+        assertEquals(2, ads.size());
+        for (Ad add : ads) {
+            List<AdBroadcast> adBroadcasts = add.getBroadcastAds();
+            assertEquals(1, adBroadcasts.size());
         }
     }
 
     @Test
     @TestTransaction
     public void addBroadcastListTest(){
-        List<AddBroadcast> addBroadcasts = entityManager.createQuery("select ab from AddBroadcast ab").getResultList();
-        assertEquals(2, addBroadcasts.size());
-        for (AddBroadcast addBroadcast: addBroadcasts){
-            assertNotNull(addBroadcast.getAdd());
+        List<AdBroadcast> adBroadcasts = entityManager.createQuery("select ab from AddBroadcast ab").getResultList();
+        assertEquals(2, adBroadcasts.size());
+        for (AdBroadcast adBroadcast : adBroadcasts){
+            assertNotNull(adBroadcast.getAd());
         }
     }
 
@@ -75,8 +75,8 @@ public class JPAQueriesTest extends IntegrationBase {
         List<Broadcast> broadcasts = entityManager.createQuery("select broadcast from Broadcast broadcast").getResultList();
         assertEquals(1, broadcasts.size());
         Broadcast broadcast = broadcasts.get(0);
-        List<AddBroadcast> addBroadcasts = broadcast.getAddBroadcasts();
-        assertEquals(2, addBroadcasts.size());
+        List<AdBroadcast> adBroadcasts = broadcast.getAdBroadcasts();
+        assertEquals(2, adBroadcasts.size());
         List<SongBroadcast> songBroadcasts = broadcast.getSongBroadcasts();
         assertEquals(2, songBroadcasts.size());
         assertTrue(broadcast.getAllocatedTime() > 0);
@@ -108,12 +108,12 @@ public class JPAQueriesTest extends IntegrationBase {
         // no broadcast is added
         Song invalidSong3 = new Song("title", "genre", 5, "artist", 2023);
         broadcast.createSongBroadcast(invalidSong3, DateUtil.setTime("13:15"));
-        assertEquals(listOfSongs, broadcast.getAddBroadcasts().size());
+        assertEquals(listOfSongs, broadcast.getAdBroadcasts().size());
         // exceed limit restriction
         // no broadcast is added
         LocalDateTime broadcastEndingTime = broadcast.getBroadcastEndingDateTime();
         broadcast.createSongBroadcast(invalidSong3, broadcastEndingTime.minusMinutes(invalidSong3.getDuration()/2).toLocalTime());
-        assertEquals(listOfSongs, broadcast.getAddBroadcasts().size());
+        assertEquals(listOfSongs, broadcast.getAdBroadcasts().size());
     }
 
     @Test
@@ -121,37 +121,37 @@ public class JPAQueriesTest extends IntegrationBase {
     public void restrictAddBroadcastCreation(){
         List<Broadcast> broadcasts = entityManager.createQuery("select b from Broadcast b").getResultList();
         Broadcast broadcast = broadcasts.get(0);
-        List<AddBroadcast> addBroadcasts = broadcast.getAddBroadcasts();
-        Integer listOfAdds = addBroadcasts.size();
+        List<AdBroadcast> adBroadcasts = broadcast.getAdBroadcasts();
+        Integer listOfAdds = adBroadcasts.size();
         // total duration restriction
         // no broadcast is added
-        Add invalidAdd1 = new Add(broadcast.getDuration() + 100, 1, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-03-2022") , ZoneEnum.LateNight);
-        broadcast.createAddBroadcast(invalidAdd1, DateUtil.setTime("02:40"));
-        assertEquals(listOfAdds, broadcast.getAddBroadcasts().size());
+        Ad invalidAdd1 = new Ad(broadcast.getDuration() + 100, 1, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-03-2022") , ZoneEnum.LateNight);
+        broadcast.createAdBroadcast(invalidAdd1, DateUtil.setTime("02:40"));
+        assertEquals(listOfAdds, broadcast.getAdBroadcasts().size());
         // invalid timezone restriction
         // no broadcast is added
-        Add invalidAdd2 = new Add(5, 1, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-03-2022") , ZoneEnum.Afternoon);
-        broadcast.createAddBroadcast(invalidAdd2, DateUtil.setTime("02:00"));
-        assertEquals(listOfAdds, broadcast.getAddBroadcasts().size());
+        Ad invalidAdd2 = new Ad(5, 1, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-03-2022") , ZoneEnum.Afternoon);
+        broadcast.createAdBroadcast(invalidAdd2, DateUtil.setTime("02:00"));
+        assertEquals(listOfAdds, broadcast.getAdBroadcasts().size());
         // occurrence song restriction
         // no broadcast is added
-        Add invalidAdd3 = new Add(5, 1, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-03-2022") , ZoneEnum.LateNight);
-        broadcast.createAddBroadcast(invalidAdd3, DateUtil.setTime("00:15"));
-        assertEquals(listOfAdds, broadcast.getAddBroadcasts().size());
+        Ad invalidAdd3 = new Ad(5, 1, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-03-2022") , ZoneEnum.LateNight);
+        broadcast.createAdBroadcast(invalidAdd3, DateUtil.setTime("00:15"));
+        assertEquals(listOfAdds, broadcast.getAdBroadcasts().size());
         // exceed limit restriction
         // no broadcast is added
-        Add invalidAdd4 = new Add(5, 1, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-03-2022") , ZoneEnum.LateNight);
-        broadcast.createAddBroadcast(invalidAdd4, DateUtil.setTime("13:15"));
-        assertEquals(listOfAdds, broadcast.getAddBroadcasts().size());
+        Ad invalidAdd4 = new Ad(5, 1, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-03-2022") , ZoneEnum.LateNight);
+        broadcast.createAdBroadcast(invalidAdd4, DateUtil.setTime("13:15"));
+        assertEquals(listOfAdds, broadcast.getAdBroadcasts().size());
         // exceed limit restriction
         // no broadcast is added
         LocalDateTime broadcastEndingTime = broadcast.getBroadcastEndingDateTime();
-        broadcast.createAddBroadcast(invalidAdd4, broadcastEndingTime.minusMinutes(invalidAdd4.getDuration()/2).toLocalTime());
-        assertEquals(listOfAdds, broadcast.getAddBroadcasts().size());
+        broadcast.createAdBroadcast(invalidAdd4, broadcastEndingTime.minusMinutes(invalidAdd4.getDuration()/2).toLocalTime());
+        assertEquals(listOfAdds, broadcast.getAdBroadcasts().size());
         // Add rep_per_zone restriction
         // no broadcast is added
-        Add invalidAdd5 = new Add(10, 0, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-03-2022") , ZoneEnum.LateNight);
-        broadcast.createAddBroadcast(invalidAdd5, DateUtil.setTime("02:40"));
-        assertEquals(listOfAdds, broadcast.getAddBroadcasts().size());
+        Ad invalidAdd5 = new Ad(10, 0, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-03-2022") , ZoneEnum.LateNight);
+        broadcast.createAdBroadcast(invalidAdd5, DateUtil.setTime("02:40"));
+        assertEquals(listOfAdds, broadcast.getAdBroadcasts().size());
     }
 }

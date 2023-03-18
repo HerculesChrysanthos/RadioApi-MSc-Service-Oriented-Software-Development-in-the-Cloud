@@ -1,6 +1,6 @@
 package gr.aueb.radio.services;
 
-import gr.aueb.radio.domains.AddBroadcast;
+import gr.aueb.radio.domains.AdBroadcast;
 import gr.aueb.radio.exceptions.NotFoundException;
 import gr.aueb.radio.mappers.AdBroadcastMapper;
 import gr.aueb.radio.persistence.AdBroadcastRepository;
@@ -18,11 +18,11 @@ public class AdBroadcastService {
 
 
     @Transactional
-    public AdBroadcastRepresentation findAddBroadcast(Integer id){
-        AddBroadcast addBroadcast = adBroadcastRepository.findById(id);
-        if (addBroadcast == null) {
+    public AdBroadcastRepresentation findAdBroadcast(Integer id){
+        AdBroadcast adBroadcast = adBroadcastRepository.findById(id);
+        if (adBroadcast == null) {
             throw new NotFoundException("AddBroadcast not found");
         }
-        return adBroadcastMapper.toRepresentation(addBroadcast);
+        return adBroadcastMapper.toRepresentation(adBroadcast);
     }
 }

@@ -1,6 +1,6 @@
 package gr.aueb.radio.mappers;
 
-import gr.aueb.radio.domains.AddBroadcast;
+import gr.aueb.radio.domains.AdBroadcast;
 import gr.aueb.radio.representations.AdBroadcastRepresentation;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -13,14 +13,12 @@ public abstract  class AdBroadcastMapper {
 
     @Mapping(target = "broadcastTime", source = "broadcastTime", qualifiedByName = "stringTimeFormatter")
     @Mapping(target = "broadcastDate", source = "broadcastDate", qualifiedByName = "stringDateFormatter")
-    public abstract AddBroadcast toModel(AdBroadcastRepresentation representation);
+    public abstract AdBroadcast toModel(AdBroadcastRepresentation representation);
 
     @Mapping(target = "broadcastTime", source = "broadcastTime", qualifiedByName = "timeFormatter")
     @Mapping(target = "broadcastDate", source = "broadcastDate", qualifiedByName = "dateFormatter")
-    public abstract AdBroadcastRepresentation toRepresentation(AddBroadcast addBroadcast);
+    public abstract AdBroadcastRepresentation toRepresentation(AdBroadcast adBroadcast);
 
-    @Mapping(target = "broadcastTime", source = "broadcastTime", qualifiedByName = "timeFormatter")
-    @Mapping(target = "broadcastDate", source = "broadcastDate", qualifiedByName = "dateFormatter")
-    public abstract List<AdBroadcastRepresentation> toRepresentation(List<AddBroadcast> addBroadcast);
+    public abstract List<AdBroadcastRepresentation> toRepresentation(List<AdBroadcast> adBroadcast);
 
 }

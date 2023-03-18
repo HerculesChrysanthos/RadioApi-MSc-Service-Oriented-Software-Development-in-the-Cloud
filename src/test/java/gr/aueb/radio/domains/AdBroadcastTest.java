@@ -12,10 +12,10 @@ import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AddBroadcastTest {
+public class AdBroadcastTest {
 
-    Add add;
-    AddBroadcast addBroadcast;
+    Ad ad;
+    AdBroadcast adBroadcast;
 
     Broadcast broadcast;
     private static LocalDate broadcastDate = DateUtil.setDate("01-01-2022");
@@ -29,36 +29,36 @@ public class AddBroadcastTest {
 
     @BeforeEach
     public void setUp() {
-        addBroadcast = new AddBroadcast();
-        addBroadcast.setBroadcastDate(broadcastDate);
-        addBroadcast.setBroadcastTime(broadcastTime);
-        add = new Add(duration, repPerZone, startingDate, endingDate, timeZone);
+        adBroadcast = new AdBroadcast();
+        adBroadcast.setBroadcastDate(broadcastDate);
+        adBroadcast.setBroadcastTime(broadcastTime);
+        ad = new Ad(duration, repPerZone, startingDate, endingDate, timeZone);
         broadcast = new Broadcast(100, broadcastDate, broadcastTime, BroadcastEnum.NEWS);
     }
 
     @Test
     public void successfulSetUp() {
-        assertEquals(addBroadcast.getBroadcastDate(), broadcastDate);
-        assertEquals(addBroadcast.getBroadcastTime(), broadcastTime);
+        assertEquals(adBroadcast.getBroadcastDate(), broadcastDate);
+        assertEquals(adBroadcast.getBroadcastTime(), broadcastTime);
     }
 
     @Test
-    public void setAddTest(){
-        addBroadcast.setAdd(add);
-        assertNotNull(addBroadcast.getAdd());
+    public void setAdTest(){
+        adBroadcast.setAd(ad);
+        assertNotNull(adBroadcast.getAd());
     }
 
     @Test
     public void setBroadcastTest(){
-        addBroadcast.setBroadcast(broadcast);
-        assertNotNull(addBroadcast.getBroadcast());
+        adBroadcast.setBroadcast(broadcast);
+        assertNotNull(adBroadcast.getBroadcast());
     }
 
     @Test
     public void getEndingTimeTest(){
-        addBroadcast.setAdd(add);
+        adBroadcast.setAd(ad);
         LocalDateTime expectedTime = broadcastDate.atTime(broadcastTime).plusMinutes(duration);
-        LocalDateTime broadcastEndingTime = addBroadcast.getBroadcastEndingDateTime();
+        LocalDateTime broadcastEndingTime = adBroadcast.getBroadcastEndingDateTime();
         assertTrue(expectedTime.isEqual(broadcastEndingTime));
     }
 

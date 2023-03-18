@@ -60,22 +60,22 @@ public class BroadcastTest {
     }
 
     @Test
-    public void createValidAddBroadcastTest() {
-        Add add = new Add(5, 1, DateUtil.setDate("01-01-2023"), DateUtil.setDate("01-05-2023"), ZoneEnum.LateNight);
-        broadcast.createAddBroadcast(add, DateUtil.setTime("00:00"));
-        List<AddBroadcast> broadcasts = broadcast.getAddBroadcasts();
+    public void createValidAdBroadcastTest() {
+        Ad ad = new Ad(5, 1, DateUtil.setDate("01-01-2023"), DateUtil.setDate("01-05-2023"), ZoneEnum.LateNight);
+        broadcast.createAdBroadcast(ad, DateUtil.setTime("00:00"));
+        List<AdBroadcast> broadcasts = broadcast.getAdBroadcasts();
         assertNotNull(broadcasts);
         assertEquals(1, broadcasts.size());
     }
 
     @Test
-    public void removeValidAddBroadcastTest() {
-        Add add = new Add(5, 1, DateUtil.setDate("01-01-2023"), DateUtil.setDate("01-05-2023"), ZoneEnum.LateNight);
-        broadcast.createAddBroadcast(add, DateUtil.setTime("01:00"));
-        List<AddBroadcast> broadcasts = broadcast.getAddBroadcasts();
+    public void removeValidAdBroadcastTest() {
+        Ad ad = new Ad(5, 1, DateUtil.setDate("01-01-2023"), DateUtil.setDate("01-05-2023"), ZoneEnum.LateNight);
+        broadcast.createAdBroadcast(ad, DateUtil.setTime("01:00"));
+        List<AdBroadcast> broadcasts = broadcast.getAdBroadcasts();
         assertEquals(1, broadcasts.size());
-        AddBroadcast addBroadcast = broadcasts.get(0);
-        broadcast.removeAddBroadcast(addBroadcast);
+        AdBroadcast adBroadcast = broadcasts.get(0);
+        broadcast.removeAdBroadcast(adBroadcast);
         assertEquals(0, broadcasts.size());
     }
 

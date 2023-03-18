@@ -1,6 +1,6 @@
 package gr.aueb.radio.persistence;
 
-import gr.aueb.radio.domains.AddBroadcast;
+import gr.aueb.radio.domains.AdBroadcast;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import io.quarkus.panache.common.Parameters;
 
@@ -8,10 +8,10 @@ import javax.enterprise.context.RequestScoped;
 import java.util.List;
 
 @RequestScoped
-public class AdBroadcastRepository implements PanacheRepositoryBase<AddBroadcast, Integer> {
+public class AdBroadcastRepository implements PanacheRepositoryBase<AdBroadcast, Integer> {
 
     /* find addBroadcasts of a specific add */
-    public List<AddBroadcast> findAddBrByAdd(Integer addId){
-        return find("select ab from AddBroadcasts ab where ab.add.id=:addId", Parameters.with("addId", addId).map()).list();
+    public List<AdBroadcast> findAdBrByAdv(Integer adId){
+        return find("select ab from AdBroadcasts ab where ab.ad.id=:adId", Parameters.with("adId", adId).map()).list();
     }
 }
