@@ -47,13 +47,9 @@ public class AdResource {
 
         @POST
         public Response createAd(AdRepresentation adrepresentation) {
-                try {
-                        Ad ad = adService.create(adrepresentation);
-                        URI uri = UriBuilder.fromResource(UserResource.class).path(String.valueOf(ad.getId())).build();
-                        return Response.created(uri).entity(adMapper.toRepresentation(ad)).build();
-                }catch (RadioException re){
-                        return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), re.getMessage()).build();
-                }
+                Ad ad = adService.create(adrepresentation);
+                URI uri = UriBuilder.fromResource(UserResource.class).path(String.valueOf(ad.getId())).build();
+                return Response.created(uri).entity(adMapper.toRepresentation(ad)).build();
         }
 
         @PUT
@@ -62,17 +58,18 @@ public class AdResource {
                 try {
                         adService.update(id, adrepresentation);
                         return  Response.noContent().build();
-                }
-                catch (NotFoundException re){
+                } catch (NotFoundException re){
                         return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
+                } catch (RadioException re){
+                        return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), re.getMessage()).build();
                 }
         }
 
         @DELETE
         @Path("/{id}")
-        public Response deleteAd(@PathParam("id") Integer id, AdRepresentation adrepresentation) {
+        public Response deleteAd(@PathParam("id") Integer id) {
                 try {
-                        adService.delete(id,adrepresentation);
+                        adService.delete(id);
                         return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
                 }catch (NotFoundException re){
                         return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();

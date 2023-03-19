@@ -1,12 +1,14 @@
 package gr.aueb.radio.services;
 
 import gr.aueb.radio.domains.Ad;
+import gr.aueb.radio.domains.AdBroadcast;
 import gr.aueb.radio.enums.ZoneEnum;
 import gr.aueb.radio.exceptions.NotFoundException;
 import gr.aueb.radio.exceptions.RadioException;
 import gr.aueb.radio.mappers.AdMapper;
 import gr.aueb.radio.persistence.AdRepository;
 import gr.aueb.radio.representations.AdRepresentation;
+import gr.aueb.radio.utils.DateUtil;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -17,6 +19,9 @@ import java.util.List;
 public class AdService {
     @Inject
     AdRepository adRepository;
+
+    @Inject
+    BroadcastService broadcastService;
 
     @Inject
     AdMapper adMapper;
@@ -45,36 +50,40 @@ public class AdService {
     @Transactional
     public Ad create(AdRepresentation adRepresentation) {
         Ad ad = adMapper.toModel(adRepresentation);
-        if (adRepository.findById(ad.getId()) != null) {
-            throw new RadioException("Ad already exists");
-        }
         adRepository.persist(ad);
         return ad;
     }
 
     @Transactional
     public Ad update(Integer id, AdRepresentation adRepresentation) {
-        Ad ad = adMapper.toModel(adRepresentation);
-        if (adRepository.findById(ad.getId()) == null) {
-            throw new RuntimeException("Ad does not exist");
+        Ad ad = adRepository.findById(id);
+        if(ad == null){
+            throw new NotFoundException("Ad not found");
         }
         if (ad.getBroadcastAds().size() != 0){
             throw new RadioException("Ad is immutable, it has scheduled broadcasts");
         }
+        ad.setDuration(adRepresentation.duration);
+        ad.setTimezone(adRepresentation.timezone);
+        ad.setRepPerZone(adRepresentation.repPerZone);
+        ad.setStartingDate(DateUtil.setDate(adRepresentation.startingDate));
+        ad.setEndingDate(DateUtil.setDate(adRepresentation.endingDate));
         adRepository.getEntityManager().merge(ad);
         return ad;
     }
 
     @Transactional
-    public Ad delete(Integer id, AdRepresentation adRepresentation) {
-        Ad ad = adMapper.toModel(adRepresentation);
-
-        if (adRepository.findById(ad.getId()) == null) {
-            throw new RuntimeException("Ad does not exist");
+    public void delete(Integer id) {
+        Ad ad = adRepository.findById(id);
+        if(ad == null){
+            throw new NotFoundException("Ad not found");
+        }
+        List<AdBroadcast> adBroadcasts = ad.getBroadcastAds();
+        for (AdBroadcast adBroadcast: adBroadcasts){
+            broadcastService.removeAdBroadcast(adBroadcast.getBroadcast().getId(), adBroadcast.getId());
         }
 
-        adRepository.getEntityManager().remove(ad);
-        return ad;
+        adRepository.deleteById(id);
     }
 }
 
