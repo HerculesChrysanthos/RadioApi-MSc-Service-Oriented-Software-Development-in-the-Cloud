@@ -11,8 +11,8 @@ insert into users (id, username, password, email, role) values(6002, 'user', 'us
 insert into ads (id, duration, rep_per_zone, starting_date, ending_date, timezone) values (1001, 15, 0, PARSEDATETIME('01-01-2022','dd-MM-yyyy'), PARSEDATETIME('01-03-2022','dd-MM-yyyy'), 'LateNight');
 insert into ads (id, duration, rep_per_zone, starting_date, ending_date, timezone) values (1002, 30, 0, PARSEDATETIME('01-01-2022','dd-MM-yyyy'), PARSEDATETIME('01-04-2022','dd-MM-yyyy'), 'LateNight');
 
-insert into songs (id, title, artist, release_year, duration, genre) values(2001, 'title', 'artist', 2023, 25, 'genre');
-insert into songs (id, title, artist, release_year, duration, genre) values(2002, 'title1', 'artist1', 2023, 10, 'genre2');
+insert into songs (id, title, artist, release_year, duration, genre) values(2001, 'Ride', 'Twenty One Pilots', 2015, 25, 'hip hop');
+insert into songs (id, title, artist, release_year, duration, genre) values(2002, 'Stressed Out', 'Twenty One Pilots', 2015, 10, 'hip hop');
 
 insert into broadcasts (id, duration, starting_date, starting_time, type) values(3001, 200, PARSEDATETIME('01-02-2022','dd-MM-yyyy'), '00:00', 'PLAYLIST');
 
