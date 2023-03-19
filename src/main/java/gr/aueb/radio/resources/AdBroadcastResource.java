@@ -1,21 +1,20 @@
 package gr.aueb.radio.resources;
 
 import gr.aueb.radio.domains.AdBroadcast;
+import gr.aueb.radio.dto.AdBroadcastCreationDTO;
+import gr.aueb.radio.exceptions.NotFoundException;
 import gr.aueb.radio.exceptions.RadioException;
 import gr.aueb.radio.mappers.AdBroadcastMapper;
-import gr.aueb.radio.representations.AdBroadcastRepresentation;
 import gr.aueb.radio.services.AdBroadcastService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.net.URI;
+import java.util.List;
 
-@Path("/adBroadcast")
+@Path("/ad_broadcasts")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @RequestScoped
@@ -29,15 +28,45 @@ public class AdBroadcastResource {
     @Context
     UriInfo uriInfo;
 
-    @POST
-    public Response createAdBroadcast(AdBroadcastRepresentation adBroadcastRepresentation) {
+    @GET
+    public Response search(@QueryParam("date") String date) {
+        List<AdBroadcast> found = adBroadcastService.search(date);
+        return Response.ok().entity(adBroadcastMapper.toRepresentationList(found)).build();
+    }
+
+    @GET
+    @Path("/{id}")
+    public Response find(@PathParam("id") Integer id) {
         try {
-            AdBroadcast adBroadcast = adBroadcastService.create(adBroadcastRepresentation);
+            AdBroadcast adBroadcast = adBroadcastService.find(id);
+            return Response.ok().entity(adBroadcastMapper.toRepresentation(adBroadcast)).build();
+        }catch (NotFoundException e){
+            return Response.status(Response.Status.NOT_FOUND.getStatusCode(), e.getMessage()).build();
+        }
+    }
+
+    @DELETE
+    @Path("/{id}")
+    public Response delete(@PathParam("id") Integer id) {
+        try {
+            adBroadcastService.delete(id);
+            return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
+        }catch (NotFoundException e){
+            return Response.status(Response.Status.NOT_FOUND.getStatusCode(), e.getMessage()).build();
+        }
+    }
+
+
+    @POST
+    public Response createAdBroadcast(AdBroadcastCreationDTO dto) {
+        try {
+            AdBroadcast adBroadcast = adBroadcastService.create(dto);
             URI uri = UriBuilder.fromResource(UserResource.class).path(String.valueOf(adBroadcast.getId())).build();
             return Response.created(uri).entity(adBroadcastMapper.toRepresentation(adBroadcast)).build();
-        }
-        catch (RadioException re){
+        } catch (RadioException re){
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), re.getMessage()).build();
+        }catch (NotFoundException re){
+            return Response.status(Response.Status.NOT_FOUND.getStatusCode(), re.getMessage()).build();
         }
     }
 }

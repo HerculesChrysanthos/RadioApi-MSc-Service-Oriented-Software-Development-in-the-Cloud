@@ -19,6 +19,6 @@ public abstract  class AdBroadcastMapper {
     @Mapping(target = "broadcastDate", source = "broadcastDate", qualifiedByName = "dateFormatter")
     public abstract AdBroadcastRepresentation toRepresentation(AdBroadcast adBroadcast);
 
-    public abstract List<AdBroadcastRepresentation> toRepresentation(List<AdBroadcast> adBroadcasts);
+    public abstract List<AdBroadcastRepresentation> toRepresentationList(List<AdBroadcast> adBroadcasts);
 
 }

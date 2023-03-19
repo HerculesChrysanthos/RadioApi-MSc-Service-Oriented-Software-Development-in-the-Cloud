@@ -79,7 +79,8 @@ public class AdService {
             throw new NotFoundException("Ad not found");
         }
         List<AdBroadcast> adBroadcasts = ad.getBroadcastAds();
-        for (AdBroadcast adBroadcast: adBroadcasts){
+        while (ad.getBroadcastAds().size() != 0){
+            AdBroadcast adBroadcast = ad.getBroadcastAds().get(0);
             broadcastService.removeAdBroadcast(adBroadcast.getBroadcast().getId(), adBroadcast.getId());
         }
 
