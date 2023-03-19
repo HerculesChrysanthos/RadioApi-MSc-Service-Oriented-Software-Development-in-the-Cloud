@@ -1,7 +1,6 @@
 package gr.aueb.radio.resources;
 
 import gr.aueb.radio.domains.Song;
-import gr.aueb.radio.exceptions.NotFoundException;
 import gr.aueb.radio.exceptions.RadioException;
 import gr.aueb.radio.mappers.SongMapper;
 import gr.aueb.radio.persistence.SongRepository;
@@ -42,9 +41,20 @@ public class SongResource {
 		return songMapper.toRepresentationList(songRepository.listAll());
 	}
 
+	@GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response get(@PathParam("id") Integer id) {
+        Song song = songRepository.findById(id);
+        if (song == null) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+        return Response.ok().entity(songMapper.toRepresentation(song)).build();
+    }
 	
     @GET
-    @Path("/{artist}")
+    @Path("/song?artist=")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
 	public List<SongRepresentation> findSongsByArtist(@QueryParam("artist") String artist) {
@@ -52,7 +62,7 @@ public class SongResource {
 	}
 
     @GET
-    @Path("/{genre}")
+    @Path("/song?genre=")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
 	public List<SongRepresentation> findSongsByGenre(@QueryParam("genre") String genre) {
@@ -60,28 +70,49 @@ public class SongResource {
 	}
 
     @GET
-    @Path("/{title}")
+    @Path("/song?title=")
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public SongRepresentation find(@PathParam("title") String title) {
+    public Response find(@QueryParam("title") String title) {
         Song a = songRepository.findSongByTitle(title);
         if (a == null) {
-            throw new NotFoundException();
+            return Response.status(Status.NOT_FOUND).build();
 		}
-		return songMapper.toRepresentation(a);
+		    return Response.ok().entity(songMapper.toRepresentation(a)).build();
 	}
     
-    @PUT
-	@Transactional
-	public Response create (SongRepresentation representation) {
-		if (representation.title == null) {
-			throw new RuntimeException();			
-		}
-		Song song = songMapper.toModel(representation);
-		songRepository.persist(song);
-		URI uri = UriBuilder.fromResource(SongResource.class).path(String.valueOf(song.getTitle())).build();
-		return Response.created(uri).entity(songMapper.toRepresentation(song)).build();
+    @POST
+    public Response create (SongRepresentation songRepresentation) {
+        Song song = songMapper.toModel(songRepresentation);
+        songRepository.persist(song);
+        URI uri = UriBuilder.fromResource(SongResource.class).path(String.valueOf(song.getId())).build();
+        SongRepresentation createdSongRepresentation = songMapper.toRepresentation(song);
+        return Response.created(uri).entity(createdSongRepresentation).build();
 
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @Transactional
+    public Response delete(@PathParam("id") Integer id) {
+        Song song = songRepository.findById(id);
+        if (song == null) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+        songRepository.delete(song);
+        return Response.noContent().build();
+    }
+
+    @PUT
+    @Path("/{id}")
+    @Transactional   
+    public Response update(@PathParam("id") Integer id, SongRepresentation songRepresentation) {
+        Song song = songRepository.findById(id);
+        if (song == null) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+        songRepository.persist(song);
+        return Response.noContent().build();
     }
 
 }

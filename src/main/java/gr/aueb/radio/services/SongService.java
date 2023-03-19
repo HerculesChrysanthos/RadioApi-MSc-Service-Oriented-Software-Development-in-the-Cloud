@@ -24,18 +24,20 @@ public class SongService {
     SongMapper songMapper;
 
     @Transactional
-    public Song create(SongRepresentation songRepresentation){
-        Song song = songMapper.toModel(songRepresentation);
-        if (songRepository.findSongByTitle(song.getTitle()) != null){
-            throw new RadioException("A Song with that title already exists");
-        }
-        if (songRepository.findSongsByArtist(song.getArtist()) != null){
-            throw new RadioException("A Song with this artist already exists");
-        }
-        songRepository.persist(song);
-        return song;
+	public List<SongRepresentation> listAll() {
+		return songMapper.toRepresentationList(songRepository.listAll());
+	}
+
+    @Transactional
+    public List<SongRepresentation> findSongsByArtist(String artist) {
+        return songMapper.toRepresentationList(songRepository.findSongsByArtist(artist));
     }
 
+    @Transactional
+    public List<SongRepresentation> findSongsByGenre(String genre) {
+        return songMapper.toRepresentationList(songRepository.findSongsByGenre(genre));
+    }
+   
     @Transactional
     public SongRepresentation findSong(Integer Id){
         Song song = songRepository.findById(Id);
@@ -45,7 +47,6 @@ public class SongService {
         return songMapper.toRepresentation(song);
     }
     
-      public PanacheQuery<Song> findSongs(String title) {
-        return songRepository.find(title);
-    }
+
+
 }
