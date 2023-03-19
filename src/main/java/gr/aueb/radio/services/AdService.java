@@ -48,9 +48,32 @@ public class AdService {
         if (adRepository.findById(ad.getId()) != null) {
             throw new RadioException("Ad already exists");
         }
-        else {
-        }
         adRepository.persist(ad);
+        return ad;
+    }
+
+    @Transactional
+    public Ad update(Integer id, AdRepresentation adRepresentation) {
+        Ad ad = adMapper.toModel(adRepresentation);
+        if (adRepository.findById(ad.getId()) == null) {
+            throw new RuntimeException("Ad does not exist");
+        }
+        if (ad.getBroadcastAds().size() != 0){
+            throw new RadioException("Ad is immutable, it has scheduled broadcasts");
+        }
+        adRepository.getEntityManager().merge(ad);
+        return ad;
+    }
+
+    @Transactional
+    public Ad delete(Integer id, AdRepresentation adRepresentation) {
+        Ad ad = adMapper.toModel(adRepresentation);
+
+        if (adRepository.findById(ad.getId()) == null) {
+            throw new RuntimeException("Ad does not exist");
+        }
+
+        adRepository.getEntityManager().remove(ad);
         return ad;
     }
 }

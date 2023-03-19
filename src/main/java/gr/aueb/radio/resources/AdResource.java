@@ -15,7 +15,7 @@ import javax.ws.rs.core.*;
 import java.net.URI;
 import java.util.List;
 
-@Path("/adds")
+@Path("/ads")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @RequestScoped
@@ -56,6 +56,28 @@ public class AdResource {
                 }
         }
 
+        @PUT
+        @Path("/{id}")
+        public Response updateAd(@PathParam("id") Integer id, AdRepresentation adrepresentation) {
+                try {
+                        adService.update(id, adrepresentation);
+                        return  Response.noContent().build();
+                }
+                catch (NotFoundException re){
+                        return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
+                }
+        }
+
+        @DELETE
+        @Path("/{id}")
+        public Response deleteAd(@PathParam("id") Integer id, AdRepresentation adrepresentation) {
+                try {
+                        adService.delete(id,adrepresentation);
+                        return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
+                }catch (NotFoundException re){
+                        return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
+                }
+        }
 }
 
 

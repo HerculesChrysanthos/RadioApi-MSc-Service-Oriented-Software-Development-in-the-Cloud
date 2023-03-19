@@ -10,6 +10,7 @@ import org.mapstruct.Named;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Mapper(componentModel = "cdi", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class BroadcastMapper {
@@ -21,6 +22,7 @@ public abstract class BroadcastMapper {
     @Mapping(target = "startingTime", source = "startingTime", qualifiedByName = "timeFormatter")
     @Mapping(target = "startingDate", source = "startingDate", qualifiedByName = "dateFormatter")
     public abstract BroadcastRepresentation toRepresentation(Broadcast broadcast);
+    public abstract List<BroadcastRepresentation> toRepresentationList(List<Broadcast> broadcasts);
 
     @Named("timeFormatter")
     public String formatTime(LocalTime time){
