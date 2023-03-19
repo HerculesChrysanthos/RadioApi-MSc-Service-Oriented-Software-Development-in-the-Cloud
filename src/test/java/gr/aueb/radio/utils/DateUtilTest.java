@@ -25,6 +25,17 @@ public class DateUtilTest {
     }
 
     @Test
+    public void betweenTestLocalDate(){
+        LocalDate start = DateUtil.setDate("01-11-2022");
+        LocalDate end = DateUtil.setDate("01-12-2022");
+        assertTrue(DateUtil.between(start, DateUtil.setDate("01-11-2022"), end));
+        assertTrue(DateUtil.between(start, DateUtil.setDate("21-11-2022"), end));
+        assertTrue(DateUtil.between(start, DateUtil.setDate("01-12-2022"), end));
+        assertFalse(DateUtil.between(start, DateUtil.setDate("01-12-2023"), end));
+        assertFalse(DateUtil.between(start, DateUtil.setDate("01-12-2021"), end));
+    }
+
+    @Test
     public void betweenTestLocalTime(){
         LocalTime start = DateUtil.setTime("12:30");
         LocalTime end = DateUtil.setTime("13:30");

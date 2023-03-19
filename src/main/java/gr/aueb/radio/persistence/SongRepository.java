@@ -40,5 +40,9 @@ public class SongRepository implements PanacheRepositoryBase<Song, Integer> {
         return query.list();
     }
 
+    public List<String> getAllGenres(){
+        return find("select distinct song.genre from Song song group by song.genre having count(*) >= 10").project(String.class).list();
+    }
+
 
 }
