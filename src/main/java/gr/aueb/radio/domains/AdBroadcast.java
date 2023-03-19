@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
-@Table (name = "add_broadcasts")
+@Table (name = "ad_broadcasts")
 public class AdBroadcast {
 
     @Id
@@ -21,7 +21,7 @@ public class AdBroadcast {
     private LocalTime broadcastTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "add_id")
+    @JoinColumn(name = "ad_id")
     private Ad ad;
 
     @ManyToOne(fetch = FetchType.LAZY)

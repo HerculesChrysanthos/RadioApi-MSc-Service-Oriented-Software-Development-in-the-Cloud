@@ -41,10 +41,10 @@ public class JPAQueriesTest extends IntegrationBase {
     @Test
     @TestTransaction
     public void addListTest(){
-        List<Ad> ads = entityManager.createQuery("select add from Add add").getResultList();
+        List<Ad> ads = entityManager.createQuery("select ad from Ad ad").getResultList();
         assertEquals(2, ads.size());
-        for (Ad add : ads) {
-            List<AdBroadcast> adBroadcasts = add.getBroadcastAds();
+        for (Ad ad : ads) {
+            List<AdBroadcast> adBroadcasts = ad.getBroadcastAds();
             assertEquals(1, adBroadcasts.size());
         }
     }
@@ -52,7 +52,7 @@ public class JPAQueriesTest extends IntegrationBase {
     @Test
     @TestTransaction
     public void addBroadcastListTest(){
-        List<AdBroadcast> adBroadcasts = entityManager.createQuery("select ab from AddBroadcast ab").getResultList();
+        List<AdBroadcast> adBroadcasts = entityManager.createQuery("select ab from AdBroadcast ab").getResultList();
         assertEquals(2, adBroadcasts.size());
         for (AdBroadcast adBroadcast : adBroadcasts){
             assertNotNull(adBroadcast.getAd());
@@ -122,36 +122,36 @@ public class JPAQueriesTest extends IntegrationBase {
         List<Broadcast> broadcasts = entityManager.createQuery("select b from Broadcast b").getResultList();
         Broadcast broadcast = broadcasts.get(0);
         List<AdBroadcast> adBroadcasts = broadcast.getAdBroadcasts();
-        Integer listOfAdds = adBroadcasts.size();
+        Integer listOfAds = adBroadcasts.size();
         // total duration restriction
         // no broadcast is added
         Ad invalidAdd1 = new Ad(broadcast.getDuration() + 100, 1, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-03-2022") , ZoneEnum.LateNight);
         broadcast.createAdBroadcast(invalidAdd1, DateUtil.setTime("02:40"));
-        assertEquals(listOfAdds, broadcast.getAdBroadcasts().size());
+        assertEquals(listOfAds, broadcast.getAdBroadcasts().size());
         // invalid timezone restriction
         // no broadcast is added
         Ad invalidAdd2 = new Ad(5, 1, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-03-2022") , ZoneEnum.Afternoon);
         broadcast.createAdBroadcast(invalidAdd2, DateUtil.setTime("02:00"));
-        assertEquals(listOfAdds, broadcast.getAdBroadcasts().size());
+        assertEquals(listOfAds, broadcast.getAdBroadcasts().size());
         // occurrence song restriction
         // no broadcast is added
         Ad invalidAdd3 = new Ad(5, 1, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-03-2022") , ZoneEnum.LateNight);
         broadcast.createAdBroadcast(invalidAdd3, DateUtil.setTime("00:15"));
-        assertEquals(listOfAdds, broadcast.getAdBroadcasts().size());
+        assertEquals(listOfAds, broadcast.getAdBroadcasts().size());
         // exceed limit restriction
         // no broadcast is added
         Ad invalidAdd4 = new Ad(5, 1, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-03-2022") , ZoneEnum.LateNight);
         broadcast.createAdBroadcast(invalidAdd4, DateUtil.setTime("13:15"));
-        assertEquals(listOfAdds, broadcast.getAdBroadcasts().size());
+        assertEquals(listOfAds, broadcast.getAdBroadcasts().size());
         // exceed limit restriction
         // no broadcast is added
         LocalDateTime broadcastEndingTime = broadcast.getBroadcastEndingDateTime();
         broadcast.createAdBroadcast(invalidAdd4, broadcastEndingTime.minusMinutes(invalidAdd4.getDuration()/2).toLocalTime());
-        assertEquals(listOfAdds, broadcast.getAdBroadcasts().size());
+        assertEquals(listOfAds, broadcast.getAdBroadcasts().size());
         // Add rep_per_zone restriction
         // no broadcast is added
         Ad invalidAdd5 = new Ad(10, 0, DateUtil.setDate("01-01-2022"),  DateUtil.setDate("01-03-2022") , ZoneEnum.LateNight);
         broadcast.createAdBroadcast(invalidAdd5, DateUtil.setTime("02:40"));
-        assertEquals(listOfAdds, broadcast.getAdBroadcasts().size());
+        assertEquals(listOfAds, broadcast.getAdBroadcasts().size());
     }
 }
