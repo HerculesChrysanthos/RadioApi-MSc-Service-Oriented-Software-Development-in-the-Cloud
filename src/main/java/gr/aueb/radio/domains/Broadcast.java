@@ -96,26 +96,16 @@ public class Broadcast {
         return this.songBroadcasts;
     }
 
+    public ZoneEnum getTimezone(){
+        return DateUtil.calculateTimezone(this.startingTime);
+    }
+
     public AdBroadcast createAdBroadcast(Ad ad, LocalTime time){
-        this.timezone = DateUtil.calculateTimezone(this.startingTime);
-        if(ad.getTimezone() != this.timezone){
-            log.info("Broadcast timezone restriction");
-            return null;
-        }
-        if(!ad.toBeBroadcasted(this.startingDate)){
-            log.info("Rep per_zone_restriction");
+        if (!adCanBeAdded(ad, time)){
             return null;
         }
         if(checkForOccurrence(time, ad.getDuration())){
             log.info("Broadcast occurrence restriction");
-            return null;
-        }
-        if(getAllocatedTime() + ad.getDuration() > this.duration){
-            log.info("Broadcast duration restriction");
-            return null;
-        }
-        if (this.exceedsLimits(time, ad.getDuration())){
-            log.info("Broadcast limit restriction");
             return null;
         }
         AdBroadcast adBroadcast = new AdBroadcast(this.startingDate, time);
@@ -126,21 +116,11 @@ public class Broadcast {
     }
 
     public SongBroadcast createSongBroadcast(Song song, LocalTime time){
-
-        if(!song.toBeBroadcasted(this.startingDate, time)){
-            log.info("Broadcast song broadcast restriction");
+        if(!songCanBeAdded(song, time)){
             return null;
         }
         if(checkForOccurrence(time, song.getDuration())){
             log.info("Broadcast occurrence restriction");
-            return null;
-        }
-        if(getAllocatedTime() + song.getDuration() > this.duration){
-            log.info("Broadcast duration restriction");
-            return null;
-        }
-        if (this.exceedsLimits(time, song.getDuration())){
-            log.info("Broadcast limit restriction");
             return null;
         }
         SongBroadcast songBroadcast = new SongBroadcast(this.startingDate, time);
@@ -153,11 +133,13 @@ public class Broadcast {
     public void removeAdBroadcast(AdBroadcast adBroadcast) {
         this.adBroadcasts.remove(adBroadcast);
         adBroadcast.setBroadcast(null);
+        adBroadcast.getAd().removeAdBroadcast(adBroadcast);
     }
 
     public void removeSongBroadcast(SongBroadcast songBroadcast) {
         this.songBroadcasts.remove(songBroadcast);
         songBroadcast.setBroadcast(null);
+        songBroadcast.getSong().removeSongBroadcast(songBroadcast);
     }
 
     private boolean checkForOccurrence(LocalTime startingTime, Integer duration){
@@ -191,6 +173,17 @@ public class Broadcast {
         return false;
     }
 
+    private boolean validSongGenre(String genre){
+        if(this.songBroadcasts.size() == 0){
+            return true;
+        }
+        SongBroadcast sb = this.songBroadcasts.get(0);
+        if (sb.getSong().getGenre().equals(genre)){
+            return true;
+        }
+        return false;
+    }
+
     private boolean exceedsLimits(LocalTime startingTime, Integer duration){
         // Starting time of song/add broadcast
         LocalDateTime startingDateTime = this.startingDate.atTime(startingTime);
@@ -220,10 +213,55 @@ public class Broadcast {
         for (SongBroadcast songBroadcast : this.songBroadcasts){
             totalTime += songBroadcast.getSong().getDuration();
         }
-        for (AdBroadcast adBroadcast : this.adBroadcasts){
-            totalTime += adBroadcast.getAd().getDuration();
+        for (AdBroadcast addBroadcast : this.adBroadcasts){
+            totalTime += addBroadcast.getAd().getDuration();
         }
         return totalTime;
     }
 
+    public boolean songCanBeAdded(Song song, LocalTime time){
+        if(!song.toBeBroadcasted(this.startingDate, time)){
+            log.info("Broadcast song broadcast restriction");
+            return false;
+        }
+
+        if(!validSongGenre(song.getGenre())){
+            log.info("Inconsistent song genre");
+            return false;
+        }
+
+        if(getAllocatedTime() + song.getDuration() > this.duration){
+            log.info("Broadcast duration restriction");
+            return false;
+        }
+        if (this.exceedsLimits(time, song.getDuration())){
+            log.info("Broadcast limit restriction");
+            return false;
+        }
+        return true;
+    }
+
+    public boolean adCanBeAdded(Ad ad, LocalTime time){
+        this.timezone = DateUtil.calculateTimezone(this.startingTime);
+        if(ad.getTimezone() != this.timezone){
+            log.info("Broadcast timezone restriction");
+            return false;
+        }
+        if(!ad.toBeBroadcasted(this.startingDate)){
+            log.info("Add restrictions");
+            return false;
+        }
+
+        if(getAllocatedTime() + ad.getDuration() > this.duration){
+            log.info("Broadcast duration restriction");
+            return false;
+        }
+        if (this.exceedsLimits(time, ad.getDuration())){
+            log.info("Broadcast limit restriction");
+            return false;
+        }
+        return true;
+    }
+
 }
+
