@@ -6,6 +6,6 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 public class SongBroadcastRepresentation {
 	public String broadcastDate;
     public String broadcastTime;
-	public SongRepresentation song;	
-    
+	public SongRepresentation song;
+	public BroadcastRepresentation broadcast;
 }

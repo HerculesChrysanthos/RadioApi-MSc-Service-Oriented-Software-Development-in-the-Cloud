@@ -1,21 +1,27 @@
 package gr.aueb.radio.services;
 
+import gr.aueb.radio.domains.Ad;
+import gr.aueb.radio.domains.AdBroadcast;
 import gr.aueb.radio.domains.Song;
+import gr.aueb.radio.domains.SongBroadcast;
 import gr.aueb.radio.exceptions.NotFoundException;
 import gr.aueb.radio.exceptions.RadioException;
 import gr.aueb.radio.mappers.SongMapper;
 import gr.aueb.radio.persistence.SongRepository;
+import gr.aueb.radio.representations.AdRepresentation;
 import gr.aueb.radio.representations.SongRepresentation;
+import gr.aueb.radio.utils.DateUtil;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.ws.rs.Path;
 
 @RequestScoped
-
 public class SongService {
     @Inject
     SongRepository songRepository;
@@ -23,20 +29,59 @@ public class SongService {
     @Inject
     SongMapper songMapper;
 
-    @Transactional
-	public List<SongRepresentation> listAll() {
-		return songMapper.toRepresentationList(songRepository.listAll());
-	}
+    @Inject
+    BroadcastService broadcastService;
 
     @Transactional
-    public List<SongRepresentation> findSongsByArtist(String artist) {
-        return songMapper.toRepresentationList(songRepository.findSongsByArtist(artist));
+    public List<SongRepresentation> search(String artist, String genre, String title){
+        List<Song> songs = songRepository.listAll();
+        if(artist != null){
+            // will filter and return all songs based on artist
+            songs = songs.stream().filter(s -> s.getArtist().equals(artist)).collect(Collectors.toList());
+        }
+        if(genre != null){
+            // will filter and return all songs based on genre
+            songs = songs.stream().filter(s -> s.getGenre().equals(genre)).collect(Collectors.toList());
+        }
+        if(title != null){
+            // will filter and return all songs based on title
+            songs = songs.stream().filter(s -> s.getTitle().equals(title)).collect(Collectors.toList());
+        }
+        return songMapper.toRepresentationList(songs);
     }
 
     @Transactional
-    public List<SongRepresentation> findSongsByGenre(String genre) {
-        return songMapper.toRepresentationList(songRepository.findSongsByGenre(genre));
+    public Song update(Integer id, SongRepresentation songRepresentation) {
+        Song song = songRepository.findById(id);
+        if(song == null){
+            throw new NotFoundException("Song not found");
+        }
+        if (song.getSongBroadcasts().size() != 0){
+            throw new RadioException("Song is immutable, it has scheduled broadcasts");
+        }
+        song.setGenre(songRepresentation.genre);
+        song.setDuration(songRepresentation.duration);
+        song.setArtist(songRepresentation.artist);
+        song.setYear(songRepresentation.year);
+        song.setTitle(songRepresentation.title);
+        songRepository.getEntityManager().merge(song);
+        return song;
     }
+
+    @Transactional
+    public void delete(Integer id) {
+        Song song = songRepository.findById(id);
+        if(song == null){
+            throw new NotFoundException("Song not found");
+        }
+        List<SongBroadcast> songBroadcasts = song.getSongBroadcasts();
+        for (SongBroadcast songBroadcast: songBroadcasts){
+            broadcastService.removeSongBroadcast(songBroadcast.getBroadcast().getId(), songBroadcast.getId());
+        }
+
+        songRepository.deleteById(id);
+    }
+
    
     @Transactional
     public SongRepresentation findSong(Integer Id){
@@ -45,6 +90,13 @@ public class SongService {
             throw new NotFoundException("Song not found");
         }
         return songMapper.toRepresentation(song);
+    }
+
+    @Transactional
+    public Song create(SongRepresentation songRepresentation) {
+        Song song = songMapper.toModel(songRepresentation);
+        songRepository.persist(song);
+        return song;
     }
     
 

@@ -13,15 +13,6 @@ import javax.persistence.NoResultException;
 @RequestScoped
 public class SongRepository implements PanacheRepositoryBase<Song, Integer> {
 
-    public Song findById(Integer id) {
-        PanacheQuery<Song> query = find("select a from Ad a where a.id = :id", Parameters.with("id", id).map());
-        try {
-            return query.singleResult();
-        } catch(NoResultException ex) {
-            return null;
-        }
-    }
-
     public Song findSongByTitle(String title) {
         PanacheQuery<Song> query = find("select song from Song  song where song.title = :title", Parameters.with("title", title).map());
         try {

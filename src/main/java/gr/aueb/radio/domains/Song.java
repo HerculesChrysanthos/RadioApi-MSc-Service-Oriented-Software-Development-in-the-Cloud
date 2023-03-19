@@ -16,7 +16,7 @@ public class Song {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Column(name = "title", nullable = false, length = 50)
+    @Column(name = "title", nullable = false, length = 100)
     private String title;
 
     @Column(name = "artist", nullable = false, length = 50)

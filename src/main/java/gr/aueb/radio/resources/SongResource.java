@@ -1,6 +1,7 @@
 package gr.aueb.radio.resources;
 
 import gr.aueb.radio.domains.Song;
+import gr.aueb.radio.exceptions.NotFoundException;
 import gr.aueb.radio.exceptions.RadioException;
 import gr.aueb.radio.mappers.SongMapper;
 import gr.aueb.radio.persistence.SongRepository;
@@ -22,69 +23,43 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.List;
 
-@Path("/song")
+@Path("/songs")
 @Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 @RequestScoped
 public class SongResource {
     @Context
 	UriInfo uriInfo;
-    
-    @Inject
-    SongRepository songRepository;
 
     @Inject
     SongMapper songMapper;
 
-    @GET
-	@Transactional
-	public List<SongRepresentation> listAll() {
-		return songMapper.toRepresentationList(songRepository.listAll());
-	}
+    @Inject
+    SongService songService;
+
 
 	@GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Transactional
-    public Response get(@PathParam("id") Integer id) {
-        Song song = songRepository.findById(id);
-        if (song == null) {
+    public Response getSong(@PathParam("id") Integer id) {
+        try{
+            SongRepresentation found = songService.findSong(id);
+            return Response.ok().entity(found).build();
+        }catch (NotFoundException e){
             return Response.status(Status.NOT_FOUND).build();
         }
-        return Response.ok().entity(songMapper.toRepresentation(song)).build();
     }
-	
-    @GET
-    @Path("/song?artist=")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Transactional
-	public List<SongRepresentation> findSongsByArtist(@QueryParam("artist") String artist) {
-		return songMapper.toRepresentationList(songRepository.findSongsByArtist(artist));
-	}
 
     @GET
-    @Path("/song?genre=")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Transactional
-	public List<SongRepresentation> findSongsByGenre(@QueryParam("genre") String genre) {
-		return songMapper.toRepresentationList(songRepository.findSongsByGenre(genre));
-	}
-
-    @GET
-    @Path("/song?title=")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Transactional
-    public Response find(@QueryParam("title") String title) {
-        Song a = songRepository.findSongByTitle(title);
-        if (a == null) {
-            return Response.status(Status.NOT_FOUND).build();
-		}
-		    return Response.ok().entity(songMapper.toRepresentation(a)).build();
-	}
+    public Response search(@QueryParam("artist") String artist,
+                         @QueryParam("genre") String genre,
+                         @QueryParam("title") String title) {
+        List<SongRepresentation> found = songService.search(artist, genre, title);
+        return Response.ok().entity(found).build();
+    }
     
     @POST
     public Response create (SongRepresentation songRepresentation) {
-        Song song = songMapper.toModel(songRepresentation);
-        songRepository.persist(song);
+        Song song = songService.create(songRepresentation);
         URI uri = UriBuilder.fromResource(SongResource.class).path(String.valueOf(song.getId())).build();
         SongRepresentation createdSongRepresentation = songMapper.toRepresentation(song);
         return Response.created(uri).entity(createdSongRepresentation).build();
@@ -93,26 +68,26 @@ public class SongResource {
 
     @DELETE
     @Path("/{id}")
-    @Transactional
     public Response delete(@PathParam("id") Integer id) {
-        Song song = songRepository.findById(id);
-        if (song == null) {
+        try{
+            songService.delete(id);
+            return Response.noContent().build();
+        }catch (NotFoundException e){
             return Response.status(Status.NOT_FOUND).build();
         }
-        songRepository.delete(song);
-        return Response.noContent().build();
     }
 
     @PUT
     @Path("/{id}")
-    @Transactional   
     public Response update(@PathParam("id") Integer id, SongRepresentation songRepresentation) {
-        Song song = songRepository.findById(id);
-        if (song == null) {
+        try{
+            songService.update(id, songRepresentation);
+            return Response.noContent().build();
+        }catch (NotFoundException e){
             return Response.status(Status.NOT_FOUND).build();
+        }catch (RadioException e){
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), e.getMessage()).build();
         }
-        songRepository.persist(song);
-        return Response.noContent().build();
     }
 
 }
