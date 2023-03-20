@@ -1,17 +1,12 @@
 package gr.aueb.radio.services;
 
-import gr.aueb.radio.domains.Ad;
-import gr.aueb.radio.domains.AdBroadcast;
 import gr.aueb.radio.domains.Song;
 import gr.aueb.radio.domains.SongBroadcast;
 import gr.aueb.radio.exceptions.NotFoundException;
 import gr.aueb.radio.exceptions.RadioException;
 import gr.aueb.radio.mappers.SongMapper;
 import gr.aueb.radio.persistence.SongRepository;
-import gr.aueb.radio.representations.AdRepresentation;
 import gr.aueb.radio.representations.SongRepresentation;
-import gr.aueb.radio.utils.DateUtil;
-import io.quarkus.hibernate.orm.panache.PanacheQuery;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,7 +14,6 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import javax.ws.rs.Path;
 
 @RequestScoped
 public class SongService {
@@ -74,15 +68,15 @@ public class SongService {
         if(song == null){
             throw new NotFoundException("Song not found");
         }
-        List<SongBroadcast> songBroadcasts = song.getSongBroadcasts();
-        for (SongBroadcast songBroadcast: songBroadcasts){
+        while (song.getSongBroadcasts().size() != 0){
+            SongBroadcast songBroadcast = song.getSongBroadcasts().get(0);
             broadcastService.removeSongBroadcast(songBroadcast.getBroadcast().getId(), songBroadcast.getId());
         }
 
         songRepository.deleteById(id);
     }
 
-   
+
     @Transactional
     public SongRepresentation findSong(Integer Id){
         Song song = songRepository.findById(Id);
@@ -98,7 +92,4 @@ public class SongService {
         songRepository.persist(song);
         return song;
     }
-    
-
-
 }
