@@ -41,6 +41,22 @@ public class AdServiceTest extends IntegrationBase {
 
     @Test
     @TestTransaction
+    public void findAdsTimezoneTest(){
+        // check retrieval of all ads if timezone null
+        List<Ad> ads  = adRepository.listAll();
+        int ttlAds = ads.size();
+        List<AdRepresentation> test1 = adService.search(null);
+        int Test = test1.size();
+        assertEquals(Test,ttlAds);
+
+        List<Ad> adsLateNight  = adRepository.findByTimezone(ZoneEnum.LateNight);
+        for(Ad ad : adsLateNight) {
+            assertEquals(ad.getTimezone(), ZoneEnum.LateNight);
+        }
+    }
+
+    @Test
+    @TestTransaction
     public void CreateAdTest() {
 
         List<Ad> adsList = adRepository.listAll();
@@ -54,7 +70,7 @@ public class AdServiceTest extends IntegrationBase {
         adRepresentation.timezone = ZoneEnum.EarlyMorning;
         adRepresentation.repPerZone = 2;
         // check list of ads is plus one
-        Ad adCreated = adService.create(adRepresentation);;
+        Ad adCreated = adService.create(adRepresentation);
         assertEquals(numOfAds + 1, adRepository.listAll().size());
         // check correct creation ex. starting date, timezone
         LocalDate dateToCheck = DateUtil.setDate(adRepresentation.startingDate);
