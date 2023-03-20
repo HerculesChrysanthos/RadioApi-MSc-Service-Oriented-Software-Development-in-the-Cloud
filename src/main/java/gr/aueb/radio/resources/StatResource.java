@@ -1,6 +1,7 @@
 package gr.aueb.radio.resources;
 
 import gr.aueb.radio.dto.AdStatsDTO;
+import gr.aueb.radio.exceptions.RadioException;
 import gr.aueb.radio.representations.BroadcastOutputRepresentation;
 import gr.aueb.radio.representations.BroadcastRepresentation;
 import gr.aueb.radio.services.StatService;
@@ -32,16 +33,25 @@ public class StatResource {
     @Path("/program")
     @RolesAllowed("PRODUCER")
     public Response getDailySchedule(@QueryParam("date") String date){
+        try {
             List<BroadcastOutputRepresentation> broadcastsOfDay = statService.getDailySchedule(date);
             return Response.ok().entity(broadcastsOfDay).build();
+        }catch (RadioException re){
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), re.getMessage()).build();
+        }
+
     }
 
     @GET
     @Path("/ads")
     @RolesAllowed("PRODUCER")
     public Response getAdsStats(@QueryParam("date") String date){
-        AdStatsDTO dto = statService.extractAdStats(date);
-        return Response.ok().entity(dto).build();
+        try {
+            AdStatsDTO dto = statService.extractAdStats(date);
+            return Response.ok().entity(dto).build();
+        }catch (RadioException re){
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), re.getMessage()).build();
+        }
     }
 
 

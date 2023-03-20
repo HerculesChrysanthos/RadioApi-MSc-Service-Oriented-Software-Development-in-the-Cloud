@@ -15,6 +15,7 @@ insert into songs (id, title, artist, release_year, duration, genre) values(7001
 insert into songs (id, title, artist, release_year, duration, genre) values(7002, 'Stressed Out', 'Twenty One Pilots', 2015, 5, 'hip hop');
 
 insert into broadcasts (id, duration, starting_date, starting_time, type) values(3001, 200, PARSEDATETIME('01-02-2022','dd-MM-yyyy'), '00:00', 'PLAYLIST');
+insert into broadcasts (id, duration, starting_date, starting_time, type) values(3002, 200, PARSEDATETIME('01-02-2023','dd-MM-yyyy'), '08:00', 'PLAYLIST');
 
 insert into ad_broadcasts (id, broadcast_date, broadcast_time, ad_id, broadcast_id) values (4001, PARSEDATETIME('01-02-2022','dd-MM-yyyy'), '00:40', 1001, 3001);
 insert into ad_broadcasts (id, broadcast_date, broadcast_time, ad_id, broadcast_id) values (4002, PARSEDATETIME('01-02-2022','dd-MM-yyyy'), '01:50', 1002, 3001);

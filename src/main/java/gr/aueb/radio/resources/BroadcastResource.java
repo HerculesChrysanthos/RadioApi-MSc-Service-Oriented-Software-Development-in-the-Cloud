@@ -58,9 +58,13 @@ public class BroadcastResource {
                                      @QueryParam("to") String to,
                                      @QueryParam("date") String date,
                                      @QueryParam("type")BroadcastEnum type){
-        BroadcastSearchDTO searchDTO = new BroadcastSearchDTO(from, to, date, type);
-        List<BroadcastOutputRepresentation> broadcastsFound = broadcastService.search(searchDTO);
-        return Response.ok().entity(broadcastsFound).build();
+        try {
+            BroadcastSearchDTO searchDTO = new BroadcastSearchDTO(from, to, date, type);
+            List<BroadcastOutputRepresentation> broadcastsFound = broadcastService.search(searchDTO);
+            return Response.ok().entity(broadcastsFound).build();
+        }catch (RadioException re){
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), re.getMessage()).build();
+        }
     }
 
     @POST

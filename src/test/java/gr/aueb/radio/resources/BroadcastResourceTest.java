@@ -91,6 +91,12 @@ public class BroadcastResourceTest extends IntegrationBase {
     public void searchBroadcastTest(){
         String url = Fixture.API_ROOT + Fixture.BROADCASTS_PATH;
         int totalNumOfBroadcasts = broadcastRepository.listAll().size();
+        //trigger radio exception due to invalid format
+        given()
+                .queryParam("from", "2022")
+                .when()
+                .get(url)
+                .then().statusCode(Status.BAD_REQUEST.getStatusCode());
         // general search should return all broadcasts
         List<BroadcastOutputRepresentation> found = given()
                 .when()

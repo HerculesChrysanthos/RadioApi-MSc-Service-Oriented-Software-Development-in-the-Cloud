@@ -1,6 +1,7 @@
 package gr.aueb.radio.mappers;
 
 import gr.aueb.radio.domains.Broadcast;
+import gr.aueb.radio.exceptions.RadioException;
 import gr.aueb.radio.representations.BroadcastRepresentation;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -35,8 +36,12 @@ public abstract class BroadcastMapper {
 
     @Named("stringTimeFormatter")
     public LocalTime formatTime(String time){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        return LocalTime.parse(time, formatter);
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            return LocalTime.parse(time, formatter);
+        }catch (Exception e){
+            throw new RadioException("Invalid date format, should be HH:mm");
+        }
     }
 
     @Named("dateFormatter")
@@ -47,7 +52,11 @@ public abstract class BroadcastMapper {
 
     @Named("stringDateFormatter")
     public LocalDate formatDate(String date){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        return LocalDate.parse(date, formatter);
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            return LocalDate.parse(date, formatter);
+        }catch (Exception e){
+            throw new RadioException("Invalid date format, should be dd-MM-yyyy");
+        }
     }
 }

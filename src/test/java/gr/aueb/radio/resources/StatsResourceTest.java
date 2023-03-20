@@ -48,8 +48,15 @@ public class StatsResourceTest extends IntegrationBase {
                 .when()
                 .get(url)
                 .then().statusCode(Response.Status.OK.getStatusCode())
-                .extract().as(new TypeRef<List<BroadcastOutputRepresentation>>() {
+                .extract().as(new TypeRef<>() {
                 });
+        // trigger Radio exception due to invalid date format
+        given().auth().preemptive().basic("producer", "producer")
+                .queryParam("date","2022")
+                .contentType(ContentType.JSON)
+                .when()
+                .get(url)
+                .then().statusCode(Response.Status.BAD_REQUEST.getStatusCode());
         assertTrue(broadcastRepresentation.size() > 0);
     }
 
@@ -77,6 +84,13 @@ public class StatsResourceTest extends IntegrationBase {
                 .get(url)
                 .then().statusCode(Response.Status.OK.getStatusCode())
                 .extract().as(AdStatsDTO.class);
+        // trigger Radio exception due to invalid date format
+        given().auth().preemptive().basic("producer", "producer")
+                .queryParam("date","2022")
+                .contentType(ContentType.JSON)
+                .when()
+                .get(url)
+                .then().statusCode(Response.Status.BAD_REQUEST.getStatusCode());
         assertNotNull(dto);
     }
 }
