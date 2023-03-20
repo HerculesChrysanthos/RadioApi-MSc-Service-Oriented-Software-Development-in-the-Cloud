@@ -2,11 +2,14 @@ package gr.aueb.radio.services;
 
 import gr.aueb.radio.domains.*;
 import gr.aueb.radio.dto.BroadcastSearchDTO;
+import gr.aueb.radio.dto.SuggestionsDTO;
 import gr.aueb.radio.enums.BroadcastEnum;
 import gr.aueb.radio.exceptions.NotFoundException;
 import gr.aueb.radio.exceptions.RadioException;
+import gr.aueb.radio.mappers.AdMapper;
 import gr.aueb.radio.mappers.BroadcastMapper;
 import gr.aueb.radio.mappers.OutputBroadcastMapper;
+import gr.aueb.radio.mappers.SongMapper;
 import gr.aueb.radio.persistence.*;
 import gr.aueb.radio.representations.BroadcastOutputRepresentation;
 import gr.aueb.radio.representations.BroadcastRepresentation;
@@ -31,6 +34,12 @@ public class BroadcastService {
     BroadcastMapper broadcastMapper;
 
     @Inject
+    SongMapper songMapper;
+
+    @Inject
+    AdMapper adMapper;
+
+    @Inject
     OutputBroadcastMapper outputBroadcastMapper;
 
     @Inject
@@ -41,6 +50,9 @@ public class BroadcastService {
 
     @Inject
     PlaylistService playlistService;
+
+    @Inject
+    SuggestionsService suggestionsService;
 
 
     @Transactional
@@ -195,6 +207,16 @@ public class BroadcastService {
         }
         broadcast.removeSongBroadcast(songBroadcast);
         songBroadcastRepository.deleteById(sbId);
+    }
+
+    @Transactional
+    public SuggestionsDTO suggestions(Integer id){
+        SuggestionsDTO suggestions = new SuggestionsDTO();
+        List<Ad> ads = suggestionsService.suggestAds(id);
+        suggestions.ads = adMapper.toRepresentationList(ads);
+        List<Song> songs = suggestionsService.suggestSongs(id);
+        suggestions.songs = songMapper.toRepresentationList(songs);
+        return suggestions;
     }
 
     private Broadcast updateValues(Broadcast broadcast, BroadcastRepresentation broadcastRepresentation){

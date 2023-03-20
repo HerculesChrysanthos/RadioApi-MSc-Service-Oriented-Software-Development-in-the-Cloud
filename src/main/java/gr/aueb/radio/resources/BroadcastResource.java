@@ -2,6 +2,7 @@ package gr.aueb.radio.resources;
 
 import gr.aueb.radio.domains.Broadcast;
 import gr.aueb.radio.dto.BroadcastSearchDTO;
+import gr.aueb.radio.dto.SuggestionsDTO;
 import gr.aueb.radio.enums.BroadcastEnum;
 import gr.aueb.radio.exceptions.NotFoundException;
 import gr.aueb.radio.exceptions.RadioException;
@@ -100,6 +101,19 @@ public class BroadcastResource {
         try{
             broadcastService.delete(id);
             return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
+        } catch (NotFoundException e){
+            log.error("Broadcast not found");
+            return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
+        }
+    }
+
+    @Path("/{id}/suggestions")
+    @GET
+    @RolesAllowed("PRODUCER")
+    public Response suggest(@PathParam("id") Integer id){
+        try{
+            SuggestionsDTO dto = broadcastService.suggestions(id);
+            return Response.ok().entity(dto).build();
         } catch (NotFoundException e){
             log.error("Broadcast not found");
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();

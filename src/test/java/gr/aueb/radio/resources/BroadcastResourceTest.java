@@ -114,7 +114,7 @@ public class BroadcastResourceTest extends IntegrationBase {
         assertEquals(1, found.size());
         BroadcastOutputRepresentation broadcastFound = found.get(0);
         assertEquals(exists.getSongBroadcasts().size(), broadcastFound.songBroadcasts.size());
-        // TODO: Ad assertition for AdBroadcasts too
+        assertEquals(exists.getAdBroadcasts().size(), broadcastFound.adBroadcasts.size());
         assertEquals(exists.getDuration(), broadcastFound.duration);
         assertEquals(exists.getType(), broadcastFound.type);
         assertTrue(exists.getStartingDate().equals(DateUtil.setDate(broadcastFound.startingDate)));

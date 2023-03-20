@@ -1,6 +1,7 @@
 package gr.aueb.radio.utils;
 
 import gr.aueb.radio.enums.ZoneEnum;
+import gr.aueb.radio.exceptions.RadioException;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -14,11 +15,19 @@ public class DateUtil {
 
     private static ZoneId zone = ZoneId.of("Europe/Athens");
     public static LocalDate setDate(String date){
-        return LocalDate.parse(date, dateFormatter);
+        try {
+            return LocalDate.parse(date, dateFormatter);
+        }catch (Exception e){
+            throw new RadioException("Invalid date format, should be dd-MM-yyyy");
+        }
     }
 
     public static LocalTime setTime(String time){
-        return LocalTime.parse(time, timeFormatter);
+        try {
+            return LocalTime.parse(time, timeFormatter);
+        }catch (Exception e){
+            throw new RadioException("Invalid time format, should be HH:mm");
+        }
     }
 
     public static String setTimeToString(LocalTime time){

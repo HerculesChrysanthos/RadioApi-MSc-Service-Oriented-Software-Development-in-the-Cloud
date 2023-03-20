@@ -1,6 +1,7 @@
 package gr.aueb.radio.utils;
 
 import gr.aueb.radio.enums.ZoneEnum;
+import gr.aueb.radio.exceptions.RadioException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -15,6 +16,8 @@ public class DateUtilTest {
         LocalDate testingDate = DateUtil.setDate("01-01-2022");
         LocalDate expectedDate = LocalDate.of(2022, 1, 1);
         assertTrue(expectedDate.isEqual(testingDate));
+
+        assertThrows(RadioException.class, ()->DateUtil.setDate("whatever"));
     }
 
     @Test
@@ -22,7 +25,10 @@ public class DateUtilTest {
         LocalTime testingTime = DateUtil.setTime("12:30");
         LocalTime expectedTime = LocalTime.of(12, 30);
         assertTrue(expectedTime.equals(testingTime));
+
+        assertThrows(RadioException.class, ()->DateUtil.setTime("whatever"));
     }
+
 
     @Test
     public void betweenTestLocalDate(){
