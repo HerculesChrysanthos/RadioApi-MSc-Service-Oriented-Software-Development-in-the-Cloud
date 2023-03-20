@@ -14,12 +14,6 @@ import java.util.Map;
 
 @RequestScoped
 public class AdBroadcastRepository implements PanacheRepositoryBase<AdBroadcast, Integer> {
-
-    /* find addBroadcasts of a specific add */
-    public List<AdBroadcast> findAdBrByAdv(Integer adId){
-        return find("select ab from AdBroadcast ab where ab.ad.id=:adId", Parameters.with("adId", adId).map()).list();
-    }
-
     public List<AdBroadcast> findByTimezoneDate(ZoneEnum timezone, LocalDate date){
         Map<String, Object> params = new HashMap<>();
         params.put("date", date);
