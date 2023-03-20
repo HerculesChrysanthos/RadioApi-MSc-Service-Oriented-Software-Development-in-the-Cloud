@@ -7,6 +7,7 @@ import gr.aueb.radio.exceptions.RadioException;
 import gr.aueb.radio.mappers.AdBroadcastMapper;
 import gr.aueb.radio.services.AdBroadcastService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -29,13 +30,19 @@ public class AdBroadcastResource {
     UriInfo uriInfo;
 
     @GET
+    @RolesAllowed("PRODUCER")
     public Response search(@QueryParam("date") String date) {
-        List<AdBroadcast> found = adBroadcastService.search(date);
-        return Response.ok().entity(adBroadcastMapper.toRepresentationList(found)).build();
+        try {
+            List<AdBroadcast> found = adBroadcastService.search(date);
+            return Response.ok().entity(adBroadcastMapper.toRepresentationList(found)).build();
+        }catch (RadioException re){
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), re.getMessage()).build();
+        }
     }
 
     @GET
     @Path("/{id}")
+    @RolesAllowed("PRODUCER")
     public Response find(@PathParam("id") Integer id) {
         try {
             AdBroadcast adBroadcast = adBroadcastService.find(id);
@@ -47,6 +54,7 @@ public class AdBroadcastResource {
 
     @DELETE
     @Path("/{id}")
+    @RolesAllowed("PRODUCER")
     public Response delete(@PathParam("id") Integer id) {
         try {
             adBroadcastService.delete(id);
@@ -58,6 +66,7 @@ public class AdBroadcastResource {
 
 
     @POST
+    @RolesAllowed("PRODUCER")
     public Response createAdBroadcast(AdBroadcastCreationDTO dto) {
         try {
             AdBroadcast adBroadcast = adBroadcastService.create(dto);

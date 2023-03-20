@@ -7,5 +7,6 @@ public class Fixture {
     public static String BROADCASTS_PATH  = "/broadcasts";
     public static String SONGS_PATH = "/songs";
     public static String ADS_PATH = "/ads";
+    public static String ADBROADCAST_PATH  = "/ad_broadcasts";
     public static String STATISTICS_PATH  = "/stats";
 }

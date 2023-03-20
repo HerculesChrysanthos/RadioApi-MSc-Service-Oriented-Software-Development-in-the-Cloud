@@ -8,6 +8,7 @@ import gr.aueb.radio.mappers.AdMapper;
 import gr.aueb.radio.representations.AdRepresentation;
 import gr.aueb.radio.services.AdService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -30,6 +31,7 @@ public class AdResource {
 
         @GET
         @Path("/{id}")
+        @RolesAllowed("PRODUCER")
         public Response getAd(@PathParam("id") Integer id) {
                 try {
                         AdRepresentation adRepresentation = adService.findAd(id);
@@ -40,20 +42,27 @@ public class AdResource {
         }
 
         @GET
+        @RolesAllowed("PRODUCER")
         public Response getAdsOfTimezone(@QueryParam("timezone") ZoneEnum timezone) {
                 List<AdRepresentation> adsByTimezone = adService.search(timezone);
                 return Response.ok().entity(adsByTimezone).build();
         }
 
         @POST
+        @RolesAllowed("PRODUCER")
         public Response createAd(AdRepresentation adrepresentation) {
-                Ad ad = adService.create(adrepresentation);
-                URI uri = UriBuilder.fromResource(UserResource.class).path(String.valueOf(ad.getId())).build();
-                return Response.created(uri).entity(adMapper.toRepresentation(ad)).build();
+                try {
+                        Ad ad = adService.create(adrepresentation);
+                        URI uri = UriBuilder.fromResource(UserResource.class).path(String.valueOf(ad.getId())).build();
+                        return Response.created(uri).entity(adMapper.toRepresentation(ad)).build();
+                } catch (RadioException re){
+                        return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), re.getMessage()).build();
+                }
         }
 
         @PUT
         @Path("/{id}")
+        @RolesAllowed("PRODUCER")
         public Response updateAd(@PathParam("id") Integer id, AdRepresentation adrepresentation) {
                 try {
                         adService.update(id, adrepresentation);
@@ -67,6 +76,7 @@ public class AdResource {
 
         @DELETE
         @Path("/{id}")
+        @RolesAllowed("PRODUCER")
         public Response deleteAd(@PathParam("id") Integer id) {
                 try {
                         adService.delete(id);

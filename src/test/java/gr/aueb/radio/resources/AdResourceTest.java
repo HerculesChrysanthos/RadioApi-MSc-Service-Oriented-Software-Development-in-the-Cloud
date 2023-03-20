@@ -20,7 +20,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -37,7 +36,8 @@ public class AdResourceTest extends IntegrationBase {
     public void getAdTest(){
         Ad validAd = adRepository.listAll().get(0);
         String url = Fixture.API_ROOT + Fixture.ADS_PATH + "/" + validAd.getId();
-        AdRepresentation adRepresentation = when()
+        AdRepresentation adRepresentation = given().auth().preemptive().basic("producer", "producer")
+                .when()
                 .get(url)
                 .then().statusCode(Response.Status.OK.getStatusCode())
                 .extract().as(AdRepresentation.class);
@@ -49,7 +49,8 @@ public class AdResourceTest extends IntegrationBase {
         assertEquals(validAd.getRepPerZone(), adRepresentation.repPerZone);
 
         String url2 = Fixture.API_ROOT + Fixture.ADS_PATH + "/-1";
-        when()
+        given().auth().preemptive().basic("producer", "producer")
+                .when()
                 .get(url2)
                 .then().statusCode(Response.Status.NOT_FOUND.getStatusCode());
 
@@ -68,7 +69,7 @@ public class AdResourceTest extends IntegrationBase {
         String url = Fixture.API_ROOT + Fixture.ADS_PATH;
         int numOfAds = adRepository.listAll().size();
         // authorized user with permissions valid broadcast
-       AdRepresentation adRepresentation = given()
+        AdRepresentation adRepresentation = given().auth().preemptive().basic("producer", "producer")
                 .contentType(ContentType.JSON)
                 .body(a)
                 .when()
@@ -81,6 +82,15 @@ public class AdResourceTest extends IntegrationBase {
         assertTrue(a.startingDate.equals(adRepresentation.startingDate));
         assertTrue(a.endingDate.equals(adRepresentation.endingDate));
         assertEquals(numOfAds + 1, adRepository.listAll().size());
+
+        // trigger a radio exception with bad date format
+//        a.endingDate = "2022";
+//        given().auth().preemptive().basic("producer", "producer")
+//                .contentType(ContentType.JSON)
+//                .body(a)
+//                .when()
+//                .post(url)
+//                .then().statusCode(Response.Status.BAD_REQUEST.getStatusCode());
     }
 
     @Test
@@ -100,7 +110,7 @@ public class AdResourceTest extends IntegrationBase {
         LocalDate dateToCheck = DateUtil.setDate(a.startingDate);
         String url = Fixture.API_ROOT + Fixture.ADS_PATH+ "/" + created.getId();
 
-         given().contentType(ContentType.JSON)
+        given().auth().preemptive().basic("producer", "producer").contentType(ContentType.JSON)
                 .body(a)
                 .when()
                 .put(url)
@@ -111,14 +121,14 @@ public class AdResourceTest extends IntegrationBase {
         assertTrue(dateToCheck.equals(updated.getStartingDate()));
 
         String url2 = Fixture.API_ROOT + Fixture.ADS_PATH + "/-1";
-        given().contentType(ContentType.JSON)
+        given().auth().preemptive().basic("producer", "producer").contentType(ContentType.JSON)
                 .body(a)
                 .when()
                 .put(url2)
                 .then().statusCode(Response.Status.NOT_FOUND.getStatusCode());
         // Test existing broadcast restriction - 1001 already broadcasted
         String url3 = Fixture.API_ROOT + Fixture.ADS_PATH + "/1001";
-        given().contentType(ContentType.JSON)
+        given().auth().preemptive().basic("producer", "producer").contentType(ContentType.JSON)
                 .body(a)
                 .when()
                 .put(url3)
@@ -137,7 +147,7 @@ public class AdResourceTest extends IntegrationBase {
         // create a new ad with timezone Afternoon
         Ad created = adService.create(a);
         String url = Fixture.API_ROOT + Fixture.ADS_PATH ;
-        List<AdRepresentation> found = given()
+        List<AdRepresentation> found = given().auth().preemptive().basic("producer", "producer")
                 .queryParam("timezone",(created.getTimezone()))
                 .when()
                 .get(url)
@@ -155,14 +165,14 @@ public class AdResourceTest extends IntegrationBase {
         int initialNumOfAds = initialAds.size();
 
         String url = Fixture.API_ROOT + Fixture.ADS_PATH + "/-1";
-        given().contentType(ContentType.JSON)
+        given().auth().preemptive().basic("producer", "producer").contentType(ContentType.JSON)
                 .when()
                 .delete(url)
                 .then().statusCode(Response.Status.NOT_FOUND.getStatusCode());
 
         // test successful delete
         String url1 = Fixture.API_ROOT + Fixture.ADS_PATH + "/" + adId;
-        given().contentType(ContentType.JSON)
+        given().auth().preemptive().basic("producer", "producer").contentType(ContentType.JSON)
                 .when()
                 .delete(url1)
                 .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());

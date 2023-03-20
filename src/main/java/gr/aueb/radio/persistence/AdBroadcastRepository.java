@@ -7,6 +7,7 @@ import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import io.quarkus.panache.common.Parameters;
 
 import javax.enterprise.context.RequestScoped;
+import javax.persistence.NoResultException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +46,12 @@ public class AdBroadcastRepository implements PanacheRepositoryBase<AdBroadcast,
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
         List<AdBroadcast> broadcasts = find("select ab from AdBroadcast ab left join fetch ab.ad where ab.id=:id", params).list();
-        return find("select ab from AdBroadcast ab left join fetch ab.broadcast where ab in :ad_broadcasts", Parameters.with("ad_broadcasts", broadcasts).map()).singleResult();
+        try {
+            return find("select ab from AdBroadcast ab left join fetch ab.broadcast where ab in :ad_broadcasts", Parameters.with("ad_broadcasts", broadcasts).map()).singleResult();
+        }
+        catch (NoResultException nr){
+            return null;
+        }
     }
 
 }
