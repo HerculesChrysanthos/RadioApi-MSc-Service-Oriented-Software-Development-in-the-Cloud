@@ -7,6 +7,7 @@ import gr.aueb.radio.exceptions.RadioException;
 import gr.aueb.radio.mappers.SongBroadcastMapper;
 import gr.aueb.radio.services.SongBroadcastService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -29,13 +30,19 @@ public class SongBroadcastResource {
     UriInfo uriInfo;
 
     @GET
+    @RolesAllowed("PRODUCER")
     public Response search(@QueryParam("date") String date) {
-        List<SongBroadcast> found = songBroadcastService.search(date);
-        return Response.ok().entity(songBroadcastMapper.toRepresentationList(found)).build();
+        try {
+            List<SongBroadcast> found = songBroadcastService.search(date);
+            return Response.ok().entity(songBroadcastMapper.toRepresentationList(found)).build();
+        }catch (RadioException re){
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+        }
     }
 
     @GET
     @Path("/{id}")
+    @RolesAllowed("PRODUCER")
     public Response find(@PathParam("id") Integer id) {
         try {
             SongBroadcast songBroadcast = songBroadcastService.find(id);
@@ -47,6 +54,7 @@ public class SongBroadcastResource {
 
     @DELETE
     @Path("/{id}")
+    @RolesAllowed("PRODUCER")
     public Response delete(@PathParam("id") Integer id) {
         try {
             songBroadcastService.delete(id);
@@ -58,15 +66,16 @@ public class SongBroadcastResource {
 
 
     @POST
-    public Response createAdBroadcast(SongBroadcastCreationDTO dto) {
+    @RolesAllowed("PRODUCER")
+    public Response createSongBroadcast(SongBroadcastCreationDTO dto) {
         try {
             SongBroadcast songBroadcast = songBroadcastService.create(dto);
             URI uri = UriBuilder.fromResource(UserResource.class).path(String.valueOf(songBroadcast.getId())).build();
             return Response.created(uri).entity(songBroadcastMapper.toRepresentation(songBroadcast)).build();
         } catch (RadioException re){
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), re.getMessage()).build();
-        }catch (NotFoundException re){
-            return Response.status(Response.Status.NOT_FOUND.getStatusCode(), re.getMessage()).build();
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+        } catch (NotFoundException e){
+            return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
         }
     }
 }
