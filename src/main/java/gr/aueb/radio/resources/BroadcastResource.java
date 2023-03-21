@@ -17,6 +17,7 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -77,7 +78,7 @@ public class BroadcastResource {
 
     @POST
     @RolesAllowed("PRODUCER")
-    public Response create(BroadcastRepresentation broadcastRepresentation){
+    public Response create(@Valid BroadcastRepresentation broadcastRepresentation){
         try{
             Broadcast broadcast = broadcastService.create(broadcastRepresentation);
             URI uri = UriBuilder.fromResource(BroadcastResource.class).path(String.valueOf(broadcast.getId())).build();
@@ -92,7 +93,7 @@ public class BroadcastResource {
     @PUT
     @Path("/{id}")
     @RolesAllowed("PRODUCER")
-    public Response update(@PathParam("id") Integer id, BroadcastRepresentation broadcastRepresentation){
+    public Response update(@PathParam("id") Integer id, @Valid BroadcastRepresentation broadcastRepresentation){
         try{
             broadcastService.update(id, broadcastRepresentation);
             return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();

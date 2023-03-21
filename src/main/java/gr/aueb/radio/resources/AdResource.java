@@ -1,6 +1,7 @@
 package gr.aueb.radio.resources;
 
 import gr.aueb.radio.domains.Ad;
+import gr.aueb.radio.dto.AdInputDTO;
 import gr.aueb.radio.enums.ZoneEnum;
 import gr.aueb.radio.exceptions.NotFoundException;
 import gr.aueb.radio.exceptions.RadioException;
@@ -11,6 +12,7 @@ import gr.aueb.radio.services.AdService;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.net.URI;
@@ -50,9 +52,9 @@ public class AdResource {
 
         @POST
         @RolesAllowed("PRODUCER")
-        public Response createAd(AdRepresentation adrepresentation) {
+        public Response createAd(@Valid AdInputDTO adrepresentation) {
                 try {
-                        Ad ad = adService.create(adrepresentation);
+                        Ad ad = adService.create(adrepresentation.toRepresentation());
                         URI uri = UriBuilder.fromResource(UserResource.class).path(String.valueOf(ad.getId())).build();
                         return Response.created(uri).entity(adMapper.toRepresentation(ad)).build();
                 } catch (RadioException re){
@@ -63,9 +65,9 @@ public class AdResource {
         @PUT
         @Path("/{id}")
         @RolesAllowed("PRODUCER")
-        public Response updateAd(@PathParam("id") Integer id, AdRepresentation adrepresentation) {
+        public Response updateAd(@PathParam("id") Integer id, @Valid AdInputDTO adrepresentation) {
                 try {
-                        adService.update(id, adrepresentation);
+                        adService.update(id, adrepresentation.toRepresentation());
                         return  Response.noContent().build();
                 } catch (NotFoundException re){
                         return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();

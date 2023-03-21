@@ -8,7 +8,6 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "cdi",injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract  class UserMapper {
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "role", ignore = true)
     public abstract User toModel(UserRepresentation representation);
 

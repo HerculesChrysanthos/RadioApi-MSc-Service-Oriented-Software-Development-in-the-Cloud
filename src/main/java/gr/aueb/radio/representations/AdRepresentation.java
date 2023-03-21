@@ -5,7 +5,7 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 
 @RegisterForReflection
 public class AdRepresentation {
-
+    public Integer id;
     public Integer duration;
     public Integer repPerZone;
     public String startingDate;

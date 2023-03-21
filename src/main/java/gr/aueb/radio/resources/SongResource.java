@@ -1,6 +1,7 @@
 package gr.aueb.radio.resources;
 
 import gr.aueb.radio.domains.Song;
+import gr.aueb.radio.dto.SongInputDTO;
 import gr.aueb.radio.exceptions.NotFoundException;
 import gr.aueb.radio.exceptions.RadioException;
 import gr.aueb.radio.mappers.SongMapper;
@@ -11,6 +12,7 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -57,11 +59,11 @@ public class SongResource {
         List<SongRepresentation> found = songService.search(artist, genre, title);
         return Response.ok().entity(found).build();
     }
-    
+
     @POST
     @PermitAll
-    public Response create (SongRepresentation songRepresentation) {
-        Song song = songService.create(songRepresentation);
+    public Response create (@Valid SongInputDTO songRepresentation) {
+        Song song = songService.create(songRepresentation.toRepresentation());
         URI uri = UriBuilder.fromResource(SongResource.class).path(String.valueOf(song.getId())).build();
         SongRepresentation createdSongRepresentation = songMapper.toRepresentation(song);
         return Response.created(uri).entity(createdSongRepresentation).build();
@@ -83,9 +85,9 @@ public class SongResource {
     @PUT
     @Path("/{id}")
     @PermitAll
-    public Response update(@PathParam("id") Integer id, SongRepresentation songRepresentation) {
+    public Response update(@PathParam("id") Integer id, @Valid SongInputDTO songRepresentation) {
         try{
-            songService.update(id, songRepresentation);
+            songService.update(id, songRepresentation.toRepresentation());
             return Response.noContent().build();
         }catch (NotFoundException e){
             return Response.status(Status.NOT_FOUND).build();

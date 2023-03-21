@@ -1,6 +1,7 @@
 package gr.aueb.radio.resources;
 
 import gr.aueb.radio.domains.User;
+import gr.aueb.radio.dto.UserInputDTO;
 import gr.aueb.radio.exceptions.NotFoundException;
 import gr.aueb.radio.exceptions.RadioException;
 import gr.aueb.radio.mappers.UserMapper;
@@ -9,6 +10,7 @@ import gr.aueb.radio.services.UserService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -38,9 +40,9 @@ public class UserResource {
         }
     }
     @POST
-    public Response register(UserRepresentation userRepresentation){
+    public Response register(@Valid UserInputDTO userRepresentation){
         try {
-            User user = userService.create(userRepresentation);
+            User user = userService.create(userRepresentation.toRepresentation());
             URI uri = UriBuilder.fromResource(UserResource.class).path(String.valueOf(user.getId())).build();
             return Response.created(uri).entity(userMapper.toRepresentation(user)).build();
         }catch (RadioException re){
