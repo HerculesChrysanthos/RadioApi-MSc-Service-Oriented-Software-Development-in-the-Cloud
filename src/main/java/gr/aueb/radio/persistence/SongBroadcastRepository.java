@@ -1,8 +1,6 @@
 package gr.aueb.radio.persistence;
 
-import gr.aueb.radio.domains.AdBroadcast;
 import gr.aueb.radio.domains.SongBroadcast;
-import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import io.quarkus.panache.common.Parameters;
 
@@ -26,6 +24,10 @@ public class SongBroadcastRepository implements PanacheRepositoryBase<SongBroadc
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
         List<SongBroadcast> broadcasts = find("select sb from SongBroadcast sb left join fetch sb.song where sb.id=:id", params).list();
-        return find("select sb from SongBroadcast sb left join fetch sb.broadcast where sb in :song_broadcasts", Parameters.with("song_broadcasts", broadcasts).map()).singleResult();
+        try {
+            return find("select sb from SongBroadcast sb left join fetch sb.broadcast where sb in :song_broadcasts", Parameters.with("song_broadcasts", broadcasts).map()).singleResult();
+        }catch (NoResultException e){
+            return null;
+        }
     }
 }

@@ -4,16 +4,13 @@ import gr.aueb.radio.domains.Song;
 import gr.aueb.radio.exceptions.NotFoundException;
 import gr.aueb.radio.exceptions.RadioException;
 import gr.aueb.radio.mappers.SongMapper;
-import gr.aueb.radio.persistence.SongRepository;
 import gr.aueb.radio.representations.SongRepresentation;
 import gr.aueb.radio.services.SongService;
-import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -93,7 +90,7 @@ public class SongResource {
         }catch (NotFoundException e){
             return Response.status(Status.NOT_FOUND).build();
         }catch (RadioException e){
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), e.getMessage()).build();
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(e.getMessage()).build();
         }
     }
 
