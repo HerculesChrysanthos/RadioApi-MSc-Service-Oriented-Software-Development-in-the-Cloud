@@ -44,7 +44,7 @@ public class UserResource {
             URI uri = UriBuilder.fromResource(UserResource.class).path(String.valueOf(user.getId())).build();
             return Response.created(uri).entity(userMapper.toRepresentation(user)).build();
         }catch (RadioException re){
-            return Response.status(Status.BAD_REQUEST.getStatusCode(), re.getMessage()).build();
+            return Response.status(Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
         }
     }
 }

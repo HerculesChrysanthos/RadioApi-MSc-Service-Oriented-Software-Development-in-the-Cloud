@@ -37,7 +37,7 @@ public class StatResource {
             List<BroadcastOutputRepresentation> broadcastsOfDay = statService.getDailySchedule(date);
             return Response.ok().entity(broadcastsOfDay).build();
         }catch (RadioException re){
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), re.getMessage()).build();
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
         }
 
     }
@@ -50,7 +50,7 @@ public class StatResource {
             AdStatsDTO dto = statService.extractAdStats(date);
             return Response.ok().entity(dto).build();
         }catch (RadioException re){
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), re.getMessage()).build();
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
         }
     }
 

@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequestScoped
 @Slf4j
@@ -217,6 +218,20 @@ public class BroadcastService {
         List<Song> songs = suggestionsService.suggestSongs(id);
         suggestions.songs = songMapper.toRepresentationList(songs);
         return suggestions;
+    }
+
+    @Transactional
+    public BroadcastOutputRepresentation getNow(){
+        LocalTime timeNow = DateUtil.timeNow();
+        LocalDate dateNow = DateUtil.dateNow();
+        LocalDateTime dateTimeNow = dateNow.atTime(timeNow);
+        List<Broadcast> broadcastsOfDay = broadcastRepository.findByDate(dateNow);
+        try {
+            broadcastsOfDay = broadcastsOfDay.stream().filter(s -> DateUtil.between(s.getStartingDate().atTime(s.getStartingTime()), dateTimeNow, s.getBroadcastEndingDateTime())).collect(Collectors.toList());
+            return outputBroadcastMapper.toRepresentation(broadcastsOfDay.get(0));
+        }catch (Exception e){
+            return new BroadcastOutputRepresentation();
+        }
     }
 
     private Broadcast updateValues(Broadcast broadcast, BroadcastRepresentation broadcastRepresentation){

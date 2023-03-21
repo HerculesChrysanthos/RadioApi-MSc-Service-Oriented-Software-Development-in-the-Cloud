@@ -2,6 +2,7 @@ package gr.aueb.radio.services;
 
 import gr.aueb.radio.IntegrationBase;
 import gr.aueb.radio.domains.*;
+import gr.aueb.radio.dto.AdStatsDTO;
 import gr.aueb.radio.dto.BroadcastSearchDTO;
 import gr.aueb.radio.enums.BroadcastEnum;
 import gr.aueb.radio.enums.ZoneEnum;
@@ -17,16 +18,20 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 
 
 @QuarkusTest
@@ -334,6 +339,26 @@ public class BroadcastServiceTest extends IntegrationBase {
         assertEquals(0, validSong.getSongBroadcasts().size());
         assertEquals(0, broadcast.getSongBroadcasts().size());
         assertEquals(initialNumSongBroadcasts, songBroadcastRepository.listAll().size());
+    }
+
+    @Test
+    public void getNowTest(){
+        assertNotNull(broadcastService.getNow());
+        // create a broadcast with localtime
+        BroadcastRepresentation broadcastRepresentation = createRepresentation();
+        broadcastRepresentation.startingDate = DateUtil.setDateToString(DateUtil.dateNow());
+        broadcastRepresentation.startingTime = DateUtil.setTimeToString(DateUtil.timeNow());
+        Broadcast broadcast = broadcastService.create(broadcastRepresentation);
+        // get date/time of the broadcast
+        LocalDate validDate = broadcast.getStartingDate();
+        LocalDateTime broadcastStartTime = validDate.atTime(broadcast.getStartingTime());
+        LocalDateTime broadcastEndingTime = broadcast.getBroadcastEndingDateTime();
+
+        BroadcastOutputRepresentation playingNow = broadcastService.getNow();
+        assertNotNull(playingNow);
+        LocalDateTime playingNowTime = LocalDateTime.of(DateUtil.setDate(playingNow.startingDate), DateUtil.setTime(playingNow.startingTime));
+        boolean check = DateUtil.between(broadcastStartTime, playingNowTime, broadcastEndingTime);
+        assertTrue(check);
     }
 
 
