@@ -63,8 +63,16 @@ public class BroadcastResource {
             List<BroadcastOutputRepresentation> broadcastsFound = broadcastService.search(searchDTO);
             return Response.ok().entity(broadcastsFound).build();
         }catch (RadioException re){
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), re.getMessage()).build();
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
         }
+    }
+
+    @GET
+    @Path("now")
+    @PermitAll
+    public Response getNow(){
+        BroadcastOutputRepresentation playingNow = broadcastService.getNow();
+        return Response.ok().entity(playingNow).build();
     }
 
     @POST
@@ -76,7 +84,7 @@ public class BroadcastResource {
             return Response.created(uri).entity(outputBroadcastMapper.toRepresentation(broadcast)).build();
         }catch (RadioException re){
             log.error("Broadcast overlapping restriction triggered");
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), re.getMessage()).build();
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
         }
     }
 
@@ -91,7 +99,7 @@ public class BroadcastResource {
         } catch (RadioException re){
             log.error("Broadcast cannot be updated");
             log.error(re.getMessage());
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), re.getMessage()).build();
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
         } catch (NotFoundException e){
             log.error("Broadcast not found");
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();

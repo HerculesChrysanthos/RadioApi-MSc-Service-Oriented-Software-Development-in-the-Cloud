@@ -314,4 +314,16 @@ public class BroadcastResourceTest extends IntegrationBase {
         assertEquals(initialNumOfAdBroadcasts - scheduledAdsOfBroadcast, adBroadcastRepository.listAll().size());
         assertEquals(initialNumOfSongBroadcasts - scheduledSongsOfBroadcast, songBroadcastRepository.listAll().size());
     }
+
+    @Test
+    public void getPlayingBroadcastTest(){
+        String url = Fixture.API_ROOT + Fixture.BROADCASTS_PATH + "/now";
+
+        BroadcastOutputRepresentation playing = given()
+                .when()
+                .get(url)
+                .then().statusCode(Status.OK.getStatusCode())
+                .extract().as(BroadcastOutputRepresentation.class);
+        assertNotNull(playing);
+    }
 }
