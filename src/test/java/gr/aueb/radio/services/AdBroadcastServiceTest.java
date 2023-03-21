@@ -53,32 +53,25 @@ public class AdBroadcastServiceTest extends IntegrationBaseExtended {
 
     @Test
     @TestTransaction
-    public void findAdTest(){
+    public void findAdBrTest(){
         List<AdBroadcast> adBroadcastsList = adBroadcastRepository.listAll();
         Integer adBroadcastId = adBroadcastsList.get(0).getId();
         AdBroadcast ab = adBroadcastService.find(adBroadcastId);
-        assertNotNull(adBroadcastId);
-    }
-
-    @Test
-    @TestTransaction
-    public void findAdBroadcastDateTest(){
-        List<AdBroadcast> adBroadcastsOfDay  = adBroadcastRepository.findByDate(DateUtil.setDate("01-01-2022"));
-        for(AdBroadcast adBroadcast : adBroadcastsOfDay) {
-            assertEquals(adBroadcast.getBroadcastDate(), DateUtil.setDate("01-01-2022"));
-        }
+        assertNotNull(ab);
+        assertThrows(NotFoundException.class, ()->adBroadcastService.find(-1));
     }
 
     @Test
     @TestTransaction
     public void findAdBrDateTest(){
-        String date = "01-02-2023";
+        String date = "01-02-2022";
         LocalDate dateToSearch = DateUtil.setDate(date);
-        adBroadcastService.search(date);
-        List<AdBroadcast> AdBroadcastsList = adBroadcastRepository.findByDateDetails(dateToSearch);
+        List<AdBroadcast> AdBroadcastsList = adBroadcastService.search(date);
         for(AdBroadcast adBroadcast : AdBroadcastsList) {
             assertEquals(adBroadcast.getBroadcastDate(), dateToSearch);
         }
+        AdBroadcastsList = adBroadcastService.search(null);
+        assertEquals(0, AdBroadcastsList.size());
     }
 
     @Test

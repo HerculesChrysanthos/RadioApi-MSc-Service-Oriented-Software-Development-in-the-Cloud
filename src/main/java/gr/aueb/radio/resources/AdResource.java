@@ -56,7 +56,7 @@ public class AdResource {
                         URI uri = UriBuilder.fromResource(UserResource.class).path(String.valueOf(ad.getId())).build();
                         return Response.created(uri).entity(adMapper.toRepresentation(ad)).build();
                 } catch (RadioException re){
-                        return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), re.getMessage()).build();
+                        return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
                 }
         }
 
@@ -70,7 +70,7 @@ public class AdResource {
                 } catch (NotFoundException re){
                         return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
                 } catch (RadioException re){
-                        return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), re.getMessage()).build();
+                        return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
                 }
         }
 

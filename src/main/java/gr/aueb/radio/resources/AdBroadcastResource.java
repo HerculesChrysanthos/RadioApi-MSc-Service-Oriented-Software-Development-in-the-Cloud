@@ -36,7 +36,7 @@ public class AdBroadcastResource {
             List<AdBroadcast> found = adBroadcastService.search(date);
             return Response.ok().entity(adBroadcastMapper.toRepresentationList(found)).build();
         }catch (RadioException re){
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), re.getMessage()).build();
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
         }
     }
 
@@ -73,7 +73,7 @@ public class AdBroadcastResource {
             URI uri = UriBuilder.fromResource(UserResource.class).path(String.valueOf(adBroadcast.getId())).build();
             return Response.created(uri).entity(adBroadcastMapper.toRepresentation(adBroadcast)).build();
         } catch (RadioException re){
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode(), re.getMessage()).build();
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
         }catch (NotFoundException re){
             return Response.status(Response.Status.NOT_FOUND.getStatusCode(), re.getMessage()).build();
         }

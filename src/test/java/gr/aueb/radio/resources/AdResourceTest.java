@@ -76,7 +76,7 @@ public class AdResourceTest extends IntegrationBase {
                 .post(url)
                 .then().statusCode(Response.Status.CREATED.getStatusCode())
                 .extract().as(AdRepresentation.class);
-//        assertEquals(a.type, adRepresentation1.type);
+
         assertEquals(a.duration, adRepresentation.duration);
         assertTrue(a.repPerZone.equals(adRepresentation.repPerZone));
         assertTrue(a.startingDate.equals(adRepresentation.startingDate));
@@ -84,13 +84,13 @@ public class AdResourceTest extends IntegrationBase {
         assertEquals(numOfAds + 1, adRepository.listAll().size());
 
         // trigger a radio exception with bad date format
-//        a.endingDate = "2022";
-//        given().auth().preemptive().basic("producer", "producer")
-//                .contentType(ContentType.JSON)
-//                .body(a)
-//                .when()
-//                .post(url)
-//                .then().statusCode(Response.Status.BAD_REQUEST.getStatusCode());
+        a.endingDate = "2022";
+        given().auth().preemptive().basic("producer", "producer")
+                .contentType(ContentType.JSON)
+                .body(a)
+                .when()
+                .post(url)
+                .then().statusCode(Response.Status.BAD_REQUEST.getStatusCode());
     }
 
     @Test
