@@ -17,6 +17,7 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -44,10 +45,11 @@ public class BroadcastResource {
     @GET
     @Path("/{id}")
     @PermitAll
+    @Transactional
     public Response getBroadcast(@PathParam("id") Integer id){
         try{
             Broadcast broadcast = broadcastService.findById(id);
-            return Response.ok().entity(broadcastMapper.toRepresentation(broadcast)).build();
+            return Response.ok().entity(outputBroadcastMapper.toRepresentation(broadcast)).build();
         }catch (NotFoundException e){
             return Response.status(Response.Status.NOT_FOUND).build();
         }

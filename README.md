@@ -10,6 +10,10 @@
 
 [Μοντέλο πεδίου](docs/images/uml_project.png)
 
+[REST API Εργασίας](docs/markdown/rest-api-endpoints.md)
+
+[Παραδοχές](docs/markdown/paradoxes.md)
+
 
 ## Χρήσιμες εντολές
 
@@ -20,3 +24,5 @@
 - ```mvn test``` : εκτελεί τα unit tests του project
 - ```mvn site``` : παράγει την τεκμηρίωση του project σε μορφή HTML. Τα παραγόμενα αρχεία είναι διαθέσιμα στην τοποθεσία *target/site/*
 - ```mvn "-Dumlet.targetDir=src/site/markdown/uml" umlet:convert``` : παράγει αρχεία εικόνας png για όλα τα διαγράμματα που βρίσκονται στην τοποθεσία *src/site/markdown/uml*. 
+- ```mvn quarkus:dev``` : εκκίνηση εφαρμογής σε development mode
+- ```mvn quarkus:test``` : εκκίνηση εφαρμογής σε test mode

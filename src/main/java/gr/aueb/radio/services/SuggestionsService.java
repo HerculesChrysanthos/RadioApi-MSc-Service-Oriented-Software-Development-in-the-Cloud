@@ -14,6 +14,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -56,6 +57,7 @@ public class SuggestionsService {
                 suggestions.add(song);
             }
         }
+        Collections.shuffle(suggestions);
         return suggestions.stream().limit(15).collect(Collectors.toList());
     }
 
@@ -73,6 +75,7 @@ public class SuggestionsService {
                 suggestions.add(ad);
             }
         }
+        Collections.shuffle(suggestions);
         return suggestions.stream().limit(15).collect(Collectors.toList());
     }
 }

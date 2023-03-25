@@ -7,6 +7,7 @@ import gr.aueb.radio.persistence.SongRepository;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -29,8 +30,11 @@ public class PlaylistService {
         String genre = getRandomGenre();
         boolean adScheduled = false;
         List<Song> possibleSongs = songRepository.findSongsByGenre(genre);
+        Collections.shuffle(possibleSongs);
         Iterator<Song> songsIterator = possibleSongs.iterator();
-        Iterator<Ad> possibleAds = adRepository.findByTimezone(broadcast.getTimezone()).iterator();
+        List<Ad> possibleAds = adRepository.findByTimezone(broadcast.getTimezone());
+        Collections.shuffle(possibleAds);
+        Iterator<Ad> adsIterator = possibleAds.iterator();
         LocalTime trackedTime = broadcast.getStartingTime();
         //first loop
         while(songsIterator.hasNext() && broadcast.getAllocatedTime() < broadcast.getDuration()){
@@ -43,8 +47,8 @@ public class PlaylistService {
             }
             if(broadcast.getAllocatedTime() >= broadcast.getDuration() / 2 && !adScheduled){
                 // time to add an ad
-                while (!adScheduled && possibleAds.hasNext()){
-                    Ad ad = possibleAds.next();
+                while (!adScheduled && adsIterator.hasNext()){
+                    Ad ad = adsIterator.next();
                     AdBroadcast ab = broadcast.createAdBroadcast(ad, trackedTime);
                     if(ab != null){
                         trackedTime = trackedTime.plusMinutes(ad.getDuration()).plusMinutes(1);

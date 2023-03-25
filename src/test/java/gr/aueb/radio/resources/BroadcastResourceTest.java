@@ -73,11 +73,11 @@ public class BroadcastResourceTest extends IntegrationBase {
         url = Fixture.API_ROOT + Fixture.BROADCASTS_PATH + "/" + created.getId();
 
         // authorized user with permissions valid broadcast
-        BroadcastRepresentation found = given()
+        BroadcastOutputRepresentation found = given()
                 .when()
                 .get(url)
                 .then().statusCode(Status.OK.getStatusCode())
-                .extract().as(BroadcastRepresentation.class);
+                .extract().as(BroadcastOutputRepresentation.class);
 
         assertEquals(br.type, created.getType());
         assertEquals(br.duration, created.getDuration());
