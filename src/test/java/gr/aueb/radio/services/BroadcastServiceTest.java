@@ -14,6 +14,7 @@ import gr.aueb.radio.representations.BroadcastOutputRepresentation;
 import gr.aueb.radio.representations.BroadcastRepresentation;
 import gr.aueb.radio.utils.DateUtil;
 import io.quarkus.test.TestTransaction;
+import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,6 +27,7 @@ import javax.transaction.Transactional;
 
 
 import java.time.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -245,6 +247,30 @@ public class BroadcastServiceTest extends IntegrationBase {
         assertEquals(1, broadcast.getAdBroadcasts().size());
         assertEquals(1, validAd.getBroadcastAds().size());
         assertEquals(initialNumAdBroadcasts + 1, adBroadcastRepository.listAll().size());
+    }
+
+    @Test
+    @Transactional
+    public void scheduleAddTestAdRestrictions(){
+        List<AdBroadcast> adBroadcasts = new ArrayList<>();
+        adBroadcasts.add(new AdBroadcast());
+        adBroadcasts.add(new AdBroadcast());
+        adBroadcasts.add(new AdBroadcast());
+        adBroadcasts.add(new AdBroadcast());
+
+        AdBroadcastRepository mockedAdBroadcastRepository = Mockito.mock(AdBroadcastRepository.class);
+        Mockito.when(mockedAdBroadcastRepository.findByTimezoneDate(any(), any())).thenReturn(adBroadcasts);
+        QuarkusMock.installMockForType(mockedAdBroadcastRepository, AdBroadcastRepository.class);
+        BroadcastRepresentation broadcastRepresentation = createRepresentation();
+        broadcastRepresentation.startingDate = "12-12-2012";
+        broadcastRepresentation.startingTime = "13:00";
+        Broadcast broadcast = broadcastService.create(broadcastRepresentation);
+
+        Ad validAd = new Ad(2, 4, DateUtil.setDate("01-12-2012"), DateUtil.setDate("22-12-2012"), ZoneEnum.Noon);
+        adRepository.persist(validAd);
+        assertThrows(RadioException.class, ()->{
+            broadcastService.scheduleAd(broadcast.getId(), validAd, DateUtil.setTime("13:25"));
+        });
     }
 
     @Test

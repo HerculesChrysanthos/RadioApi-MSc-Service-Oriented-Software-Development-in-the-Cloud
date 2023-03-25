@@ -160,6 +160,10 @@ public class BroadcastService {
         if (broadcast == null){
             throw new NotFoundException("Broadcast not found");
         }
+        int adBroadcastsInTimezone = adBroadcastRepository.findByTimezoneDate(broadcast.getTimezone(), broadcast.getStartingDate()).size();
+        if (adBroadcastsInTimezone >= 4){
+            throw new RadioException("Add cannot be scheduled to broadcast");
+        }
         AdBroadcast created = broadcast.createAdBroadcast(ad, startingTime);
         if (created == null){
             throw new RadioException("Add cannot be scheduled to broadcast");

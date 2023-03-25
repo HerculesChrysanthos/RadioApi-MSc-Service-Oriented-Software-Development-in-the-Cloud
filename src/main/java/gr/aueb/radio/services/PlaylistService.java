@@ -1,6 +1,7 @@
 package gr.aueb.radio.services;
 
 import gr.aueb.radio.domains.*;
+import gr.aueb.radio.persistence.AdBroadcastRepository;
 import gr.aueb.radio.persistence.AdRepository;
 import gr.aueb.radio.persistence.SongRepository;
 
@@ -20,15 +21,23 @@ public class PlaylistService {
 
     @Inject
     AdRepository adRepository;
+
+    @Inject
+    AdBroadcastRepository adBroadcastRepository;
+
     private String getRandomGenre(){
         Random rand = new Random();
         List<String> genres = songRepository.getAllGenres();
         int randomIndex = rand.nextInt(genres.size());
         return genres.get(randomIndex);
     }
+
+    private boolean adCanBeScheduled(Broadcast broadcast){
+        return adBroadcastRepository.findByTimezoneDate(broadcast.getTimezone(), broadcast.getStartingDate()).size() >= 4;
+    }
     public void populateBroadcast(Broadcast broadcast){
         String genre = getRandomGenre();
-        boolean adScheduled = false;
+        boolean adScheduled = adCanBeScheduled(broadcast);
         List<Song> possibleSongs = songRepository.findSongsByGenre(genre);
         Collections.shuffle(possibleSongs);
         Iterator<Song> songsIterator = possibleSongs.iterator();
