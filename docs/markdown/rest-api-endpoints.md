@@ -36,6 +36,8 @@
 | POST   | /ads                     | Δημιουργία νέου ad                            |
 | DELETE | /ads/{id}                | Διαγραφή ad με βάση το id του                 |
 | PUT    | /ads/{id}                | Ενημέρωση στοιχείων ενος ad με βάση το id του |
+| GET    | /ads/date={date} | Ανάκτηση προγράμματος μεταδόσεων με βάση κάποια ημέρα   |
+
 
 ## Broadcast
 
@@ -47,6 +49,7 @@
 | DELETE | /broadcasts/{id}                                        | Διαγραφή broadcasts με βάση το id του                       |
 | PUT    | /broadcasts/{id}                                        | Ενημέρωση στοιχείων ενος broadcasts με βάση το id του       |
 | GET    | /broadcasts/{id}/suggestions                            | Προτάσεις songs και ads για ενα broadcast με βάση το id του |
+| GET    | /broadcasts/?date={date}                                | Ανάκτηση προγράμματος μεταδόσεων με βάση κάποια ημέρα       |
 
 ## AdSongBroadcast
 
@@ -60,13 +63,3 @@
 | GET    | /AdsongBroadcast/songs/?date={date} | Αναζήτηση song_broadcast με βάση κάποια φίλτρα |
 | POST   | /AdsongBroadcast/songs              | Δημιουργία νέου song_broadcast                 |
 | DELETE | /AdsongBroadcast/songs{id}          | Διαγραφή song_broadcast με βάση το id του      |
-
-
-
-
-## Statistics
-
-| Method | Url                        | Description                                             |
-|--------|----------------------------|---------------------------------------------------------|
-| GET    | /stats/program?date={date} | Ανάκτηση προγράμματος μεταδόσεων με βάση κάποια ημέρα   |
-| GET    | /stats/ads?date={date}     | Ανάκτηση στατιστικών στοιχείων ads με βάση κάποια ημέρα |
