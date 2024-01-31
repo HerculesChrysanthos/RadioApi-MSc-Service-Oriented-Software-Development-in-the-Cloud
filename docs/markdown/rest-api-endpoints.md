@@ -48,23 +48,21 @@
 | PUT    | /broadcasts/{id}                                        | Ενημέρωση στοιχείων ενος broadcasts με βάση το id του       |
 | GET    | /broadcasts/{id}/suggestions                            | Προτάσεις songs και ads για ενα broadcast με βάση το id του |
 
-## Ad Broadcast
+## AdSongBroadcast
 
 | Method | Url                        | Description                                   |
 |--------|----------------------------|-----------------------------------------------|
-| GET    | /ad_broadcasts/{id}        | Ανάκτηση ad_broadcast με βάση το id           |
-| GET    | /ad_broadcasts?date={date} | Αναζήτηση ad_broadcasts με βάση κάποια φίλτρα |
-| POST   | /ad_broadcasts             | Δημιουργία νέου ad_broadcast                  |
-| DELETE | /ad_broadcasts/{id}        | Διαγραφή ad_broadcast με βάση το id του       |
+| GET    | /AdsongBroadcast/ads/{id}           | Ανάκτηση ad_broadcast με βάση το id            |
+| GET    | /AdsongBroadcast/ads/?date={date}   | Αναζήτηση ad_broadcasts με βάση κάποια φίλτρα  |
+| POST   | /AdsongBroadcast/ads                | Δημιουργία νέου ad_broadcast                   |
+| DELETE | /AdsongBroadcast/ads/{id}           | Διαγραφή ad_broadcast με βάση το id του        |
+| GET    | /AdsongBroadcast/songs/{id}         | Ανάκτηση song_broadcast με βάση το id          |
+| GET    | /AdsongBroadcast/songs/?date={date} | Αναζήτηση song_broadcast με βάση κάποια φίλτρα |
+| POST   | /AdsongBroadcast/songs              | Δημιουργία νέου song_broadcast                 |
+| DELETE | /AdsongBroadcast/songs{id}          | Διαγραφή song_broadcast με βάση το id του      |
 
-## Song Broadcast
 
-| Method | Url                          | Description                                    |
-|--------|------------------------------|------------------------------------------------|
-| GET    | /song_broadcasts/{id}        | Ανάκτηση song_broadcast με βάση το id          |
-| GET    | /song_broadcasts?date={date} | Αναζήτηση song_broadcast με βάση κάποια φίλτρα |
-| POST   | /song_broadcasts             | Δημιουργία νέου song_broadcast                 |
-| DELETE | /song_broadcasts/{id}        | Διαγραφή song_broadcast με βάση το id του      |
+
 
 ## Statistics
 
