@@ -2,29 +2,26 @@
 
 1. [User](#User)
 2. [Song](#Song)
-
-### User
-### Song
-### Ad
-### Broadcast
-### MultimediaBroadcast
+3. [Ad](#Ad)
+4. [Broadcast](#Broadcast)
+5. [MultimediaBroadcast](#MultimediaBroadcast)
 
 ## Επικοινωνίες που θα γίνονται μεταξύ των Microservices
 
 # User
 * Δε θα πραγματοποιεί κλήση προς άλλα microservices. Τα άλλα microservices θα επικοινωνούν μαζί με αυτό.
 
-# Songs
+# Song
 ## Delete process
 * // - maybe not γιατί έχει λόγω many to one relationship λιστα με τα songBroadcasts -  Από το **MultimediaBroadcast** παίρνει όλες τις μεταδόσεις του τραγουδιού(SongBroadcast) κάνοντας κλήση στο `GET /multimediaBroadcasts/songsBroadcasts?song={id}`
 * Αφαιρεί το SongBroadcast απο το **Broadcast** `DELETE /broadcasts/songsBroadcasts/{songBroadcastId}`
 
-# Ads
+# Ad
 ## Delete process
 // - maybe not γιατί έχει λόγω many to one relationship λιστα με τα adBroadcasts -  Από το **MultimediaBroadcast** παίρνει όλες τις μεταδόσεις της διαφήμισης(AdBroadcast) κάνοντας κλήση στο `GET /multimediaBroadcasts/adsBroadcasts/{id}`
 * Αφαιρεί το SongBroadcast απο το **Broadcast** `DELETE /broadcasts/adsBroadcasts/{adBroadcastId}`
 
-# Broadcasts
+# Broadcast
 ## Create process
 * Καλεί το song για να βρει τραγούδια απο το genre `GET /songs?genre={genre}`
 * Καλεί το ad για να βρει διαφημίσεις απο το time zone `GET /ads?timezone={timezone}`
@@ -41,15 +38,15 @@
 * Καλεί το **Song** για να πάρει τραγούδια για το genre του broadcast που δόθηκε αρχικά `GET /songs?genre={genre}`
 
 
-# Multimedia broadcast microservice includes the following
+# MultimediaBroadcast
 
 # Ad Broadcast
-# Create process
+## Create process
 Καλεί το **Ad** για να βρει αντίστοιχο ad `GET /ads/{id}`
 Βρίσκει με βάση το broadcastId το αντίστοιχο **Broadcast** στο οποίο πρόκειται να προστεθεί το adBroadcast `GET /broadcasts/{id}`
 Στέλνει στο **Broadcast** ενημέρωση για το νέο adBroadcastId `PUT /broadcasts/{id}` και το request στο body περιέχει το adBroadcastToAdd πεδίο το οποίο θα ενημερώσει αντίστοιχα το array
 
-# Delete process
+## Delete process
 // - maybe not γιατι το εχει ηδη στο brodcast field που εχει λογω του many to one relationship - βρισκει το τρεχον broadcast από το **Broadcast**
 αφαιρει το AdBroadcast απο το broadcast `DELETE /broadcasts/{broadcastId}/adBroadcasts/{adBroadcastId}`
 Στο **Ad** στέλνει για διαγραφή του adBroadcast από τη λιστα με τα adBroadcasts `DELETE /ads/{adId}/adBroadcasts/{adBroadcastId}`
