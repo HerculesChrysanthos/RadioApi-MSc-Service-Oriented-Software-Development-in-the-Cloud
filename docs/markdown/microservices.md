@@ -60,4 +60,4 @@
 #### Delete process
 - Βρίσκει το τρέχον broadcast από το **Broadcast**
 - Αφαιρεί το SongBroadcast από το broadcast `DELETE /broadcasts/{broadcastId}/songBroadcasts/{songBroadcastId}`
-- Στο **Song** στέλνει για διαγραφή του songBroadcast από τη λιστα με τα songBroadcasts `DELETE /songs/{songId}/songBroadcasts/{songBroadcastId}`
+- Στο **Song** στέλνει για διαγραφή του songBroadcast από τη λίστα με τα songBroadcasts `DELETE /songs/{songId}/songBroadcasts/{songBroadcastId}`
