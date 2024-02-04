@@ -38,26 +38,26 @@
 - Καλεί το **Song** για να πάρει τραγούδια για το genre του broadcast που δόθηκε αρχικά `GET /songs?genre={genre}`
 
 
-### MultimediaBroadcast
+## MultimediaBroadcast
 
-#### Ad Broadcast
-##### Create process
+### Ad Broadcast
+#### Create process
 - Καλεί το **Ad** για να βρει αντίστοιχο ad `GET /ads/{id}`
 - Βρίσκει με βάση το broadcastId το αντίστοιχο **Broadcast** στο οποίο πρόκειται να προστεθεί το adBroadcast `GET /broadcasts/{id}`
 - Στέλνει στο **Broadcast** ενημέρωση για το νέο adBroadcastId `PUT /broadcasts/{id}` και το request στο body περιέχει το adBroadcastToAdd πεδίο το οποίο θα ενημερώσει αντίστοιχα το array
 
-##### Delete process
+#### Delete process
 - Βρίσκει το τρέχον broadcast από το **Broadcast**
 - Αφαιρεί το AdBroadcast από το broadcast `DELETE /broadcasts/{broadcastId}/adBroadcasts/{adBroadcastId}`
 - Στο **Ad** στέλνει για διαγραφή του adBroadcast από τη λιστα με τα adBroadcasts `DELETE /ads/{adId}/adBroadcasts/{adBroadcastId}`
 
-#### Song Broadcast
-##### Create process
+### Song Broadcast
+#### Create process
 - Καλεί το **Song** για να βρει αντίστοιχο song `GET /songs/{id}`
 - Βρίσκει με βάση το broadcastId το αντίστοιχο **Broadcast** στο οποίο πρόκειται να προστεθεί το songBroadcast `GET /broadcasts/{id}`
 - Στέλνει στο **Broadcast** ενημέρωση για το νέο songBroadcastId `PUT /broadcasts/{id}` και το request στο body περιέχει το songBroadcastToAdd πεδίο το οποίο θα ενημερώσει αντίστοιχα το array
 
-##### Delete process
+#### Delete process
 - Βρίσκει το τρέχον broadcast από το **Broadcast**
 - Αφαιρεί το SongBroadcast από το broadcast `DELETE /broadcasts/{broadcastId}/songBroadcasts/{songBroadcastId}`
 - Στο **Song** στέλνει για διαγραφή του songBroadcast από τη λιστα με τα songBroadcasts `DELETE /songs/{songId}/songBroadcasts/{songBroadcastId}`
