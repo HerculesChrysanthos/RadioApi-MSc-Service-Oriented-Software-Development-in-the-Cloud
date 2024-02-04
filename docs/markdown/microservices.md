@@ -1,63 +1,61 @@
 # Microservices
 
-1. [User](#User)
-2. [Song](#Song)
-3. [Ad](#Ad)
-4. [Broadcast](#Broadcast)
-5. [MultimediaBroadcast](#MultimediaBroadcast)
+1. [User](#user)
+2. [Song](#song)
+3. [Ad](#ad)
+4. [Broadcast](#broadcast)
+5. [MultimediaBroadcast](#multimediabroadcast)
 
-## Επικοινωνίες που θα γίνονται μεταξύ των Microservices
+## Interactions between Microservices
 
-## User
-- Δε θα πραγματοποιεί κλήση προς άλλα microservices. Τα άλλα microservices θα επικοινωνούν μαζί με αυτό.
+### User
+- Will not make calls to other microservices. Other microservices will communicate with it.
 
-## Song
-### Delete process
-- Από το **MultimediaBroadcast** παίρνει όλες τις μεταδόσεις του τραγουδιού(SongBroadcast) κάνοντας κλήση στο `GET /multimediaBroadcasts/songsBroadcasts?song={id}`
-- Αφαιρεί το SongBroadcast απο το **Broadcast** `DELETE /broadcasts/songsBroadcasts/{songBroadcastId}`
+### Song
+#### Delete Process
+- Calls **MultimediaBroadcast** to get all broadcasts of the song (`GET /multimediaBroadcasts/songsBroadcasts?song={id}`).
+- Removes the SongBroadcast from **Broadcast** (`DELETE /broadcasts/songsBroadcasts/{songBroadcastId}`).
 
-## Ad
-### Delete process
-- Από το **MultimediaBroadcast** παίρνει όλες τις μεταδόσεις της διαφήμισης(AdBroadcast) κάνοντας κλήση στο `GET /multimediaBroadcasts/adsBroadcasts/{id}`
-- Αφαιρεί το SongBroadcast απο το **Broadcast** `DELETE /broadcasts/adsBroadcasts/{adBroadcastId}`
+### Ad
+#### Delete Process
+- Calls **MultimediaBroadcast** to get all broadcasts of the ad (`GET /multimediaBroadcasts/adsBroadcasts/{id}`).
+- Removes the AdBroadcast from **Broadcast** (`DELETE /broadcasts/adsBroadcasts/{adBroadcastId}`).
 
-## Broadcast
-### Create process
-- Καλεί το song για να βρει τραγούδια απο το genre `GET /songs?genre={genre}`
-- Καλεί το ad για να βρει διαφημίσεις απο το time zone `GET /ads?timezone={timezone}`
-- Καλεί το MultimediaBroadcast και δημιουργεί SongBroadcast `POST /multimediaBroadcasts/songsBroadcasts`
-- Καλεί το MultimediaBroadcast και δημιουργεί AdBroadcast `POST /multimediaBroadcasts/adsBroadcasts`
+### Broadcast
+#### Create Process
+- Calls **Song** to find songs by genre (`GET /songs?genre={genre}`).
+- Calls **Ad** to find ads by time zone (`GET /ads?timezone={timezone}`).
+- Calls **MultimediaBroadcast** and creates SongBroadcast (`POST /multimediaBroadcasts/songsBroadcasts`).
+- Calls **MultimediaBroadcast** and creates AdBroadcast (`POST /multimediaBroadcasts/adsBroadcasts`).
 
-### Delete process
-- Αφαιρεί τις adBroadcast αυτού του broadcast `DELETE /multimediaBroadcasts/adsBroadcasts/{id}`
-- Αφαιρεί τις songBroadcast αυτού του broadcast `DELETE /multimediaBroadcasts/songsBroadcasts/{id}`
+#### Delete Process
+- Removes adBroadcasts of this broadcast (`DELETE /multimediaBroadcasts/adsBroadcasts/{id}`).
+- Removes songBroadcasts of this broadcast (`DELETE /multimediaBroadcasts/songsBroadcasts/{id}`).
 
+#### Suggestions Process
+- Calls **Ad** to get ads for the timezone of the initial broadcast (`GET /ads?timezone={timezone}`).
+- Calls **Song** to get songs for the genre of the initial broadcast (`GET /songs?genre={genre}`).
 
-### Suggestions process
-- Καλεί το **Ad** για να πάρει διαφημίσεις για το timezone του broadcast που δόθηκε αρχικά `GET /ads?timezone={timezone}`
-- Καλεί το **Song** για να πάρει τραγούδια για το genre του broadcast που δόθηκε αρχικά `GET /songs?genre={genre}`
+### MultimediaBroadcast
 
+#### Ad Broadcast
+##### Create Process
+- Calls **Ad** to find the corresponding ad (`GET /ads/{id}`).
+- Finds the corresponding **Broadcast** based on the broadcastId (`GET /broadcasts/{id}`).
+- Sends an update to **Broadcast** for the new adBroadcastId (`PUT /broadcasts/{id}`), with the adBroadcastToAdd field to update the array.
 
-## MultimediaBroadcast
+##### Delete Process
+- Finds the current broadcast from **Broadcast**.
+- Removes the AdBroadcast from the broadcast (`DELETE /broadcasts/{broadcastId}/adBroadcasts/{adBroadcastId}`).
+- Sends a deletion request to **Ad** for the adBroadcast (`DELETE /ads/{adId}/adBroadcasts/{adBroadcastId}`).
 
-### Ad Broadcast
-#### Create process
-- Καλεί το **Ad** για να βρει αντίστοιχο ad `GET /ads/{id}`
-- Βρίσκει με βάση το broadcastId το αντίστοιχο **Broadcast** στο οποίο πρόκειται να προστεθεί το adBroadcast `GET /broadcasts/{id}`
-- Στέλνει στο **Broadcast** ενημέρωση για το νέο adBroadcastId `PUT /broadcasts/{id}` και το request στο body περιέχει το adBroadcastToAdd πεδίο το οποίο θα ενημερώσει αντίστοιχα το array
+#### Song Broadcast
+##### Create Process
+- Calls **Song** to find the corresponding song (`GET /songs/{id}`).
+- Finds the corresponding **Broadcast** based on the broadcastId (`GET /broadcasts/{id}`).
+- Sends an update to **Broadcast** for the new songBroadcastId (`PUT /broadcasts/{id}`), with the songBroadcastToAdd field to update the array.
 
-#### Delete process
-- Βρίσκει το τρέχον broadcast από το **Broadcast**
-- Αφαιρεί το AdBroadcast από το broadcast `DELETE /broadcasts/{broadcastId}/adBroadcasts/{adBroadcastId}`
-- Στο **Ad** στέλνει για διαγραφή του adBroadcast από τη λιστα με τα adBroadcasts `DELETE /ads/{adId}/adBroadcasts/{adBroadcastId}`
-
-### Song Broadcast
-#### Create process
-- Καλεί το **Song** για να βρει αντίστοιχο song `GET /songs/{id}`
-- Βρίσκει με βάση το broadcastId το αντίστοιχο **Broadcast** στο οποίο πρόκειται να προστεθεί το songBroadcast `GET /broadcasts/{id}`
-- Στέλνει στο **Broadcast** ενημέρωση για το νέο songBroadcastId `PUT /broadcasts/{id}` και το request στο body περιέχει το songBroadcastToAdd πεδίο το οποίο θα ενημερώσει αντίστοιχα το array
-
-#### Delete process
-- Βρίσκει το τρέχον broadcast από το **Broadcast**
-- Αφαιρεί το SongBroadcast από το broadcast `DELETE /broadcasts/{broadcastId}/songBroadcasts/{songBroadcastId}`
-- Στο **Song** στέλνει για διαγραφή του songBroadcast από τη λίστα με τα songBroadcasts `DELETE /songs/{songId}/songBroadcasts/{songBroadcastId}`
+##### Delete Process
+- Finds the current broadcast from **Broadcast**.
+- Removes the SongBroadcast from the broadcast (`DELETE /broadcasts/{broadcastId}/songBroadcasts/{songBroadcastId}`).
+- Sends a deletion request to **Song** for the songBroadcast (`DELETE /songs/{songId}/songBroadcasts/{songBroadcastId}`).
