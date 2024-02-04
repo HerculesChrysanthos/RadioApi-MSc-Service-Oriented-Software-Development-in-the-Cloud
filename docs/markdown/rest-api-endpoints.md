@@ -22,10 +22,11 @@
 | Method | Url                                                | Description                                     |
 |--------|----------------------------------------------------|-------------------------------------------------|
 | GET    | /songs/{id}                                        | Ανάκτηση song με βάση το id                     |
-| GET    | /songs?artist={artist}?genre={genre}?title={title} | Αναζήτηση songs με βάση κάποια φίλτρα           |
+| GET    | /songs?artist={artist}&genre={genre}&title={title} | Αναζήτηση songs με βάση κάποια φίλτρα           |
 | POST   | /songs                                             | Δημιουργία νέου song                            |
 | DELETE | /songs/{id}                                        | Διαγραφή song με βάση το id του                 |
 | PUT    | /songs/{id}                                        | Ενημέρωση στοιχείων ενος song με βάση το id του |
+| DELETE | /songs/{songId}/songBroadcasts/{songBroadcastId}   | Αφαιρεί από τα songBroadcasts ενός τραγουδιού το songBroadcastId |
 
 ## Ad
 
@@ -37,6 +38,8 @@
 | DELETE | /ads/{id}                | Διαγραφή ad με βάση το id του                 |
 | PUT    | /ads/{id}                | Ενημέρωση στοιχείων ενος ad με βάση το id του |
 | GET    | /ads/date={date} | Ανάκτηση προγράμματος μεταδόσεων με βάση κάποια ημέρα   |
+| DELETE | /ads/{adId}/adBroadcasts/{adBroadcastId}   | Αφαιρεί από τα adBroadcasts ενός ad το adBroadcastId |
+
 
 
 ## Broadcast
@@ -49,17 +52,21 @@
 | DELETE | /broadcasts/{id}                                        | Διαγραφή broadcasts με βάση το id του                       |
 | PUT    | /broadcasts/{id}                                        | Ενημέρωση στοιχείων ενος broadcasts με βάση το id του       |
 | GET    | /broadcasts/{id}/suggestions                            | Προτάσεις songs και ads για ενα broadcast με βάση το id του |
-| GET    | /broadcasts/?date={date}                                | Ανάκτηση προγράμματος μεταδόσεων με βάση κάποια ημέρα       |
+| GET    | /broadcasts?date={date}} | Ανάκτηση προγράμματος μεταδόσεων με βάση κάποια ημέρα     |
+| DELETE | /broadcasts/songsBroadcasts/{songBroadcastId}  | Διαγραφή του songBroadcast από όσα broadcasts υπάρχει με βάση το songBroadcastId          |
+| DELETE | /broadcasts/adsBroadcasts/{adBroadcastId}  | Διαγραφή του adBroadcast από όσα broadcasts υπάρχει με βάση το adBroadcastId          |
+| DELETE | /broadcasts/{broadcastId}/songBroadcasts/{songBroadcastId}  | Διαγραφή του songBroadcast το τρέχον broadcast με βάση το songBroadcastId          |
+| DELETE | /broadcasts/{broadcastId}/adBroadcasts/{adBroadcastId}}  | Διαγραφή του adBroadcast το τρέχον broadcast με βάση το adBroadcastId          |
 
-## AdSongBroadcast
+## MultimediaBroadcast
 
 | Method | Url                        | Description                                   |
 |--------|----------------------------|-----------------------------------------------|
-| GET    | /AdsongBroadcast/ads/{id}           | Ανάκτηση ad_broadcast με βάση το id            |
-| GET    | /AdsongBroadcast/ads/?date={date}   | Αναζήτηση ad_broadcasts με βάση κάποια φίλτρα  |
-| POST   | /AdsongBroadcast/ads                | Δημιουργία νέου ad_broadcast                   |
-| DELETE | /AdsongBroadcast/ads/{id}           | Διαγραφή ad_broadcast με βάση το id του        |
-| GET    | /AdsongBroadcast/songs/{id}         | Ανάκτηση song_broadcast με βάση το id          |
-| GET    | /AdsongBroadcast/songs/?date={date} | Αναζήτηση song_broadcast με βάση κάποια φίλτρα |
-| POST   | /AdsongBroadcast/songs              | Δημιουργία νέου song_broadcast                 |
-| DELETE | /AdsongBroadcast/songs{id}          | Διαγραφή song_broadcast με βάση το id του      |
+| GET    | /multimediaBroadcasts/adsBroadcasts/{id}           | Ανάκτηση ad_broadcast με βάση το id            |
+| GET    | /multimediaBroadcasts/adsBroadcasts?date={date}   | Αναζήτηση ad_broadcasts με βάση κάποια φίλτρα  |
+| POST   | /multimediaBroadcasts/adsBroadcasts                | Δημιουργία νέου ad_broadcast                   |
+| DELETE | /multimediaBroadcasts/adsBroadcasts/{id}           | Διαγραφή ad_broadcast με βάση το id του        |
+| GET    | /multimediaBroadcasts/songsBroadcasts/{id}         | Ανάκτηση song_broadcast με βάση το id          |
+| GET    | /multimediaBroadcasts/songsBroadcasts?date={date} | Αναζήτηση song_broadcast με βάση κάποια φίλτρα |
+| POST   | /multimediaBroadcasts/songsBroadcasts              | Δημιουργία νέου song_broadcast                 |
+| DELETE | /multimediaBroadcasts/songsBroadcasts{id}          | Διαγραφή song_broadcast με βάση το id του      |
