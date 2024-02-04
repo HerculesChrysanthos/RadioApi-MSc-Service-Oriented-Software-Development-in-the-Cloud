@@ -14,6 +14,10 @@
 
 [Παραδοχές](docs/markdown/paradoxes.md)
 
+[Επικοινωνίες microservices](docs/markdown/Functionality_Microservices.md)
+
+[Sequence Diagram](docs/markdown/sequence_diagram_v1.png)
+
 
 ## Χρήσιμες εντολές
 
