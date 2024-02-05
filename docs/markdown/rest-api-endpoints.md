@@ -6,9 +6,7 @@
 2. [Song REST API](#song)
 3. [Ad REST API](#ad)
 4. [Broadcast REST API](#broadcast)
-5. [Ad Broadcast REST API](#ad-broadcast)
-6. [Song Broadcast REST API](#song-broadcast)
-7. [Statistics REST API](#statistics)
+5. [MultimediaBroadcast REST API](#MultimediaBroadcast)
 
 ## User
 
