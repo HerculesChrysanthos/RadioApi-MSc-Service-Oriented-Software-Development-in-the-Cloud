@@ -12,12 +12,10 @@
 
 ## Song
 ### Delete process
-- Από το **MultimediaBroadcast** παίρνει όλες τις μεταδόσεις του τραγουδιού(SongBroadcast) κάνοντας κλήση στο `GET /multimediaBroadcasts/songsBroadcasts?song={id}`
 - Αφαιρεί το SongBroadcast απο το **Broadcast** `DELETE /broadcasts/songsBroadcasts/{songBroadcastId}`
 
 ## Ad
 ### Delete process
-- Από το **MultimediaBroadcast** παίρνει όλες τις μεταδόσεις της διαφήμισης(AdBroadcast) κάνοντας κλήση στο `GET /multimediaBroadcasts/adsBroadcasts/{id}`
 - Αφαιρεί το SongBroadcast απο το **Broadcast** `DELETE /broadcasts/adsBroadcasts/{adBroadcastId}`
 
 ## Broadcast
@@ -57,6 +55,5 @@
 - Στέλνει στο **Broadcast** ενημέρωση για το νέο songBroadcastId `PUT /broadcasts/{id}` και το request στο body περιέχει το songBroadcastToAdd πεδίο το οποίο θα ενημερώσει αντίστοιχα το array
 
 #### Delete process
-- Βρίσκει το τρέχον broadcast από το **Broadcast**
 - Αφαιρεί το SongBroadcast από το broadcast `DELETE /broadcasts/{broadcastId}/songBroadcasts/{songBroadcastId}`
 - Στο **Song** στέλνει για διαγραφή του songBroadcast από τη λίστα με τα songBroadcasts `DELETE /songs/{songId}/songBroadcasts/{songBroadcastId}`
