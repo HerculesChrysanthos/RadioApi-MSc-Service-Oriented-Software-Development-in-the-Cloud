@@ -15,22 +15,22 @@
 - Αφαιρεί το SongBroadcast απο το **Broadcast** `DELETE /broadcasts/songsBroadcasts/{songBroadcastId}`
 
 ## Ad
-### Delete process
+#### Delete process
 - Αφαιρεί το SongBroadcast απο το **Broadcast** `DELETE /broadcasts/adsBroadcasts/{adBroadcastId}`
 
 ## Broadcast
-### Create process
+#### Create process
 - Καλεί το song για να βρει τραγούδια απο το genre `GET /songs?genre={genre}`
 - Καλεί το ad για να βρει διαφημίσεις απο το time zone `GET /ads?timezone={timezone}`
 - Καλεί το MultimediaBroadcast και δημιουργεί SongBroadcast `POST /multimediaBroadcasts/songsBroadcasts`
 - Καλεί το MultimediaBroadcast και δημιουργεί AdBroadcast `POST /multimediaBroadcasts/adsBroadcasts`
 
-### Delete process
+#### Delete process
 - Αφαιρεί τις adBroadcast αυτού του broadcast `DELETE /multimediaBroadcasts/adsBroadcasts/{id}`
 - Αφαιρεί τις songBroadcast αυτού του broadcast `DELETE /multimediaBroadcasts/songsBroadcasts/{id}`
 
 
-### Suggestions process
+#### Suggestions process
 - Καλεί το **Ad** για να πάρει διαφημίσεις για το timezone του broadcast που δόθηκε αρχικά `GET /ads?timezone={timezone}`
 - Καλεί το **Song** για να πάρει τραγούδια για το genre του broadcast που δόθηκε αρχικά `GET /songs?genre={genre}`
 
