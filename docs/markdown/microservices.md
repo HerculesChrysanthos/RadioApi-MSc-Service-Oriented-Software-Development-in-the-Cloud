@@ -44,7 +44,6 @@
 - Στέλνει στο **Broadcast** ενημέρωση για το νέο adBroadcastId `PUT /broadcasts/{id}` και το request στο body περιέχει το adBroadcastToAdd πεδίο το οποίο θα ενημερώσει αντίστοιχα το array
 
 #### Delete process
-- Βρίσκει το τρέχον broadcast από το **Broadcast**
 - Αφαιρεί το AdBroadcast από το broadcast `DELETE /broadcasts/{broadcastId}/adBroadcasts/{adBroadcastId}`
 - Στο **Ad** στέλνει για διαγραφή του adBroadcast από τη λιστα με τα adBroadcasts `DELETE /ads/{adId}/adBroadcasts/{adBroadcastId}`
 
