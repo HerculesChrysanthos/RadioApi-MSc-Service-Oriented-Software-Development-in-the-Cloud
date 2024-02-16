@@ -6,7 +6,12 @@
     <groupId>gr.aueb</groupId>
     <artifactId>radio</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <name>Radio</name>
+    <modules>
+        <module>content-service</module>
+        <module>content-service</module>
+    </modules>
     <properties>
         <compiler-plugin.version>3.8.1</compiler-plugin.version>
         <maven.compiler.release>11</maven.compiler.release>
