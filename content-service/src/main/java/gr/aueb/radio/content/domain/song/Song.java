@@ -1,5 +1,6 @@
 package gr.aueb.radio.content.domain.song;
 
+import gr.aueb.radio.content.domain.genre.Genre;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -25,14 +26,14 @@ public class Song {
     @Column(name = "duration", nullable = false)
     private Integer duration;
 
-    @Column(name = "genre", nullable = false, length = 50)
-    private String genre;
+    @OneToOne(mappedBy = "genre", cascade = CascadeType.PERSIST)
+    private Genre genre;
 
     private List<Integer> songBroadcasts = new ArrayList<>();
     public Song() {
     }
 
-    public Song(String title, String genre, Integer duration, String artist, Integer year) {
+    public Song(String title, Genre genre, Integer duration, String artist, Integer year) {
         this.title = title;
         this.artist = artist;
         this.duration = duration;
@@ -79,11 +80,11 @@ public class Song {
         this.duration = duration;
     }
 
-    public String getGenre() {
+    public Genre getGenre() {
         return this.genre;
     }
 
-    public void setGenre(String genre) {
+    public void setGenre(Genre genre) {
         this.genre = genre;
     }
 
