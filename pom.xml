@@ -10,7 +10,6 @@
     <name>Radio</name>
     <modules>
         <module>content-service</module>
-        <module>content-service</module>
     </modules>
     <properties>
         <compiler-plugin.version>3.8.1</compiler-plugin.version>
