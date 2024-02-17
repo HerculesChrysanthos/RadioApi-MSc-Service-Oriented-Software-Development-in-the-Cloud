@@ -26,7 +26,8 @@ public class Song {
     @Column(name = "duration", nullable = false)
     private Integer duration;
 
-    @OneToOne(mappedBy = "genre", cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "genreId")
     private Genre genre;
 
     private List<Integer> songBroadcasts = new ArrayList<>();
