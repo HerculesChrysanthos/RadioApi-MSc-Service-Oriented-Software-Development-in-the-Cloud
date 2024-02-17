@@ -1,0 +1,41 @@
+package gr.aueb.radio.content.infrastructure.rest.representation;
+
+import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@AllArgsConstructor
+public class SongInputDTO {
+    @NotNull
+    @NotBlank
+    public String title;
+
+    @NotNull
+    @NotBlank
+    public String artist;
+
+    @Min(value = 1)
+    @Max(value = 9999)
+    @Positive
+    @NotNull
+    public Integer year;
+
+    @Positive
+    @NotNull
+    public Integer duration;
+
+    @NotNull
+    @NotBlank
+    public Integer genreId;
+
+    public SongRepresentation toRepresentation() {
+        SongRepresentation songRepresentation = new SongRepresentation();
+        songRepresentation.title = this.title;
+        songRepresentation.artist = this.artist;
+        songRepresentation.year = this.year;
+        songRepresentation.duration = this.duration;
+        songRepresentation.genreId = this.genreId;
+        return songRepresentation;
+    }
+}
