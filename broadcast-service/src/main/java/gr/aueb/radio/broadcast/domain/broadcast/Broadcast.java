@@ -14,6 +14,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Entity
 @Table(name="broadcasts")
 @Slf4j
@@ -31,7 +32,7 @@ public class Broadcast {
 
     @Column(name="starting_time", nullable = false)
     private LocalTime startingTime;
-
+//  test
     @Enumerated(EnumType.STRING)
     @Column(name="type")
     private BroadcastEnum type;
