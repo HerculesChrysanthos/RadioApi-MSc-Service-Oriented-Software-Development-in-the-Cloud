@@ -47,6 +47,7 @@ public class Broadcast {
 
     public Broadcast() {}
 
+
     public Broadcast(Integer duration, LocalDate startingDate, LocalTime startingTime, BroadcastEnum type) {
         this.duration = duration;
         this.startingDate = startingDate;
