@@ -4,7 +4,6 @@ import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 
@@ -22,9 +21,9 @@ public class SongBroadcast {
     @Column(name = "broadcast_time", nullable = false)
     private LocalTime broadcastTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "song_id")
-    private Song song;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "song_id")
+//    private Song song;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "broadcast_id")
@@ -58,13 +57,13 @@ public class SongBroadcast {
         this.broadcastTime = broadcastTime;
     }
 
-    public Song getSong() {
-        return song;
-    }
-
-    public void setSong(Song song) {
-        this.song = song;
-    }
+//    public Song getSong() {
+//        return song;
+//    }
+//
+//    public void setSong(Song song) {
+//        this.song = song;
+//    }
 
     public Broadcast getBroadcast() {
         return this.broadcast;
@@ -74,8 +73,8 @@ public class SongBroadcast {
         this.broadcast = broadcast;
     }
 
-    public LocalDateTime getBroadcastEndingDateTime(){
-        LocalDateTime startingDate = this.broadcastDate.atTime(this.broadcastTime);
-        return startingDate.plusMinutes(this.song.getDuration());
-    }
+//    public LocalDateTime getBroadcastEndingDateTime(){
+//        LocalDateTime startingDate = this.broadcastDate.atTime(this.broadcastTime);
+//        return startingDate.plusMinutes(this.song.getDuration());
+//    }
 }
