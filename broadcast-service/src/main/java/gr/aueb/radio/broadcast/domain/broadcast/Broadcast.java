@@ -45,6 +45,8 @@ public class Broadcast {
     @OneToMany(mappedBy = "broadcast", fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<SongBroadcast> songBroadcasts = new ArrayList<>();
 
+    private Integer userId;
+
     public Broadcast() {}
 
 
@@ -104,7 +106,15 @@ public class Broadcast {
         return DateUtil.calculateTimezone(this.startingTime);
     }
 
-//    public AdBroadcast createAdBroadcast(Ad ad, LocalTime time){
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    //    public AdBroadcast createAdBroadcast(Ad ad, LocalTime time){
 //        if (!adCanBeAdded(ad, time)){
 //            return null;
 //        }
