@@ -4,7 +4,7 @@ import gr.aueb.radio.broadcast.domain.broadcast.AdBroadcast.AdBroadcast;
 import gr.aueb.radio.broadcast.domain.broadcast.SongBroadcast.SongBroadcast;
 import gr.aueb.radio.broadcast.domain.broadcast.enums.BroadcastEnum;
 import gr.aueb.radio.broadcast.domain.broadcast.enums.ZoneEnum;
-import gr.aueb.radio.broadcast.utils.DateUtil;
+import gr.aueb.radio.broadcast.common.DateUtil;
 import jakarta.persistence.*;
 import lombok.extern.slf4j.Slf4j;
 
