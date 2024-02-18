@@ -47,6 +47,8 @@ public class Broadcast {
 
     private Integer userId;
 
+    private Integer genreId;
+
     public Broadcast() {}
 
 
@@ -114,6 +116,13 @@ public class Broadcast {
         this.userId = userId;
     }
 
+    public Integer getGenreId() {
+        return genreId;
+    }
+
+    public void setGenreId(Integer genreId) {
+        this.genreId = genreId;
+    }
     //    public AdBroadcast createAdBroadcast(Ad ad, LocalTime time){
 //        if (!adCanBeAdded(ad, time)){
 //            return null;

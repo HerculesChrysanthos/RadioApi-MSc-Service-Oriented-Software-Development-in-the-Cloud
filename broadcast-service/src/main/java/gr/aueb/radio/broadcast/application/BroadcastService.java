@@ -6,7 +6,7 @@ import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
 import gr.aueb.radio.broadcast.infrastructure.persistence.BroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastMapper;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastRepresentation;
-import gr.aueb.radio.broadcast.utils.DateUtil;
+import gr.aueb.radio.broadcast.common.DateUtil;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
