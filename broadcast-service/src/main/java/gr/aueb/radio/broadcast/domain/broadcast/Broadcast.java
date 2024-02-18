@@ -32,7 +32,7 @@ public class Broadcast {
 
     @Column(name="starting_time", nullable = false)
     private LocalTime startingTime;
-//  test
+
     @Enumerated(EnumType.STRING)
     @Column(name="type")
     private BroadcastEnum type;
