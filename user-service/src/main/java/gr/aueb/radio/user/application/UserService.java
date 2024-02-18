@@ -5,6 +5,7 @@ import gr.aueb.radio.user.common.RadioException;
 import gr.aueb.radio.user.domain.user.Role;
 import gr.aueb.radio.user.domain.user.User;
 import gr.aueb.radio.user.infrastructure.persistence.UserRepository;
+import gr.aueb.radio.user.infrastructure.rest.representation.UserBasicRepresentation;
 import gr.aueb.radio.user.infrastructure.rest.representation.UserMapper;
 import gr.aueb.radio.user.infrastructure.rest.representation.UserRepresentation;
 import jakarta.enterprise.context.RequestScoped;
@@ -40,5 +41,16 @@ public class UserService {
             throw new NotFoundException("User not found");
         }
         return userMapper.toRepresentation(user);
+    }
+
+    @Transactional
+    public UserBasicRepresentation findUserByUsername(String username){
+        User user = userRepository.findByUsername(username);
+
+        if(user == null){
+            throw new NotFoundException("User not found");
+        }
+
+        return userMapper.toBasicRepresentation(user);
     }
 }

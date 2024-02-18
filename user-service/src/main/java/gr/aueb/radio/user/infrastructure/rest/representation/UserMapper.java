@@ -11,4 +11,6 @@ public abstract  class UserMapper {
     public abstract User toModel(UserRepresentation representation);
 
     public abstract UserRepresentation toRepresentation(User user);
+
+    public abstract UserBasicRepresentation toBasicRepresentation(User user);
 }
