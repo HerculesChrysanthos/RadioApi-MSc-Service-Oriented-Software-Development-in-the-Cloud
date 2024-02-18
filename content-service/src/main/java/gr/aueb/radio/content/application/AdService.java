@@ -25,6 +25,9 @@ public class AdService {
     @Inject
     AdMapper adMapper;
 
+    @Inject
+    UserService userService;
+
 
     @Transactional
     public AdRepresentation findAd(Integer id) {
@@ -49,6 +52,10 @@ public class AdService {
     @Transactional
     public Ad create(AdRepresentation adRepresentation) {
         Ad ad = adMapper.toModel(adRepresentation);
+
+        // must read variables from incoming request
+        userService.verifyAuth("producer","producer");
+
         adRepository.persist(ad);
         return ad;
     }
