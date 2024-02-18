@@ -24,7 +24,7 @@ public class SongBroadcast {
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "song_id")
 //    private Song song;
-
+//test
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "broadcast_id")
     private Broadcast broadcast;
