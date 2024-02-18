@@ -54,8 +54,8 @@ public class SongResource {
 
     @POST
     //@PermitAll
-    public Response create (@Valid SongInputDTO songRepresentation) {
-        Song song = songService.create(songRepresentation.toRepresentation());
+    public Response create (@Valid SongInputDTO songRepresentation,  @Context HttpHeaders headers) {
+        Song song = songService.create(songRepresentation.toRepresentation(), headers);
         URI uri = UriBuilder.fromResource(SongResource.class).path(String.valueOf(song.getId())).build();
         SongRepresentation createdSongRepresentation = songMapper.toRepresentation(song);
         return Response.created(uri).entity(createdSongRepresentation).build();

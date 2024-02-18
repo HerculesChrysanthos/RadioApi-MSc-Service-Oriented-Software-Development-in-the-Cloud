@@ -11,6 +11,7 @@ import gr.aueb.radio.content.infrastructure.rest.representation.SongRepresentati
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.core.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +29,9 @@ public class SongService {
 
     @Inject
     GenreMapper genreMapper;
+
+    @Inject
+    UserService userService;
 
     //@Inject
     //BroadcastService broadcastService;
@@ -98,8 +102,16 @@ public class SongService {
     }
 
     @Transactional
-    public Song create(SongRepresentation songRepresentation) {
+    public Song create(SongRepresentation songRepresentation, HttpHeaders headers) {
         Song song = songMapper.toModel(songRepresentation);
+//        // Extract custom headers
+//        String username = headers.getHeaderString("username");
+//        String password = headers.getHeaderString("password");
+//
+//        userService.verifyAuth(username,password);
+
+//         must read variables from incoming request
+        userService.verifyAuth("producer","producer");
         songRepository.persist(song);
         return song;
     }
