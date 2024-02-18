@@ -27,7 +27,7 @@ public class Song {
     private Integer duration;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name= "genreId")
+    @JoinColumn(name= "genre_id")
     private Genre genre;
 
     private List<Integer> songBroadcasts = new ArrayList<>();
