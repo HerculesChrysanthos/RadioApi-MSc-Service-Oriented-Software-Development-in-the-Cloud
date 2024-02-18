@@ -11,6 +11,7 @@ import gr.aueb.radio.content.infrastructure.rest.representation.AdRepresentation
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.transaction.Transactional;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.core.*;
 
 
 import java.util.List;
@@ -50,10 +51,15 @@ public class AdService {
     }
 
     @Transactional
-    public Ad create(AdRepresentation adRepresentation) {
+    public Ad create(AdRepresentation adRepresentation, HttpHeaders headers) {
         Ad ad = adMapper.toModel(adRepresentation);
+//        // Extract custom headers
+//        String username = headers.getHeaderString("username");
+//        String password = headers.getHeaderString("password");
+//
+//        userService.verifyAuth(username,password);
 
-        // must read variables from incoming request
+//         must read variables from incoming request
         userService.verifyAuth("producer","producer");
 
         adRepository.persist(ad);

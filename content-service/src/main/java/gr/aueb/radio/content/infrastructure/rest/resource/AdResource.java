@@ -53,9 +53,9 @@ public class AdResource {
 
     @POST
 //    @RolesAllowed("PRODUCER")
-    public Response createAd(@Valid AdInputDTO adrepresentation) {
+    public Response createAd(@Valid AdInputDTO adrepresentation, @Context HttpHeaders headers) {
         try {
-            Ad ad = adService.create(adrepresentation.toRepresentation());
+            Ad ad = adService.create(adrepresentation.toRepresentation(), headers);
             URI uri = UriBuilder.fromResource(AdResource.class).path(String.valueOf(ad.getId())).build();
             return Response.created(uri).entity(adMapper.toRepresentation(ad)).build();
         } catch (RadioException re){
