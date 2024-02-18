@@ -1,7 +1,6 @@
-package gr.aueb.radio.broadcast.utils;
+package gr.aueb.radio.broadcast.common;
 
 
-import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.domain.broadcast.enums.ZoneEnum;
 
 import java.time.LocalDate;
