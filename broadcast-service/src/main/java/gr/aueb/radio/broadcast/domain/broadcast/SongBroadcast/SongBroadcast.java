@@ -23,7 +23,7 @@ public class SongBroadcast {
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "song_id")
-//    private Song song;
+   private Integer songId;
 //test
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "broadcast_id")
