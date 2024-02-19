@@ -35,9 +35,10 @@ public class AdResource {
     @GET
     @Path("/{id}")
 //    @RolesAllowed("PRODUCER")
-    public Response getAd(@PathParam("id") Integer id) {
+    public Response getAd(@PathParam("id") Integer id,
+                          @HeaderParam("Authorization") String auth) {
         try {
-            AdRepresentation adRepresentation = adService.findAd(id);
+            AdRepresentation adRepresentation = adService.findAd(id, auth);
             return Response.ok().entity(adRepresentation).build();
         } catch (NotFoundException nfe) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -46,14 +47,19 @@ public class AdResource {
 
     @GET
 //    @RolesAllowed("PRODUCER")
-    public Response getAdsOfTimezone(@QueryParam("timezone") Zone timezone) {
-        List<AdRepresentation> adsByTimezone = adService.search(timezone);
+    public Response getAdsOfTimezone(
+            @QueryParam("timezone") Zone timezone,
+            @HeaderParam("Authorization") String auth) {
+        List<AdRepresentation> adsByTimezone = adService.search(timezone, auth);
         return Response.ok().entity(adsByTimezone).build();
     }
 
     @POST
 //    @RolesAllowed("PRODUCER")
-    public Response createAd(@Valid AdInputDTO adRepresentation, @HeaderParam("Authorization") String auth) {
+    public Response createAd(
+            @Valid AdInputDTO adRepresentation,
+            @HeaderParam("Authorization") String auth
+    ) {
         try {
             Ad ad = adService.create(adRepresentation.toRepresentation(), auth);
             URI uri = UriBuilder.fromResource(AdResource.class).path(String.valueOf(ad.getId())).build();
@@ -86,9 +92,12 @@ public class AdResource {
     @DELETE
     @Path("/{id}")
 //    @RolesAllowed("PRODUCER")
-    public Response deleteAd(@PathParam("id") Integer id) {
+    public Response deleteAd(
+            @PathParam("id") Integer id,
+            @HeaderParam("Authorization") String auth
+    ) {
         try {
-            adService.delete(id);
+            adService.delete(id, auth);
             return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
         }catch (NotFoundException re){
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();

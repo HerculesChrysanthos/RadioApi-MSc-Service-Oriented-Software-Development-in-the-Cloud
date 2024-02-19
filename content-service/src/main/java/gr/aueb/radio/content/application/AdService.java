@@ -31,7 +31,13 @@ public class AdService {
 
 
     @Transactional
-    public AdRepresentation findAd(Integer id) {
+    public AdRepresentation findAd(Integer id, String auth) {
+        String userRole = userService.verifyAuth(auth).role;
+
+        if(!userRole.equals("PRODUCER")){
+            throw new RadioException("Not Allowed to change this.", 403);
+        }
+
         Ad ad = adRepository.findById(id);
         if (ad == null) {
             throw new NotFoundException("Ad not found");
@@ -40,8 +46,15 @@ public class AdService {
     }
 
     @Transactional
-    public List<AdRepresentation> search(Zone timezone) {
+    public List<AdRepresentation> search(Zone timezone, String auth) {
         List<Ad> adsByTimezone;
+        // verify user role - producer
+        String userRole = userService.verifyAuth(auth).role;
+
+        if(!userRole.equals("PRODUCER")){
+            throw new RadioException("Not Allowed to change this.", 403);
+        }
+
         if (timezone == null) {
             adsByTimezone = adRepository.listAll();
         } else {
@@ -54,7 +67,13 @@ public class AdService {
     public Ad create(AdRepresentation adRepresentation, String auth) {
         Ad ad = adMapper.toModel(adRepresentation);
 
-        userService.verifyAuth(auth);
+//        userService.verifyAuth(auth);
+
+        String userRole = userService.verifyAuth(auth).role;
+
+        if(!userRole.equals("PRODUCER")){
+            throw new RadioException("Not Allowed to change this.", 403);
+        }
 
         adRepository.persist(ad);
         return ad;
@@ -92,7 +111,13 @@ public class AdService {
     }
 
     @Transactional
-    public void delete(Integer id) {
+    public void delete(Integer id, String auth ) {
+        String userRole = userService.verifyAuth(auth).role;
+
+        if(!userRole.equals("PRODUCER")){
+            throw new RadioException("Not Allowed to change this.", 403);
+        }
+
         Ad ad = adRepository.findById(id);
         if(ad == null){
             throw new NotFoundException("Ad not found");
