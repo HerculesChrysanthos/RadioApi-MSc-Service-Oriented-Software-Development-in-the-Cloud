@@ -34,40 +34,57 @@ public class SongResource {
     @GET
     @Path("/{id}")
     //@PermitAll
-    public Response getSong(@PathParam("id") Integer id) {
-        try{
-            SongRepresentation found = songService.findSong(id);
+    public Response getSong(
+            @PathParam("id") Integer id,
+            @HeaderParam("Authorization") String auth
+    ) {
+        try {
+            SongRepresentation found = songService.findSong(id, auth);
             return Response.ok().entity(found).build();
-        }catch (NotFoundException e){
+        } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
     @GET
     //@PermitAll
-    public Response search(@QueryParam("artist") String artist,
-                           @QueryParam("genre") String genre,
-                           @QueryParam("title") String title) {
-        List<SongRepresentation> found = songService.search(artist, genre, title);
+    public Response search(
+            @QueryParam("artist") String artist,
+            @QueryParam("genre") String genre,
+            @QueryParam("title") String title,
+            @HeaderParam("Authorization") String auth
+    ) {
+        List<SongRepresentation> found = songService.search(artist, genre, title, auth);
         return Response.ok().entity(found).build();
     }
 
     @POST
     //@PermitAll
-    public Response create (@Valid SongInputDTO songRepresentation,  @HeaderParam("Authorization") String auth) {
-        Song song = songService.create(songRepresentation.toRepresentation(), auth);
-        URI uri = UriBuilder.fromResource(SongResource.class).path(String.valueOf(song.getId())).build();
-        SongRepresentation createdSongRepresentation = songMapper.toRepresentation(song);
-        return Response.created(uri).entity(createdSongRepresentation).build();
+    public Response create(
+            @Valid SongInputDTO songRepresentation,
+            @HeaderParam("Authorization") String auth
+    ) {
+        try {
+            Song song = songService.create(songRepresentation.toRepresentation(), auth);
+            URI uri = UriBuilder.fromResource(SongResource.class).path(String.valueOf(song.getId())).build();
+            SongRepresentation createdSongRepresentation = songMapper.toRepresentation(song);
+            return Response.created(uri).entity(createdSongRepresentation).build();
+        } catch (
+                RadioException re) {
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode).entity(re.getMessage()).build();
+        }
 
     }
 
     @DELETE
     @Path("/{id}")
     //@RolesAllowed("PRODUCER")
-    public Response delete(@PathParam("id") Integer id) {
+    public Response delete(
+            @PathParam("id") Integer id,
+            @HeaderParam("Authorization") String auth) {
         try{
-            songService.delete(id);
+            songService.delete(id, auth);
             return Response.noContent().build();
         }catch (NotFoundException e){
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -77,9 +94,13 @@ public class SongResource {
     @PUT
     @Path("/{id}")
     //@PermitAll
-    public Response update(@PathParam("id") Integer id, @Valid SongInputDTO songRepresentation) {
+    public Response update(
+            @PathParam("id") Integer id,
+            @Valid SongInputDTO songRepresentation,
+            @HeaderParam("Authorization") String auth
+    ) {
         try{
-            songService.update(id, songRepresentation.toRepresentation());
+            songService.update(id, songRepresentation.toRepresentation(), auth);
             return Response.noContent().build();
         }catch (NotFoundException e){
             return Response.status(Response.Status.NOT_FOUND).build();

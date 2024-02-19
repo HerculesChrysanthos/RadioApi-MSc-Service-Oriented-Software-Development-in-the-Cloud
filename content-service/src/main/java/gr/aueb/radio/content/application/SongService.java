@@ -37,8 +37,11 @@ public class SongService {
     //BroadcastService broadcastService;
 
     @Transactional
-    public List<SongRepresentation> search(String artist, String genre, String title){
+    public List<SongRepresentation> search(String artist, String genre, String title, String auth){
         List<Song> songs = songRepository.listAll();
+
+        userService.verifyAuth(auth);
+
         if(artist != null){
             // will filter and return all songs based on artist
             songs = songs.stream().filter(s -> s.getArtist().equals(artist)).collect(Collectors.toList());
@@ -55,7 +58,9 @@ public class SongService {
     }
 
     @Transactional
-    public Song update(Integer id, SongRepresentation songRepresentation) {
+    public Song update(Integer id, SongRepresentation songRepresentation, String auth) {
+        userService.verifyAuth(auth);
+
         Song song = songRepository.findById(id);
         if(song == null){
             throw new NotFoundException("Song not found");
@@ -76,7 +81,9 @@ public class SongService {
     }
 
     @Transactional
-    public void delete(Integer id) {
+    public void delete(Integer id, String auth) {
+        userService.verifyAuth(auth);
+
         Song song = songRepository.findById(id);
         if(song == null){
             throw new NotFoundException("Song not found");
@@ -93,7 +100,9 @@ public class SongService {
 
 
     @Transactional
-    public SongRepresentation findSong(Integer Id){
+    public SongRepresentation findSong(Integer Id, String auth){
+        userService.verifyAuth(auth);
+
         Song song = songRepository.findById(Id);
         if (song == null) {
             throw new NotFoundException("Song not found");
