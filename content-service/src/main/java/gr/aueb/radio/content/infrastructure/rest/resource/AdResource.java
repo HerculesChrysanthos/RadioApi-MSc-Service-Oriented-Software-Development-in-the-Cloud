@@ -67,14 +67,19 @@ public class AdResource {
     @PUT
     @Path("/{id}")
 //    @RolesAllowed("PRODUCER")
-    public Response updateAd(@PathParam("id") Integer id, @Valid AdInputDTO adrepresentation) {
+    public Response updateAd(
+            @PathParam("id") Integer id,
+            @Valid AdInputDTO adRepresentation,
+            @HeaderParam("Authorization") String auth
+    ) {
         try {
-            adService.update(id, adrepresentation.toRepresentation());
+            adService.update(id, adRepresentation.toRepresentation(), auth);
             return  Response.noContent().build();
         } catch (NotFoundException re){
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
         } catch (RadioException re){
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode).entity(re.getMessage()).build();
         }
     }
 

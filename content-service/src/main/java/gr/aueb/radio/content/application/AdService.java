@@ -61,19 +61,32 @@ public class AdService {
     }
 
     @Transactional
-    public Ad update(Integer id, AdRepresentation adRepresentation) {
+    public Ad update(Integer id, AdRepresentation adRepresentation, String auth) {
+        String userRole = userService.verifyAuth(auth).role;
+
+        if(!userRole.equals("PRODUCER")){
+            throw new RadioException("Not Allowed to change this.", 403);
+        }
+
         Ad ad = adRepository.findById(id);
         if(ad == null){
             throw new NotFoundException("Ad not found");
         }
-        if (ad.getBroadcastAds().size() != 0){
+        if (ad.getBroadcastAds() != null && ad.getBroadcastAds().size() != 0){
             throw new RadioException("Ad is immutable, it has scheduled broadcasts");
         }
         ad.setDuration(adRepresentation.duration);
         ad.setTimezone(adRepresentation.timezone);
         ad.setRepPerZone(adRepresentation.repPerZone);
-        ad.setStartingDate(DateUtil.setDate(adRepresentation.startingDate));
-        ad.setEndingDate(DateUtil.setDate(adRepresentation.endingDate));
+
+        if(adRepresentation.startingDate != null){
+            ad.setStartingDate(DateUtil.setDate(adRepresentation.startingDate));
+        }
+
+        if(adRepresentation.endingDate !=null){
+            ad.setEndingDate(DateUtil.setDate(adRepresentation.endingDate));
+        }
+
         adRepository.getEntityManager().merge(ad);
         return ad;
     }

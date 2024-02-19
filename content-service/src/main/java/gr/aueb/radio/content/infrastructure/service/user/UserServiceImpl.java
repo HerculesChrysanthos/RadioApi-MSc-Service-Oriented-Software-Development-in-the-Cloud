@@ -9,6 +9,7 @@ import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.client.exception.ResteasyWebApplicationException;
 
 import java.util.Base64;
 
@@ -29,9 +30,12 @@ public class UserServiceImpl implements UserService {
             System.out.println("returned id "+ user.id);
 
             return user;
-        } catch(ProcessingException error){
+        } catch(ProcessingException error) {
             throw new RadioException("Problem on reaching user api.", 424);
         }
+//        catch (ResteasyWebApplicationException rwa){
+//            throw new RadioException("Fo", 403);
+//        }
 
     }
 }
