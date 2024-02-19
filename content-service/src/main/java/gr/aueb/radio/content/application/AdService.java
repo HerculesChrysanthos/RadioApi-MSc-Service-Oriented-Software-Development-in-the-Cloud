@@ -51,16 +51,10 @@ public class AdService {
     }
 
     @Transactional
-    public Ad create(AdRepresentation adRepresentation, HttpHeaders headers) {
+    public Ad create(AdRepresentation adRepresentation, String auth) {
         Ad ad = adMapper.toModel(adRepresentation);
-//        // Extract custom headers
-//        String username = headers.getHeaderString("username");
-//        String password = headers.getHeaderString("password");
-//
-//        userService.verifyAuth(username,password);
 
-//         must read variables from incoming request
-        userService.verifyAuth("producer","producer");
+        userService.verifyAuth(auth);
 
         adRepository.persist(ad);
         return ad;

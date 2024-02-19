@@ -53,13 +53,14 @@ public class AdResource {
 
     @POST
 //    @RolesAllowed("PRODUCER")
-    public Response createAd(@Valid AdInputDTO adrepresentation, @Context HttpHeaders headers) {
+    public Response createAd(@Valid AdInputDTO adRepresentation, @HeaderParam("Authorization") String auth) {
         try {
-            Ad ad = adService.create(adrepresentation.toRepresentation(), headers);
+            Ad ad = adService.create(adRepresentation.toRepresentation(), auth);
             URI uri = UriBuilder.fromResource(AdResource.class).path(String.valueOf(ad.getId())).build();
             return Response.created(uri).entity(adMapper.toRepresentation(ad)).build();
         } catch (RadioException re){
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode).entity(re.getMessage()).build();
         }
     }
 

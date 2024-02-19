@@ -102,16 +102,11 @@ public class SongService {
     }
 
     @Transactional
-    public Song create(SongRepresentation songRepresentation, HttpHeaders headers) {
+    public Song create(SongRepresentation songRepresentation, String auth) {
         Song song = songMapper.toModel(songRepresentation);
-//        // Extract custom headers
-//        String username = headers.getHeaderString("username");
-//        String password = headers.getHeaderString("password");
-//
-//        userService.verifyAuth(username,password);
 
-//         must read variables from incoming request
-        userService.verifyAuth("producer","producer");
+        userService.verifyAuth(auth);
+
         songRepository.persist(song);
         return song;
     }

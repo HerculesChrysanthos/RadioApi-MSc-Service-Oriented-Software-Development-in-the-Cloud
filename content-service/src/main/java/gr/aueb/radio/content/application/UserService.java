@@ -4,5 +4,5 @@ import gr.aueb.radio.content.infrastructure.service.user.representation.UserVeri
 
 public interface UserService {
 
-    UserVerifiedRepresentation verifyAuth(String username, String password);
+    UserVerifiedRepresentation verifyAuth(String auth);
 }
