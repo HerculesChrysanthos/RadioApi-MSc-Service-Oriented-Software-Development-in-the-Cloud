@@ -45,8 +45,10 @@ public class Broadcast {
     @OneToMany(mappedBy = "broadcast", fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<SongBroadcast> songBroadcasts = new ArrayList<>();
 
+    @Column(name = "user_id")
     private Integer userId;
 
+    @Column(name = "genre_id")
     private Integer genreId;
 
     public Broadcast() {}

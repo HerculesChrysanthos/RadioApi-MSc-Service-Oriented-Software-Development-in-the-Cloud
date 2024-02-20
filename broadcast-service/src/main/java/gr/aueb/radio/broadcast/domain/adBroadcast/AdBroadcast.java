@@ -23,8 +23,8 @@ public class AdBroadcast {
     private LocalTime broadcastTime;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "ad_id")
-//    private Ad ad;
+    @Column(name = "ad_id")
+    private Integer adId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "broadcast_id")

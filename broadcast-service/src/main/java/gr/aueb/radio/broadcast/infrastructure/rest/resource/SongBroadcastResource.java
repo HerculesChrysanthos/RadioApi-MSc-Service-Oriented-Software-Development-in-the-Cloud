@@ -30,9 +30,12 @@ public class SongBroadcastResource {
 
     @GET
     //@RolesAllowed("PRODUCER")
-    public Response search(@QueryParam("date") String date) {
+    public Response search(
+            @QueryParam("date") String date,
+            @HeaderParam("Authorization") String auth
+    ) {
         try {
-            List<SongBroadcast> found = songBroadcastService.search(date);
+            List<SongBroadcast> found = songBroadcastService.search(date, auth);
             return Response.ok().entity(songBroadcastMapper.toRepresentationList(found)).build();
         }catch (RadioException re){
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();

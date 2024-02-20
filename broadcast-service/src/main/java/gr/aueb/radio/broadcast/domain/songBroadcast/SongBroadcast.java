@@ -22,9 +22,9 @@ public class SongBroadcast {
     private LocalTime broadcastTime;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "song_id")
-   private Integer songId;
-//test
+    @Column(name = "song_id")
+    private Integer songId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "broadcast_id")
     private Broadcast broadcast;
@@ -57,13 +57,13 @@ public class SongBroadcast {
         this.broadcastTime = broadcastTime;
     }
 
-//    public Song getSong() {
-//        return song;
-//    }
-//
-//    public void setSong(Song song) {
-//        this.song = song;
-//    }
+    public Integer getSongId() {
+        return songId;
+    }
+
+    public void setSong(Integer songId) {
+        this.songId = songId;
+    }
 
     public Broadcast getBroadcast() {
         return this.broadcast;

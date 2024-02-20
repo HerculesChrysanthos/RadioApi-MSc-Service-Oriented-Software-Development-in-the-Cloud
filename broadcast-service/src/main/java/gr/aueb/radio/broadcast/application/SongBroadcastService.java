@@ -5,6 +5,8 @@ import gr.aueb.radio.broadcast.common.NotFoundException;
 import gr.aueb.radio.broadcast.domain.songBroadcast.SongBroadcast;
 import gr.aueb.radio.broadcast.infrastructure.persistence.SongBroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.SongBroadcastCreationDTO;
+import gr.aueb.radio.broadcast.application.UserService;
+import gr.aueb.radio.broadcast.common.RadioException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -19,6 +21,9 @@ public class SongBroadcastService {
 
     @Inject
     BroadcastService broadcastService;
+
+    @Inject
+    UserService userService;
 
 //    @Inject
 //    SongRepository songRepository;
@@ -53,7 +58,13 @@ public class SongBroadcastService {
 
 
     @Transactional
-    public List<SongBroadcast> search(String date) {
+    public List<SongBroadcast> search(String date, String auth) {
+        String userRole = userService.verifyAuth(auth).role;
+
+        if(!userRole.equals("PRODUCER")){
+            throw new RadioException("Not Allowed to access this.", 403);
+        }
+
         LocalDate dateToSearch;
         if (date == null){
             dateToSearch = DateUtil.dateNow();
