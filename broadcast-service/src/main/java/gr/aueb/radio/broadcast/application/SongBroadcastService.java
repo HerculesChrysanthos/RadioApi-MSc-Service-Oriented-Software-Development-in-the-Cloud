@@ -2,7 +2,7 @@ package gr.aueb.radio.broadcast.application;
 
 import gr.aueb.radio.broadcast.common.DateUtil;
 import gr.aueb.radio.broadcast.common.NotFoundException;
-import gr.aueb.radio.broadcast.domain.broadcast.SongBroadcast.SongBroadcast;
+import gr.aueb.radio.broadcast.domain.songBroadcast.SongBroadcast;
 import gr.aueb.radio.broadcast.infrastructure.persistence.SongBroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.SongBroadcastCreationDTO;
 import jakarta.enterprise.context.RequestScoped;

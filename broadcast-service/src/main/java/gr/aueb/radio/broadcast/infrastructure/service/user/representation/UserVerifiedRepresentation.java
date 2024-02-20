@@ -1,4 +1,4 @@
-package gr.aueb.radio.content.infrastructure.service.user.representation;
+package gr.aueb.radio.broadcast.infrastructure.service.user.representation;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 

@@ -1,8 +1,8 @@
 package gr.aueb.radio.broadcast.domain.broadcast;
 
-import gr.aueb.radio.broadcast.domain.broadcast.adBroadcast.AdBroadcast;
-import gr.aueb.radio.broadcast.domain.broadcast.songBroadcast.SongBroadcast;
 import gr.aueb.radio.broadcast.common.DateUtil;
+import gr.aueb.radio.broadcast.domain.adBroadcast.AdBroadcast;
+import gr.aueb.radio.broadcast.domain.songBroadcast.SongBroadcast;
 import jakarta.persistence.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,9 +39,6 @@ public class Broadcast {
     @Column(name = "timezone")
     private Zone timezone;
 
-
-    private ZoneEnum timezone;
-
     @OneToMany(mappedBy = "broadcast", fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<AdBroadcast> adBroadcasts = new ArrayList<>();
 
@@ -55,7 +52,7 @@ public class Broadcast {
     public Broadcast() {}
 
 
-    public Broadcast(Integer duration, LocalDate startingDate, LocalTime startingTime, BroadcastEnum type) {
+    public Broadcast(Integer duration, LocalDate startingDate, LocalTime startingTime, BroadcastType type) {
         this.duration = duration;
         this.startingDate = startingDate;
         this.startingTime = startingTime;
@@ -91,11 +88,11 @@ public class Broadcast {
         this.timezone = DateUtil.calculateTimezone(this.startingTime);
     }
 
-    public BroadcastEnum getType() {
+    public BroadcastType getType() {
         return type;
     }
 
-    public void setType(BroadcastEnum type) {
+    public void setType(BroadcastType type) {
         this.type = type;
     }
 
@@ -107,7 +104,7 @@ public class Broadcast {
         return this.songBroadcasts;
     }
 
-    public ZoneEnum getTimezone(){
+    public Zone getTimezone(){
         return DateUtil.calculateTimezone(this.startingTime);
     }
 

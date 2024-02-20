@@ -3,10 +3,12 @@ package gr.aueb.radio.broadcast.application;
 import gr.aueb.radio.broadcast.common.NotFoundException;
 import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
+import gr.aueb.radio.broadcast.domain.broadcast.BroadcastType;
 import gr.aueb.radio.broadcast.infrastructure.persistence.BroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastMapper;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastRepresentation;
 import gr.aueb.radio.broadcast.common.DateUtil;
+import gr.aueb.radio.broadcast.infrastructure.rest.representation.OutputBroadcastMapper;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -35,12 +37,14 @@ public class BroadcastService {
     @Inject
     OutputBroadcastMapper outputBroadcastMapper;
 
-    @Inject
-    AdBroadcastRepository adBroadcastRepository;
-
-    @Inject
-    SongBroadcastRepository songBroadcastRepository;
+    // better each service to interact with another service. Not with the repository of other entity
+//    @Inject
+//    AdBroadcastRepository adBroadcastRepository;
 //
+//    @Inject
+//    SongBroadcastRepository songBroadcastRepository;
+//
+
 //    @Inject
 //    PlaylistService playlistService;
 //
@@ -79,56 +83,56 @@ public class BroadcastService {
         return false;
     }
 
-    @Transactional
-    public Broadcast create(BroadcastRepresentation broadcastRepresentation){
-        Broadcast broadcastToCreate = broadcastMapper.toModel(broadcastRepresentation);
-        LocalDate date = broadcastToCreate.getStartingDate();
-        LocalTime startingTime = broadcastToCreate.getStartingTime();
-        LocalTime endingTime = broadcastToCreate.getBroadcastEndingDateTime().toLocalTime();
+//    @Transactional
+//    public Broadcast create(BroadcastRepresentation broadcastRepresentation){
+//        Broadcast broadcastToCreate = broadcastMapper.toModel(broadcastRepresentation);
+//        LocalDate date = broadcastToCreate.getStartingDate();
+//        LocalTime startingTime = broadcastToCreate.getStartingTime();
+//        LocalTime endingTime = broadcastToCreate.getBroadcastEndingDateTime().toLocalTime();
+//
+//        //verify auth user producer role
+//        String userRole = userService.verifyAuth(auth).role;
+//        if(!userRole.equals("PRODUCER")){
+//            throw new RadioException("Not Allowed to change this.", 403);
+//        }
+//
+//        if (checkForOverlapping(date, startingTime, endingTime, -1)){
+//            throw new RadioException("Overlapping found cannot create Broadcast");
+//        }
+//        if(broadcastToCreate.getType().(BroadcastType.PLAYLIST)){
+//            playlistService.populateBroadcast(broadcastToCreate);
+//        }
+//
+//        broadcastRepository.persist(broadcastToCreate);
+//        return broadcastToCreate;
+//    }
 
-        //verify auth user producer role
-        String userRole = userService.verifyAuth(auth).role;
-        if(!userRole.equals("PRODUCER")){
-            throw new RadioException("Not Allowed to change this.", 403);
-        }
-
-        if (checkForOverlapping(date, startingTime, endingTime, -1)){
-            throw new RadioException("Overlapping found cannot create Broadcast");
-        }
-        if(broadcastToCreate.getType() == BroadcastEnum.PLAYLIST){
-            playlistService.populateBroadcast(broadcastToCreate);
-        }
-
-        broadcastRepository.persist(broadcastToCreate);
-        return broadcastToCreate;
-    }
-
-    @Transactional
-    public Broadcast update(Integer id, BroadcastRepresentation broadcastRepresentation){
-        // try to find broadcast, if broadcast is not found, find func will throw NotFoundException
-        String userRole = userService.verifyAuth(auth).role;
-
-        if(!userRole.equals("PRODUCER")){
-            throw new RadioException("Not Allowed to change this.", 403);
-        }
-        Broadcast broadcast = this.findById(id);
-        int addBroadcastSize = broadcast.getAdBroadcasts().size();
-        int songBroadcastSize = broadcast.getSongBroadcasts().size();
-        // Broadcast is immutable because it has registered song/add broadcasts
-        if (addBroadcastSize != 0 || songBroadcastSize != 0){
-            throw new RadioException("Broadcast has songs/adds scheduled, cannot be updated");
-        }
-        LocalDate date = DateUtil.setDate(broadcastRepresentation.startingDate);
-        LocalTime startingTime = DateUtil.setTime(broadcastRepresentation.startingTime);
-        LocalTime endingTime = startingTime.plusMinutes(broadcastRepresentation.duration);
-        // Cannot update broadcast because the updated values will overlap another broadcast
-        if(checkForOverlapping(date, startingTime, endingTime, broadcast.getId())){
-            throw new RadioException("Overlapping found cannot update Broadcast");
-        }
-        broadcast = updateValues(broadcast, broadcastRepresentation);
-        broadcastRepository.getEntityManager().merge(broadcast);
-        return broadcast;
-    }
+//    @Transactional
+//    public Broadcast update(Integer id, BroadcastRepresentation broadcastRepresentation){
+//        // try to find broadcast, if broadcast is not found, find func will throw NotFoundException
+//        String userRole = userService.verifyAuth(auth).role;
+//
+//        if(!userRole.equals("PRODUCER")){
+//            throw new RadioException("Not Allowed to change this.", 403);
+//        }
+//        Broadcast broadcast = this.findById(id);
+//        int addBroadcastSize = broadcast.getAdBroadcasts().size();
+//        int songBroadcastSize = broadcast.getSongBroadcasts().size();
+//        // Broadcast is immutable because it has registered song/add broadcasts
+//        if (addBroadcastSize != 0 || songBroadcastSize != 0){
+//            throw new RadioException("Broadcast has songs/adds scheduled, cannot be updated");
+//        }
+//        LocalDate date = DateUtil.setDate(broadcastRepresentation.startingDate);
+//        LocalTime startingTime = DateUtil.setTime(broadcastRepresentation.startingTime);
+//        LocalTime endingTime = startingTime.plusMinutes(broadcastRepresentation.duration);
+//        // Cannot update broadcast because the updated values will overlap another broadcast
+//        if(checkForOverlapping(date, startingTime, endingTime, broadcast.getId())){
+//            throw new RadioException("Overlapping found cannot update Broadcast");
+//        }
+//        broadcast = updateValues(broadcast, broadcastRepresentation);
+//        broadcastRepository.getEntityManager().merge(broadcast);
+//        return broadcast;
+//    }
 
 //    @Transactional
 //    public void delete(Integer id){

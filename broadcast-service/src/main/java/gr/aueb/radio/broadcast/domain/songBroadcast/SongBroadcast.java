@@ -1,4 +1,4 @@
-package gr.aueb.radio.broadcast.domain.broadcast.SongBroadcast;
+package gr.aueb.radio.broadcast.domain.songBroadcast;
 
 import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
 import jakarta.persistence.*;

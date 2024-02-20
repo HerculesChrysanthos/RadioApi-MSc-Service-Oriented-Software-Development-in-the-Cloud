@@ -1,6 +1,6 @@
 package gr.aueb.radio.broadcast.infrastructure.persistence;
 
-import gr.aueb.radio.broadcast.domain.broadcast.SongBroadcast.SongBroadcast;
+import gr.aueb.radio.broadcast.domain.songBroadcast.SongBroadcast;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;

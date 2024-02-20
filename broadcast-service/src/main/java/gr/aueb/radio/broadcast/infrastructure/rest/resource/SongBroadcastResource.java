@@ -2,7 +2,7 @@ package gr.aueb.radio.broadcast.infrastructure.rest.resource;
 
 import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.application.SongBroadcastService;
-import gr.aueb.radio.broadcast.domain.broadcast.SongBroadcast.SongBroadcast;
+import gr.aueb.radio.broadcast.domain.songBroadcast.SongBroadcast;
 import gr.aueb.radio.broadcast.infrastructure.rest.ApiPath.Root;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.SongBroadcastCreationDTO;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.SongBroadcastMapper;

@@ -2,7 +2,7 @@ package gr.aueb.radio.broadcast.infrastructure.rest.resource;
 
 import gr.aueb.radio.broadcast.application.AdBroadcastService;
 import gr.aueb.radio.broadcast.common.RadioException;
-import gr.aueb.radio.broadcast.domain.broadcast.AdBroadcast.AdBroadcast;
+import gr.aueb.radio.broadcast.domain.adBroadcast.AdBroadcast;
 import gr.aueb.radio.broadcast.infrastructure.rest.ApiPath.Root;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.AdBroadcastCreationDTO;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.AdBroadcastMapper;

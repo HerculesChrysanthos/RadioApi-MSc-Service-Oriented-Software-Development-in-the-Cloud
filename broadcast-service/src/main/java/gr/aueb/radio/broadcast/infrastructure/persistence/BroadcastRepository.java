@@ -1,9 +1,7 @@
 package gr.aueb.radio.broadcast.infrastructure.persistence;
 
-
-
 import  gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
-import  gr.aueb.radio.broadcast.domain.broadcast.enums.*;
+import gr.aueb.radio.broadcast.domain.broadcast.BroadcastType;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import io.quarkus.panache.common.Parameters;
@@ -79,7 +77,7 @@ public class BroadcastRepository implements PanacheRepositoryBase<Broadcast, Int
         return find("select distinct b from Broadcast b left join fetch b.adBroadcasts where b in :broadcasts", Parameters.with("broadcasts", broadcasts).map()).list();
     }
 
-    public List<Broadcast> findByTimeRangeType(LocalTime from, LocalTime to, BroadcastEnum type){
+    public List<Broadcast> findByTimeRangeType(LocalTime from, LocalTime to, BroadcastType type){
         Map<String, Object> params = new HashMap<>();
         params.put("toTime", to);
         params.put("fromTime", from);
@@ -88,7 +86,7 @@ public class BroadcastRepository implements PanacheRepositoryBase<Broadcast, Int
         return find("select distinct b from Broadcast b left join fetch b.adBroadcasts where b in :broadcasts", Parameters.with("broadcasts", broadcasts).map()).list();
     }
 
-    public List<Broadcast> findByTimeRangeDateType(LocalTime from, LocalTime to, LocalDate date, BroadcastEnum type){
+    public List<Broadcast> findByTimeRangeDateType(LocalTime from, LocalTime to, LocalDate date, BroadcastType type){
         Map<String, Object> params = new HashMap<>();
         params.put("toTime", to);
         params.put("fromTime", from);

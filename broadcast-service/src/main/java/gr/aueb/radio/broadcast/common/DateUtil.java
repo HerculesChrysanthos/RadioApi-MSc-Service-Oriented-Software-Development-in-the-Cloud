@@ -1,7 +1,7 @@
 package gr.aueb.radio.broadcast.common;
 
 
-import gr.aueb.radio.broadcast.domain.broadcast.enums.ZoneEnum;
+import gr.aueb.radio.broadcast.domain.broadcast.Zone;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -97,19 +97,19 @@ public class DateUtil {
         return false;
     }
 
-    public static ZoneEnum calculateTimezone(LocalTime startingTime){
+    public static Zone calculateTimezone(LocalTime startingTime){
         if (DateUtil.betweenCloseOpen(LocalTime.of(0,0), startingTime,LocalTime.of(6,0))){
-            return ZoneEnum.LateNight;
+            return Zone.LateNight;
         } else if (DateUtil.betweenCloseOpen(LocalTime.of(6,0), startingTime, LocalTime.of(10,0))) {
-            return ZoneEnum.EarlyMorning;
+            return Zone.EarlyMorning;
         } else if (DateUtil.betweenCloseOpen(LocalTime.of(10,0), startingTime, LocalTime.of(13,0))){
-            return ZoneEnum.Morning;
+            return Zone.Morning;
         } else if (DateUtil.betweenCloseOpen(LocalTime.of(13,0), startingTime, LocalTime.of(17,0))){
-            return ZoneEnum.Noon;
+            return Zone.Noon;
         } else if (DateUtil.betweenCloseOpen(LocalTime.of(17,0), startingTime, LocalTime.of(20,0))){
-            return ZoneEnum.Afternoon;
+            return Zone.Afternoon;
         } else {
-            return ZoneEnum.PrimeTime;
+            return Zone.PrimeTime;
         }
     }
 }

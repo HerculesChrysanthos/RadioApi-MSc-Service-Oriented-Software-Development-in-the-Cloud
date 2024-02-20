@@ -3,18 +3,23 @@ package gr.aueb.radio.broadcast.infrastructure.rest.resource;
 import gr.aueb.radio.broadcast.application.BroadcastService;
 import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
-import gr.aueb.radio.broadcast.domain.broadcast.enums.BroadcastEnum;
+import gr.aueb.radio.broadcast.domain.broadcast.BroadcastType;
 import gr.aueb.radio.broadcast.infrastructure.rest.ApiPath.Root;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastMapper;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastOutputRepresentation;
+import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastRepresentation;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.OutputBroadcastMapper;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriBuilder;
 import lombok.extern.slf4j.Slf4j;
+
+import java.net.URI;
 
 @Path(Root.BROADCASTS)
 @Produces(MediaType.APPLICATION_JSON)
@@ -67,18 +72,18 @@ public class BroadcastResource {
 //        return Response.ok().entity(playingNow).build();
 //    }
 //
-    @POST
-//    @RolesAllowed("PRODUCER")
-    public Response create(@Valid BroadcastRepresentation broadcastRepresentation){
-        try{
-            Broadcast broadcast = broadcastService.create(broadcastRepresentation);
-            URI uri = UriBuilder.fromResource(BroadcastResource.class).path(String.valueOf(broadcast.getId())).build();
-            return Response.created(uri).entity(outputBroadcastMapper.toRepresentation(broadcast)).build();
-        }catch (RadioException re){
-            log.error("Broadcast overlapping restriction triggered");
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
-        }
-    }
+//    @POST
+////    @RolesAllowed("PRODUCER")
+//    public Response create(@Valid BroadcastRepresentation broadcastRepresentation){
+//        try{
+//            Broadcast broadcast = broadcastService.create(broadcastRepresentation);
+//            URI uri = UriBuilder.fromResource(BroadcastResource.class).path(String.valueOf(broadcast.getId())).build();
+//            return Response.created(uri).entity(outputBroadcastMapper.toRepresentation(broadcast)).build();
+//        }catch (RadioException re){
+//            log.error("Broadcast overlapping restriction triggered");
+//            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+//        }
+//    }
 //
 //
 //    @PUT

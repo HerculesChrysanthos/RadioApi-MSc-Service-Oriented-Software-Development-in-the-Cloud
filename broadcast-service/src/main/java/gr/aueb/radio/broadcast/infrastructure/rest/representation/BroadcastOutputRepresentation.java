@@ -1,6 +1,6 @@
 package gr.aueb.radio.broadcast.infrastructure.rest.representation;
 
-import gr.aueb.radio.broadcast.domain.broadcast.enums.BroadcastEnum;
+import gr.aueb.radio.broadcast.domain.broadcast.BroadcastType;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
 @RegisterForReflection
@@ -10,7 +10,7 @@ public class BroadcastOutputRepresentation {
     public Integer duration;
     public String startingDate;
     public String startingTime;
-    public BroadcastEnum type;
+    public BroadcastType type;
 //    public List<SongBroadcastRepresentation> songBroadcasts;
 //    public List<AdBroadcastRepresentation> adBroadcasts;
 //

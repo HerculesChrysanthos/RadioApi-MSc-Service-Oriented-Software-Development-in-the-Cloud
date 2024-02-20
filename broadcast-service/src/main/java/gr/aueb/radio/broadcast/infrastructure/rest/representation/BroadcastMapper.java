@@ -1,8 +1,9 @@
 package gr.aueb.radio.broadcast.infrastructure.rest.representation;
 
-
 import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
+import org.mapstruct.InjectionStrategy;
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
@@ -11,10 +12,10 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-//@Mapper(componentModel = "cdi",
-//        injectionStrategy = InjectionStrategy.CONSTRUCTOR,
-//        uses = {SongBroadcastMapper.class, AdBroadcastMapper.class}
-//)
+@Mapper(componentModel = "cdi",
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR,
+        uses = {SongBroadcastMapper.class, AdBroadcastMapper.class}
+)
 public abstract class BroadcastMapper {
 
     @Mapping(target = "startingTime", source = "startingTime", qualifiedByName = "stringTimeFormatter")

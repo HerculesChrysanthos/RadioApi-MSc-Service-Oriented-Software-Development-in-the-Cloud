@@ -1,4 +1,4 @@
-package gr.aueb.radio.broadcast.domain.broadcast.AdBroadcast;
+package gr.aueb.radio.broadcast.domain.adBroadcast;
 
 
 import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;

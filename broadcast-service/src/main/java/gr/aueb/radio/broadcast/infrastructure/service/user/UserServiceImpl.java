@@ -1,8 +1,8 @@
-package gr.aueb.radio.content.infrastructure.service.user;
+package gr.aueb.radio.broadcast.infrastructure.service.user;
 
-import gr.aueb.radio.content.application.UserService;
-import gr.aueb.radio.content.common.RadioException;
-import gr.aueb.radio.content.infrastructure.service.user.representation.UserVerifiedRepresentation;
+import gr.aueb.radio.broadcast.application.UserService;
+import gr.aueb.radio.broadcast.common.RadioException;
+import gr.aueb.radio.broadcast.infrastructure.service.user.representation.UserVerifiedRepresentation;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.ProcessingException;

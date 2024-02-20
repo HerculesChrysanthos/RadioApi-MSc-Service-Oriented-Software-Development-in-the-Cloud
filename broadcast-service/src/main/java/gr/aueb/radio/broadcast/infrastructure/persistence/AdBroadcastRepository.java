@@ -1,8 +1,8 @@
 package gr.aueb.radio.broadcast.infrastructure.persistence;
 
-import gr.aueb.radio.broadcast.domain.broadcast.AdBroadcast.AdBroadcast;
-import gr.aueb.radio.broadcast.domain.broadcast.enums.BroadcastEnum;
-import gr.aueb.radio.broadcast.domain.broadcast.enums.ZoneEnum;
+import gr.aueb.radio.broadcast.domain.adBroadcast.AdBroadcast;
+import gr.aueb.radio.broadcast.domain.broadcast.BroadcastType;
+import gr.aueb.radio.broadcast.domain.broadcast.Zone;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -15,14 +15,14 @@ import java.util.Map;
 
 @ApplicationScoped
 public class AdBroadcastRepository implements PanacheRepositoryBase<AdBroadcast, Integer> {
-    public List<AdBroadcast> findByTimezoneDate(ZoneEnum timezone, LocalDate date){
+    public List<AdBroadcast> findByTimezoneDate(Zone timezone, LocalDate date){
         Map<String, Object> params = new HashMap<>();
         params.put("date", date);
         params.put("timezone", timezone);
         return find("select ab from AdBroadcast ab where ab.ad.timezone = :timezone and ab.broadcastDate= :date", params).list();
     }
 
-    public List<AdBroadcast> findByTypeDate(BroadcastEnum type, LocalDate date){
+    public List<AdBroadcast> findByTypeDate(BroadcastType type, LocalDate date){
         Map<String, Object> params = new HashMap<>();
         params.put("date", date);
         params.put("type", type);

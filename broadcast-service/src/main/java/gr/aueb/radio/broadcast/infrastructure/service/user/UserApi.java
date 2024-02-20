@@ -1,6 +1,6 @@
-package gr.aueb.radio.content.infrastructure.service.user;
+package gr.aueb.radio.broadcast.infrastructure.service.user;
 
-import gr.aueb.radio.content.infrastructure.service.user.representation.UserVerifiedRepresentation;
+import gr.aueb.radio.broadcast.infrastructure.service.user.representation.UserVerifiedRepresentation;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
