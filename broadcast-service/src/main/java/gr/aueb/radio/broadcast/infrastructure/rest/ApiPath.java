@@ -1,4 +1,4 @@
-package gr.aueb.radio.broadcast.infrastructure.rest.resource;
+package gr.aueb.radio.broadcast.infrastructure.rest;
 
 public class ApiPath {
 
