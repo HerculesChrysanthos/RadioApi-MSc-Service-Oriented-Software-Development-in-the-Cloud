@@ -26,7 +26,8 @@ public class SongInputDTO {
     public Integer duration;
 
     @NotNull
-    @NotBlank
+    // constraint (@NotBlank) intended for strings on an integer field
+//    @NotBlank
     public Integer genreId;
 
     public SongRepresentation toRepresentation() {
