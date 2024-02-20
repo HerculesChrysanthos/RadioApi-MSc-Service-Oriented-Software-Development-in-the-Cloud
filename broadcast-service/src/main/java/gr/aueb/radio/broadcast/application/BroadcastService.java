@@ -32,14 +32,14 @@ public class BroadcastService {
 //    @Inject
 //    AdMapper adMapper;
 //
-//    @Inject
-//    OutputBroadcastMapper outputBroadcastMapper;
-//
-//    @Inject
-//    AdBroadcastRepository adBroadcastRepository;
-//
-//    @Inject
-//    SongBroadcastRepository songBroadcastRepository;
+    @Inject
+    OutputBroadcastMapper outputBroadcastMapper;
+
+    @Inject
+    AdBroadcastRepository adBroadcastRepository;
+
+    @Inject
+    SongBroadcastRepository songBroadcastRepository;
 //
 //    @Inject
 //    PlaylistService playlistService;
@@ -78,26 +78,39 @@ public class BroadcastService {
         }
         return false;
     }
-//
-//    @Transactional
-//    public Broadcast create(BroadcastRepresentation broadcastRepresentation){
-//        Broadcast broadcastToCreate = broadcastMapper.toModel(broadcastRepresentation);
-//        LocalDate date = broadcastToCreate.getStartingDate();
-//        LocalTime startingTime = broadcastToCreate.getStartingTime();
-//        LocalTime endingTime = broadcastToCreate.getBroadcastEndingDateTime().toLocalTime();
-//        if (checkForOverlapping(date, startingTime, endingTime, -1)){
-//            throw new RadioException("Overlapping found cannot create Broadcast");
-//        }
-//        if(broadcastToCreate.getType() == BroadcastEnum.PLAYLIST){
-//            playlistService.populateBroadcast(broadcastToCreate);
-//        }
-//        broadcastRepository.persist(broadcastToCreate);
-//        return broadcastToCreate;
-//    }
+
+    @Transactional
+    public Broadcast create(BroadcastRepresentation broadcastRepresentation){
+        Broadcast broadcastToCreate = broadcastMapper.toModel(broadcastRepresentation);
+        LocalDate date = broadcastToCreate.getStartingDate();
+        LocalTime startingTime = broadcastToCreate.getStartingTime();
+        LocalTime endingTime = broadcastToCreate.getBroadcastEndingDateTime().toLocalTime();
+
+        //verify auth user producer role
+        String userRole = userService.verifyAuth(auth).role;
+        if(!userRole.equals("PRODUCER")){
+            throw new RadioException("Not Allowed to change this.", 403);
+        }
+
+        if (checkForOverlapping(date, startingTime, endingTime, -1)){
+            throw new RadioException("Overlapping found cannot create Broadcast");
+        }
+        if(broadcastToCreate.getType() == BroadcastEnum.PLAYLIST){
+            playlistService.populateBroadcast(broadcastToCreate);
+        }
+
+        broadcastRepository.persist(broadcastToCreate);
+        return broadcastToCreate;
+    }
 
     @Transactional
     public Broadcast update(Integer id, BroadcastRepresentation broadcastRepresentation){
         // try to find broadcast, if broadcast is not found, find func will throw NotFoundException
+        String userRole = userService.verifyAuth(auth).role;
+
+        if(!userRole.equals("PRODUCER")){
+            throw new RadioException("Not Allowed to change this.", 403);
+        }
         Broadcast broadcast = this.findById(id);
         int addBroadcastSize = broadcast.getAdBroadcasts().size();
         int songBroadcastSize = broadcast.getSongBroadcasts().size();

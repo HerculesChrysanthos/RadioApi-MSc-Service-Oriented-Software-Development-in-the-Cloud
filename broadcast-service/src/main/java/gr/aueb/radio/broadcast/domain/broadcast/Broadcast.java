@@ -1,9 +1,7 @@
 package gr.aueb.radio.broadcast.domain.broadcast;
 
-import gr.aueb.radio.broadcast.domain.broadcast.AdBroadcast.AdBroadcast;
-import gr.aueb.radio.broadcast.domain.broadcast.SongBroadcast.SongBroadcast;
-import gr.aueb.radio.broadcast.domain.broadcast.enums.BroadcastEnum;
-import gr.aueb.radio.broadcast.domain.broadcast.enums.ZoneEnum;
+import gr.aueb.radio.broadcast.domain.broadcast.adBroadcast.AdBroadcast;
+import gr.aueb.radio.broadcast.domain.broadcast.songBroadcast.SongBroadcast;
 import gr.aueb.radio.broadcast.common.DateUtil;
 import jakarta.persistence.*;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +33,12 @@ public class Broadcast {
 
     @Enumerated(EnumType.STRING)
     @Column(name="type")
-    private BroadcastEnum type;
+    private BroadcastType type;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "timezone")
+    private Zone timezone;
+
 
     private ZoneEnum timezone;
 
