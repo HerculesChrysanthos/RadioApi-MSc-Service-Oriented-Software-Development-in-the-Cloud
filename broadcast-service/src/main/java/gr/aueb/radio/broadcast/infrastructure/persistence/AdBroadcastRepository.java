@@ -18,8 +18,12 @@ public class AdBroadcastRepository implements PanacheRepositoryBase<AdBroadcast,
     public List<AdBroadcast> findByTimezoneDate(Zone timezone, LocalDate date){
         Map<String, Object> params = new HashMap<>();
         params.put("date", date);
-        params.put("timezone", timezone);
-        return find("select ab from AdBroadcast ab where ab.ad.timezone = :timezone and ab.broadcastDate= :date", params).list();
+       // params.put("timezone", timezone);
+       // return find("select ab from AdBroadcast ab where ab.ad.timezone = :timezone and ab.broadcastDate= :date", params).list();
+
+        // todo : to timezone prepei na erxetai apo to content service h na to kratame panw sto adBroadcast
+        return find("select ab from AdBroadcast ab where ab.broadcastDate= :date", params).list();
+
     }
 
     public List<AdBroadcast> findByTypeDate(BroadcastType type, LocalDate date){

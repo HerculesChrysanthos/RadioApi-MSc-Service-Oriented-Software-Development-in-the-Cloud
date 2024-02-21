@@ -3,6 +3,7 @@ package gr.aueb.radio.broadcast.domain.broadcast;
 import gr.aueb.radio.broadcast.common.DateUtil;
 import gr.aueb.radio.broadcast.domain.adBroadcast.AdBroadcast;
 import gr.aueb.radio.broadcast.domain.songBroadcast.SongBroadcast;
+import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdBasicRepresentation;
 import jakarta.persistence.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -125,7 +126,8 @@ public class Broadcast {
     public void setGenreId(Integer genreId) {
         this.genreId = genreId;
     }
-    //    public AdBroadcast createAdBroadcast(Ad ad, LocalTime time){
+
+    public AdBroadcast createAdBroadcast(AdBasicRepresentation ad, LocalTime time){
 //        if (!adCanBeAdded(ad, time)){
 //            return null;
 //        }
@@ -133,12 +135,12 @@ public class Broadcast {
 //            log.info("Broadcast occurrence restriction");
 //            return null;
 //        }
-//        AdBroadcast adBroadcast = new AdBroadcast(this.startingDate, time);
-//        adBroadcast.setBroadcast(this);
-//        ad.addBroadcastAd(adBroadcast);
-//        this.adBroadcasts.add(adBroadcast);
-//        return adBroadcast;
-//    }
+        AdBroadcast adBroadcast = new AdBroadcast(this.startingDate, time);
+        adBroadcast.setBroadcast(this);
+        //ad.addBroadcastAd(adBroadcast);
+        this.adBroadcasts.add(adBroadcast);
+        return adBroadcast;
+    }
 
 //    public SongBroadcast createSongBroadcast(Song song, LocalTime time){
 //        if(!songCanBeAdded(song, time)){

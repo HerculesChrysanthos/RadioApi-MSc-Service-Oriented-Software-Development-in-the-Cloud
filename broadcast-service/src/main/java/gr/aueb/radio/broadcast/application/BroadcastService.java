@@ -13,6 +13,7 @@ import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastMappe
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastRepresentation;
 import gr.aueb.radio.broadcast.common.DateUtil;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.OutputBroadcastMapper;
+import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdBasicRepresentation;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -168,23 +169,23 @@ public class BroadcastService {
 //        return outputBroadcastMapper.toRepresentationList(broadcasts);
 //    }
 
-//    @Transactional
-//    public AdBroadcast scheduleAd(Integer id, Ad ad, LocalTime startingTime){
-//        Broadcast broadcast = broadcastRepository.findByIdAdDetails(id);
-//        if (broadcast == null){
-//            throw new NotFoundException("Broadcast not found");
-//        }
-//        int adBroadcastsInTimezone = adBroadcastRepository.findByTimezoneDate(broadcast.getTimezone(), broadcast.getStartingDate()).size();
-//        if (adBroadcastsInTimezone >= 4){
-//            throw new RadioException("Add cannot be scheduled to broadcast");
-//        }
-//        AdBroadcast created = broadcast.createAdBroadcast(ad, startingTime);
-//        if (created == null){
-//            throw new RadioException("Add cannot be scheduled to broadcast");
-//        }
-//        adBroadcastRepository.persist(created);
-//        return created;
-//    }
+    @Transactional
+    public AdBroadcast scheduleAd(Integer id, AdBasicRepresentation ad, LocalTime startingTime){
+        Broadcast broadcast = broadcastRepository.findByIdAdDetails(id);
+        if (broadcast == null){
+            throw new NotFoundException("Broadcast not found");
+        }
+        int adBroadcastsInTimezone = adBroadcastRepository.findByTimezoneDate(broadcast.getTimezone(), broadcast.getStartingDate()).size();
+        if (adBroadcastsInTimezone >= 4){
+            throw new RadioException("Add cannot be scheduled to broadcast");
+        }
+        AdBroadcast created = broadcast.createAdBroadcast(ad, startingTime);
+        if (created == null){
+            throw new RadioException("Add cannot be scheduled to broadcast");
+        }
+        adBroadcastRepository.persist(created);
+        return created;
+    }
 //
 //    @Transactional
 //    public SongBroadcast scheduleSong(Integer id, Song song, LocalTime startingTime){
