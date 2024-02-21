@@ -12,7 +12,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-@Mapper(componentModel = "cdi",
+@Mapper(componentModel = "jakarta",
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         uses = {SongBroadcastMapper.class, AdBroadcastMapper.class}
 )
