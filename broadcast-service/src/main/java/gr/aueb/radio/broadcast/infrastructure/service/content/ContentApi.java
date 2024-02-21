@@ -1,6 +1,7 @@
 package gr.aueb.radio.broadcast.infrastructure.service.content;
 
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdBasicRepresentation;
+import gr.aueb.radio.broadcast.infrastructure.service.content.representation.SongBasicRepresentation;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
@@ -16,6 +17,13 @@ public interface ContentApi {
     @GET
     @Path("/ads/{id}")
     AdBasicRepresentation getAdId(
+            @HeaderParam("Authorization") String basicAuthHeader,
+            @PathParam("id") Integer id
+    );
+
+    @GET
+    @Path("/songs/{id}")
+    SongBasicRepresentation getSongId(
             @HeaderParam("Authorization") String basicAuthHeader,
             @PathParam("id") Integer id
     );
