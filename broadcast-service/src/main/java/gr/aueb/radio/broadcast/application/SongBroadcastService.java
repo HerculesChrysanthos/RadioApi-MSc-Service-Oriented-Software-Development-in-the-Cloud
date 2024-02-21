@@ -10,6 +10,7 @@ import gr.aueb.radio.broadcast.common.RadioException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,8 +20,8 @@ public class SongBroadcastService {
     @Inject
     SongBroadcastRepository songBroadcastRepository;
 
-//    @Inject
-//    BroadcastService broadcastService;
+    @Inject
+    BroadcastService broadcastService;
 
     @Inject
     UserService userService;
@@ -53,14 +54,21 @@ public class SongBroadcastService {
         return songBroadcast;
     }
 
-//    @Transactional
-//    public void delete(Integer id) {
-//        SongBroadcast songBroadcast = songBroadcastRepository.findById(id);
-//        if (songBroadcast == null){
-//            throw new NotFoundException("Song Broadcast does not exist");
-//        }
-//        broadcastService.removeSongBroadcast(songBroadcast.getBroadcast().getId(), songBroadcast.getId());
-//    }
+    @Transactional
+    public void delete(Integer id, String auth) {
+        //verify auth
+        String userRole = userService.verifyAuth(auth).role;
+
+        if(!userRole.equals("PRODUCER")){
+            throw new RadioException("Not Allowed to access this.", 403);
+        }
+
+        SongBroadcast songBroadcast = songBroadcastRepository.findById(id);
+        if (songBroadcast == null){
+            throw new NotFoundException("Song Broadcast does not exist");
+        }
+        broadcastService.removeSongBroadcast(songBroadcast.getBroadcast().getId(), songBroadcast.getId());
+    }
 
 
     @Transactional

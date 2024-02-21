@@ -2,9 +2,13 @@ package gr.aueb.radio.broadcast.application;
 
 import gr.aueb.radio.broadcast.common.NotFoundRadioException;
 import gr.aueb.radio.broadcast.common.RadioException;
+import gr.aueb.radio.broadcast.domain.adBroadcast.AdBroadcast;
 import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
 import gr.aueb.radio.broadcast.domain.broadcast.BroadcastType;
+import gr.aueb.radio.broadcast.domain.songBroadcast.SongBroadcast;
+import gr.aueb.radio.broadcast.infrastructure.persistence.AdBroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.persistence.BroadcastRepository;
+import gr.aueb.radio.broadcast.infrastructure.persistence.SongBroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastMapper;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastRepresentation;
 import gr.aueb.radio.broadcast.common.DateUtil;
@@ -12,6 +16,7 @@ import gr.aueb.radio.broadcast.infrastructure.rest.representation.OutputBroadcas
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
@@ -38,11 +43,11 @@ public class BroadcastService {
     OutputBroadcastMapper outputBroadcastMapper;
 
     // better each service to interact with another service. Not with the repository of other entity
-//    @Inject
-//    AdBroadcastRepository adBroadcastRepository;
-//
-//    @Inject
-//    SongBroadcastRepository songBroadcastRepository;
+    @Inject
+    AdBroadcastRepository adBroadcastRepository;
+
+    @Inject
+    SongBroadcastRepository songBroadcastRepository;
 //
 
 //    @Inject
@@ -195,33 +200,34 @@ public class BroadcastService {
 //        return created;
 //    }
 //
-//    @Transactional
-//    public void removeAdBroadcast(Integer id, Integer abId){
-//        Broadcast broadcast = broadcastRepository.findByIdAdDetails(id);
-//        if (broadcast == null){
-//            throw new NotFoundException("Broadcast not found");
-//        }
-//        AdBroadcast adBroadcast = adBroadcastRepository.findById(abId);
-//        if(adBroadcast == null){
-//            throw new NotFoundException("Add Broadcast not found");
-//        }
-//        broadcast.removeAdBroadcast(adBroadcast);
-//        adBroadcastRepository.deleteById(abId);
-//    }
+    @Transactional
+    public void removeAdBroadcast(Integer id, Integer abId){
+        Broadcast broadcast = broadcastRepository.findByIdAdDetails(id);
+        if (broadcast == null){
+            throw new NotFoundException("Broadcast not found");
+        }
+        AdBroadcast adBroadcast = adBroadcastRepository.findById(abId);
+        // maybe the below check should be removed - to check
+        if(adBroadcast == null){
+            throw new NotFoundException("Add Broadcast not found");
+        }
+        broadcast.removeAdBroadcast(adBroadcast);
+        adBroadcastRepository.deleteById(abId);
+    }
 //
-//    @Transactional
-//    public void removeSongBroadcast(Integer id, Integer sbId){
-//        Broadcast broadcast = broadcastRepository.findByIdSongDetails(id);
-//        if (broadcast == null){
-//            throw new NotFoundException("Broadcast not found");
-//        }
-//        SongBroadcast songBroadcast = songBroadcastRepository.findById(sbId);
-//        if(songBroadcast == null){
-//            throw new NotFoundException("Song Broadcast not found");
-//        }
-//        broadcast.removeSongBroadcast(songBroadcast);
-//        songBroadcastRepository.deleteById(sbId);
-//    }
+    @Transactional
+    public void removeSongBroadcast(Integer id, Integer sbId){
+        Broadcast broadcast = broadcastRepository.findByIdSongDetails(id);
+        if (broadcast == null){
+            throw new NotFoundException("Broadcast not found");
+        }
+        SongBroadcast songBroadcast = songBroadcastRepository.findById(sbId);
+        if(songBroadcast == null){
+            throw new NotFoundException("Song Broadcast not found");
+        }
+        broadcast.removeSongBroadcast(songBroadcast);
+        songBroadcastRepository.deleteById(sbId);
+    }
 //
 //    @Transactional
 //    public SuggestionsDTO suggestions(Integer id){

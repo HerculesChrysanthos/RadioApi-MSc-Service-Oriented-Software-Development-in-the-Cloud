@@ -58,17 +58,20 @@ public class SongBroadcastResource {
         }
     }
 
-//    @DELETE
-//    @Path("/{id}")
-//    //@RolesAllowed("PRODUCER")
-//    public Response delete(@PathParam("id") Integer id) {
-//        try {
-//            songBroadcastService.delete(id);
-//            return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
-//        }catch (NotFoundException e){
-//            return Response.status(Response.Status.NOT_FOUND.getStatusCode(), e.getMessage()).build();
-//        }
-//    }
+    @DELETE
+    @Path("/{id}")
+    //@RolesAllowed("PRODUCER")
+    public Response delete(
+            @PathParam("id") Integer id,
+            @HeaderParam("Authorization") String auth
+            ) {
+        try {
+            songBroadcastService.delete(id, auth);
+            return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
+        }catch (NotFoundException e){
+            return Response.status(Response.Status.NOT_FOUND.getStatusCode(), e.getMessage()).build();
+        }
+    }
 
 
 //    @POST

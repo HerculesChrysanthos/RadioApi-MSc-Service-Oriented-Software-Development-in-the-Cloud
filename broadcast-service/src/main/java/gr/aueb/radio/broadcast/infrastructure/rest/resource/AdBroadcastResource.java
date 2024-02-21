@@ -57,24 +57,30 @@ public class AdBroadcastResource {
         }
     }
 
-//    @DELETE
-//    @Path("/{id}")
-//    //@RolesAllowed("PRODUCER")
-//    public Response delete(@PathParam("id") Integer id) {
-//        try {
-//            adBroadcastService.delete(id);
-//            return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
-//        }catch (NotFoundException e){
-//            return Response.status(Response.Status.NOT_FOUND.getStatusCode(), e.getMessage()).build();
-//        }
-//    }
+    @DELETE
+    @Path("/{id}")
+    //@RolesAllowed("PRODUCER")
+    public Response delete(
+            @PathParam("id") Integer id,
+            @HeaderParam("Authorization") String auth
+            ) {
+        try {
+            adBroadcastService.delete(id, auth);
+            return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
+        }catch (NotFoundException e){
+            return Response.status(Response.Status.NOT_FOUND.getStatusCode(), e.getMessage()).build();
+        }
+    }
 
 
 //    @POST
 //    //@RolesAllowed("PRODUCER")
-//    public Response createAdBroadcast(AdBroadcastCreationDTO dto) {
+//    public Response createAdBroadcast(
+//            AdBroadcastCreationDTO dto,
+//            @HeaderParam("Authorization") String auth
+//    ) {
 //        try {
-//            AdBroadcast adBroadcast = adBroadcastService.create(dto);
+//            AdBroadcast adBroadcast = adBroadcastService.create(dto, auth);
 //            URI uri = UriBuilder.fromResource(UserResource.class).path(String.valueOf(adBroadcast.getId())).build();
 //            return Response.created(uri).entity(adBroadcastMapper.toRepresentation(adBroadcast)).build();
 //        } catch (RadioException re){

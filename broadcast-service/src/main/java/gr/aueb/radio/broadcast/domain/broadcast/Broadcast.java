@@ -155,17 +155,19 @@ public class Broadcast {
 //        return  songBroadcast;
 //    }
 
-//    public void removeAdBroadcast(AdBroadcast adBroadcast) {
-//        this.adBroadcasts.remove(adBroadcast);
-//        adBroadcast.setBroadcast(null);
+    public void removeAdBroadcast(AdBroadcast adBroadcast) {
+        this.adBroadcasts.remove(adBroadcast);
+        adBroadcast.setBroadcast(null);
+        // to decide whether to keep a list of all adBroadcasts on ad - better not due to traffic
 //        adBroadcast.getAd().removeAdBroadcast(adBroadcast);
-//    }
+    }
 
-//    public void removeSongBroadcast(SongBroadcast songBroadcast) {
-//        this.songBroadcasts.remove(songBroadcast);
-//        songBroadcast.setBroadcast(null);
+    public void removeSongBroadcast(SongBroadcast songBroadcast) {
+        this.songBroadcasts.remove(songBroadcast);
+        songBroadcast.setBroadcast(null);
+        // to decide whether to keep a list of all aongBroadcasts on song - better not due to traffic
 //        songBroadcast.getSong().removeSongBroadcast(songBroadcast);
-//    }
+    }
 
 //    private boolean checkForOccurrence(LocalTime startingTime, Integer duration){
 //        // Starting time of song/add broadcast

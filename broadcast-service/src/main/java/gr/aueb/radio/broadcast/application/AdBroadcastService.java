@@ -11,6 +11,7 @@ import gr.aueb.radio.broadcast.infrastructure.rest.representation.AdBroadcastCre
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 import org.hibernate.annotations.EmbeddableInstantiator;
 
 import java.time.LocalDate;
@@ -31,7 +32,15 @@ public class AdBroadcastService {
 //    AdRepository adRepository;
 
 //    @Transactional
-//    public AdBroadcast create(AdBroadcastCreationDTO dto) {
+//    public AdBroadcast create(AdBroadcastCreationDTO dto, String auth) {
+//        // verify auth
+//        String userRole = userService.verifyAuth(auth).role;
+//
+//        if(!userRole.equals("PRODUCER")){
+//            throw new RadioException("Not Allowed to access this.", 403);
+//        }
+//
+//
 //       // Ad ad = adRepository.findById(dto.addId);
 ////        if (ad == null){
 ////            throw new NotFoundException("Ad does not exist");
@@ -55,14 +64,21 @@ public class AdBroadcastService {
         return adBroadcast;
     }
 
-//    @Transactional
-//    public void delete(Integer id) {
-//        AdBroadcast adBroadcast = adBroadcastRepository.findById(id);
-//        if (adBroadcast == null){
-//            throw new NotFoundException("Ad Broadcast does not exist");
-//        }
-//        broadcastService.removeAdBroadcast(adBroadcast.getBroadcast().getId(), adBroadcast.getId());
-//    }
+    @Transactional
+    public void delete(Integer id, String auth) {
+        // verify auth
+        String userRole = userService.verifyAuth(auth).role;
+
+        if(!userRole.equals("PRODUCER")){
+            throw new RadioException("Not Allowed to access this.", 403);
+        }
+
+        AdBroadcast adBroadcast = adBroadcastRepository.findById(id);
+        if (adBroadcast == null){
+            throw new NotFoundException("Ad Broadcast does not exist");
+        }
+        broadcastService.removeAdBroadcast(adBroadcast.getBroadcast().getId(), adBroadcast.getId());
+    }
 
 
     @Transactional
