@@ -23,11 +23,13 @@ public class ContentServiceImpl implements ContentService {
     @Override
     public AdBasicRepresentation getAdId(String auth, Integer adId) {
         try {
-            return contentApi.getAdId(auth, adId);
+            AdBasicRepresentation ad=  contentApi.getAdId(auth, adId);
+
+            return ad;
         } catch (ProcessingException error) {
             throw new RadioException("Problem on reaching content api.", 424);
     } catch (NotFoundException error) {
-        throw new RadioException("not found", 424);
+        throw new RadioException("not found", 404);
     }
     }
 

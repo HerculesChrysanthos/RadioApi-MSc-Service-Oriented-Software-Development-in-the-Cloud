@@ -8,6 +8,7 @@ import gr.aueb.radio.broadcast.infrastructure.persistence.AdBroadcastRepository;
 import gr.aueb.radio.broadcast.application.UserService;
 import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.AdBroadcastCreationDTO;
+import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdBasicRepresentation;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -43,15 +44,15 @@ public class AdBroadcastService {
             throw new RadioException("Not Allowed to access this.", 403);
         }
     // call content
-        Integer adId = contentService.getAdId(auth, dto.adId).Id;
-        System.out.println ("adId " + adId);
-        if (adId == null){
+        AdBasicRepresentation ad = contentService.getAdId(auth, dto.adId);
+        System.out.println ("adId " + ad.id);
+        if (ad == null){
             throw new NotFoundException("Ad does not exist");
         }
 
-//        AdBroadcast adBroadcast = broadcastService.scheduleAd(dto.broadcastId, ad, DateUtil.setTime(dto.startingTime));
-//        return adBroadcast;
-        return new AdBroadcast();
+        AdBroadcast adBroadcast = broadcastService.scheduleAd(dto.broadcastId, ad, DateUtil.setTime(dto.startingTime));
+        return adBroadcast;
+//        return new AdBroadcast();
     }
 
     @Transactional
