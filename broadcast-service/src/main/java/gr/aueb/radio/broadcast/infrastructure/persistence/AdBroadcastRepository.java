@@ -38,8 +38,9 @@ public class AdBroadcastRepository implements PanacheRepositoryBase<AdBroadcast,
     public List<AdBroadcast> findByDateDetails(LocalDate date){
         Map<String, Object> params = new HashMap<>();
         params.put("date", date);
-        List<AdBroadcast> broadcasts = find("select ab from AdBroadcast ab left join fetch ab.ad where ab.broadcastDate= :date", params).list();
-        return find("select ab from AdBroadcast ab left join fetch ab.broadcast where ab in :ad_broadcasts", Parameters.with("ad_broadcasts", broadcasts).map()).list();
+//        List<AdBroadcast> broadcasts = find("select ab from AdBroadcast ab left join fetch ab.ad where ab.broadcastDate= :date", params).list();
+//        return find("select ab from AdBroadcast ab left join fetch ab.broadcast where ab in :ad_broadcasts", Parameters.with("ad_broadcasts", broadcasts).map()).list();
+        return find("select ab from AdBroadcast ab left join fetch ab.broadcast where ab.broadcastDate= :date", params).list();
     }
 
     public AdBroadcast findByIdDetails(Integer id){
