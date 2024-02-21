@@ -5,6 +5,7 @@ import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
@@ -69,8 +70,9 @@ public class AdBroadcast {
         this.broadcast = broadcast;
     }
 
-//    public LocalDateTime getBroadcastEndingDateTime(){
-//        LocalDateTime startingLocalDateTime = this.broadcastDate.atTime(this.broadcastTime);
+    public LocalDateTime getBroadcastEndingDateTime(Integer abDuration){
+        LocalDateTime startingLocalDateTime = this.broadcastDate.atTime(this.broadcastTime);
 //        return startingLocalDateTime.plusMinutes(this.ad.getDuration());
-//    }
+        return startingLocalDateTime.plusMinutes(abDuration);
+    }
 }

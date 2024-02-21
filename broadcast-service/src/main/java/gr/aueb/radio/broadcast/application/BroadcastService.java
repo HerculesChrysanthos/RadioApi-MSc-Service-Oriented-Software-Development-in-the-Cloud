@@ -14,6 +14,7 @@ import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastRepre
 import gr.aueb.radio.broadcast.common.DateUtil;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.OutputBroadcastMapper;
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdBasicRepresentation;
+import gr.aueb.radio.broadcast.infrastructure.service.content.representation.SongBasicRepresentation;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -181,6 +182,8 @@ public class BroadcastService {
         if (adBroadcastsInTimezone >= 4){
             throw new RadioException("Add cannot be scheduled to broadcast");
         }
+        System.out.println ("adId " + ad.id);
+        System.out.println ("adId " + ad.timezone);
         AdBroadcast created = broadcast.createAdBroadcast(ad, startingTime);
         System.out.println("created - " + created);
         if (created == null){
@@ -191,10 +194,10 @@ public class BroadcastService {
     }
 //
 //    @Transactional
-//    public SongBroadcast scheduleSong(Integer id, Song song, LocalTime startingTime){
+//    public SongBroadcast scheduleSong(Integer id, SongBasicRepresentation song, LocalTime startingTime){
 //        Broadcast broadcast = broadcastRepository.findByIdSongDetails(id);
 //        if (broadcast == null){
-//            throw new NotFoundException("Broadcast not found");
+//            throw new NotFoundException("Broadcast not found");x
 //        }
 //        SongBroadcast created = broadcast.createSongBroadcast(song, startingTime);
 //        if (created == null){

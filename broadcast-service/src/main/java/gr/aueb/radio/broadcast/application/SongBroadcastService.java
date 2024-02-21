@@ -7,6 +7,8 @@ import gr.aueb.radio.broadcast.infrastructure.persistence.SongBroadcastRepositor
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.SongBroadcastCreationDTO;
 import gr.aueb.radio.broadcast.application.UserService;
 import gr.aueb.radio.broadcast.common.RadioException;
+import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdBasicRepresentation;
+import gr.aueb.radio.broadcast.infrastructure.service.content.representation.SongBasicRepresentation;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -28,9 +30,22 @@ public class SongBroadcastService {
 
 //    @Inject
 //    SongRepository songRepository;
-
+//
 //    @Transactional
 //    public SongBroadcast create(SongBroadcastCreationDTO dto) {
+//        // verify auth
+//        String userRole = userService.verifyAuth(auth).role;
+//
+//        if(!userRole.equals("PRODUCER")){
+//            throw new RadioException("Not Allowed to access this.", 403);
+//        }
+//
+//        // call content api
+//        SongBasicRepresentation song = contentService.getSongId(auth, dto.songId);
+//        System.out.println ("adId " + ad.song);
+//        if (song == null){
+//            throw new NotFoundException("Ad does not exist");
+//        }
 //        //Song song = songRepository.findById(dto.songId);
 ////        if (song == null){
 ////            throw new NotFoundException("Song does not exist");

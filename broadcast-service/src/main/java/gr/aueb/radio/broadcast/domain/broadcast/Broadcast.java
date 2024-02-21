@@ -128,15 +128,17 @@ public class Broadcast {
     }
 
     public AdBroadcast createAdBroadcast(AdBasicRepresentation ad, LocalTime time){
-//        if (!adCanBeAdded(ad, time)){
-//            return null;
-//        }
+        if (!adCanBeAdded(ad, time)){
+            return null;
+        }
 //        if(checkForOccurrence(time, ad.getDuration())){
-//            log.info("Broadcast occurrence restriction");
-//            return null;
-//        }
+            if(checkForOccurrence(time, ad.duration)){
+            log.info("Broadcast occurrence restriction");
+            return null;
+        }
         AdBroadcast adBroadcast = new AdBroadcast(this.startingDate, time);
         adBroadcast.setBroadcast(this);
+        // edo theloyme na mpainei i metadosi pano sti diafimisi? mas xreiazetai?
         //ad.addBroadcastAd(adBroadcast);
         this.adBroadcasts.add(adBroadcast);
         return adBroadcast;
@@ -171,36 +173,36 @@ public class Broadcast {
 //        songBroadcast.getSong().removeSongBroadcast(songBroadcast);
     }
 
-//    private boolean checkForOccurrence(LocalTime startingTime, Integer duration){
-//        // Starting time of song/add broadcast
-//        LocalDateTime startingDateTime = this.startingDate.atTime(startingTime);
-//        // Ending time of song/add broadcast
-//        LocalDateTime endingDateTime = startingDateTime.plusMinutes(duration);
-////        for (SongBroadcast sb : this.songBroadcasts){
-////            LocalDateTime sbStartingTime = this.startingDate.atTime(sb.getBroadcastTime());
-////            LocalDateTime sbEndingTime = sb.getBroadcastEndingDateTime();
-////            if(DateUtil.between(sbStartingTime, startingDateTime, sbEndingTime)){
-////                return true;
-////            }
-////
-////            if(DateUtil.between(sbStartingTime, endingDateTime, sbEndingTime)){
-////                return true;
-////            }
-////        }
-//
-//        for (AdBroadcast ab : this.adBroadcasts){
-//            LocalDateTime abStartingTime = this.startingDate.atTime(ab.getBroadcastTime());
-//            LocalDateTime abEndingTime = ab.getBroadcastEndingDateTime();
-//            if(DateUtil.between(abStartingTime, startingDateTime, abEndingTime)){
+    private boolean checkForOccurrence(LocalTime startingTime, Integer duration){
+        // Starting time of song/add broadcast
+        LocalDateTime startingDateTime = this.startingDate.atTime(startingTime);
+        // Ending time of song/add broadcast
+        LocalDateTime endingDateTime = startingDateTime.plusMinutes(duration);
+//        for (SongBroadcast sb : this.songBroadcasts){
+//            LocalDateTime sbStartingTime = this.startingDate.atTime(sb.getBroadcastTime());
+//            LocalDateTime sbEndingTime = sb.getBroadcastEndingDateTime();
+//            if(DateUtil.between(sbStartingTime, startingDateTime, sbEndingTime)){
 //                return true;
 //            }
 //
-//            if(DateUtil.between(abStartingTime, endingDateTime, abEndingTime)){
+//            if(DateUtil.between(sbStartingTime, endingDateTime, sbEndingTime)){
 //                return true;
 //            }
 //        }
-//        return false;
-//    }
+
+        for (AdBroadcast ab : this.adBroadcasts){
+            LocalDateTime abStartingTime = this.startingDate.atTime(ab.getBroadcastTime());
+            LocalDateTime abEndingTime = ab.getBroadcastEndingDateTime(duration);
+            if(DateUtil.between(abStartingTime, startingDateTime, abEndingTime)){
+                return true;
+            }
+
+            if(DateUtil.between(abStartingTime, endingDateTime, abEndingTime)){
+                return true;
+            }
+        }
+        return false;
+    }
 
 //    private boolean validSongGenre(String genre){
 //        if(this.songBroadcasts.size() == 0){
@@ -237,16 +239,27 @@ public class Broadcast {
         return startingDate.plusMinutes(this.duration);
     }
 
-//    public Integer getAllocatedTime(){
-//        Integer totalTime = 0;
+    public Integer getAllocatedTime(Integer adDuration, Integer songDuration){
+        Integer totalTime = 0;
+        if (adDuration != null) {
+            for (AdBroadcast addBroadcast : this.adBroadcasts) {
+                totalTime += adDuration;
+            }
+        }
+        if (songDuration != null) {
+            for (SongBroadcast songBroadcast : this.songBroadcasts) {
+                totalTime += songDuration;
+            }
+        }
+
 //        for (SongBroadcast songBroadcast : this.songBroadcasts){
 //            totalTime += songBroadcast.getSong().getDuration();
 //        }
 //        for (AdBroadcast addBroadcast : this.adBroadcasts){
 //            totalTime += addBroadcast.getAd().getDuration();
 //        }
-//        return totalTime;
-//    }
+        return totalTime;
+    }
 //
 //    public boolean songCanBeAdded(Song song, LocalTime time){
 //        if(!song.toBeBroadcasted(this.startingDate, time)){
@@ -269,10 +282,26 @@ public class Broadcast {
 //        }
 //        return true;
 //    }
+////
+
+    public boolean adCanBeAdded(AdBasicRepresentation ad, LocalTime time){
+//        System.out.println ("adId " + ad.id);
+//        System.out.println ("adId " + ad.timezone);
+
+        this.timezone = DateUtil.calculateTimezone(this.startingTime);
+        String broadcastTimezone = this.timezone.name();
 //
-//    public boolean adCanBeAdded(Ad ad, LocalTime time){
-//        this.timezone = DateUtil.calculateTimezone(this.startingTime);
-//        if(ad.getTimezone() != this.timezone){
+//        System.out.println("Type of broadcastTimezone: " + broadcastTimezone.getClass().getName());
+//        System.out.println("Type of ad.timezone: " + ad.timezone.getClass().getName());
+
+        if (!ad.timezone.equals(broadcastTimezone)) {
+            log.info("Broadcast timezone restriction");
+            return false;
+        }
+
+        // Replace with the above - The != operator compares the references of the string objects, not their content.
+//        if(ad.timezone != broadcastTimezone){
+//            System.out.println ("mpika");
 //            log.info("Broadcast timezone restriction");
 //            return false;
 //        }
@@ -280,17 +309,17 @@ public class Broadcast {
 //            log.info("Add restrictions");
 //            return false;
 //        }
-//
-//        if(getAllocatedTime() + ad.getDuration() > this.duration){
-//            log.info("Broadcast duration restriction");
-//            return false;
-//        }
-//        if (this.exceedsLimits(time, ad.getDuration())){
-//            log.info("Broadcast limit restriction");
-//            return false;
-//        }
-//        return true;
-//    }
+
+        if(getAllocatedTime(ad.duration, null) + ad.duration > this.duration){
+            log.info("Broadcast duration restriction");
+            return false;
+        }
+        if (this.exceedsLimits(time, ad.duration)){
+            log.info("Broadcast limit restriction");
+            return false;
+        }
+        return true;
+    }
 
 }
 
