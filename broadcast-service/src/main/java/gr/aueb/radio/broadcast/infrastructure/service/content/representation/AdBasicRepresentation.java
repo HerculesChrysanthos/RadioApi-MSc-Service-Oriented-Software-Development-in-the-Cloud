@@ -6,4 +6,6 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 public class AdBasicRepresentation {
 
     public Integer id;
+    public String timezone;
+    public Integer duration;
 }
