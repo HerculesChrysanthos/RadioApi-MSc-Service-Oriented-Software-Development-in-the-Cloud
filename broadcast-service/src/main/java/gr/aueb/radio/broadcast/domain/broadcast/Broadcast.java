@@ -7,6 +7,7 @@ import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdB
 import jakarta.persistence.*;
 import lombok.extern.slf4j.Slf4j;
 
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -133,7 +134,7 @@ public class Broadcast {
         }
 //        if(checkForOccurrence(time, ad.getDuration())){
             if(checkForOccurrence(time, ad.duration)){
-            log.info("Broadcast occurrence restriction");
+//            log.info("Broadcast occurrence restriction");
             return null;
         }
         AdBroadcast adBroadcast = new AdBroadcast(this.startingDate, time);
@@ -295,7 +296,7 @@ public class Broadcast {
 //        System.out.println("Type of ad.timezone: " + ad.timezone.getClass().getName());
 
         if (!ad.timezone.equals(broadcastTimezone)) {
-            log.info("Broadcast timezone restriction");
+//            log.info("Broadcast timezone restriction");
             return false;
         }
 
@@ -311,15 +312,22 @@ public class Broadcast {
 //        }
 
         if(getAllocatedTime(ad.duration, null) + ad.duration > this.duration){
-            log.info("Broadcast duration restriction");
+//            log.info("Broadcast duration restriction");
             return false;
         }
         if (this.exceedsLimits(time, ad.duration)){
-            log.info("Broadcast limit restriction");
+//            log.info("Broadcast limit restriction");
             return false;
         }
         return true;
     }
+
+//        public boolean toBeBroadcasted(LocalDate date){
+//        if (!DateUtil.between(this.startingDate, date, this.endingDate)){
+//            return false;
+//        }
+//        return this.adBroadcasts.size() < this.repPerZone;
+//    }
 
 }
 
