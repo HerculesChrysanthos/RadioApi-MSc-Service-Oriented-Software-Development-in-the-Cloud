@@ -1,7 +1,7 @@
 package gr.aueb.radio.broadcast.infrastructure.rest.representation;
 
 import gr.aueb.radio.broadcast.domain.adBroadcast.AdBroadcast;
-import gr.aueb.radio.content.infrastructure.rest.representation.AdMapper;
+//import gr.aueb.radio.content.infrastructure.rest.representation.AdMapper;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
