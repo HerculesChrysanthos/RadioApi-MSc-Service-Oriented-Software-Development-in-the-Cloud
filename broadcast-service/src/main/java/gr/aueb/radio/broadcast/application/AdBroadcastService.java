@@ -28,26 +28,31 @@ public class AdBroadcastService {
     @Inject
     AdBroadcastRepository adBroadcastRepository;
 
+    @Inject
+    ContentService contentService;
+
 //    @Inject
 //    AdRepository adRepository;
 
-//    @Transactional
-//    public AdBroadcast create(AdBroadcastCreationDTO dto, String auth) {
-//        // verify auth
-//        String userRole = userService.verifyAuth(auth).role;
-//
-//        if(!userRole.equals("PRODUCER")){
-//            throw new RadioException("Not Allowed to access this.", 403);
-//        }
-//
-//
-//       // Ad ad = adRepository.findById(dto.addId);
-////        if (ad == null){
-////            throw new NotFoundException("Ad does not exist");
-////        }
+    @Transactional
+    public AdBroadcast create(AdBroadcastCreationDTO dto, String auth) {
+        // verify auth
+        String userRole = userService.verifyAuth(auth).role;
+
+        if(!userRole.equals("PRODUCER")){
+            throw new RadioException("Not Allowed to access this.", 403);
+        }
+    // call content
+        Integer adId = contentService.getAdId(auth, dto.adId).Id;
+        System.out.println ("adId " + adId);
+        if (adId == null){
+            throw new NotFoundException("Ad does not exist");
+        }
+
 //        AdBroadcast adBroadcast = broadcastService.scheduleAd(dto.broadcastId, ad, DateUtil.setTime(dto.startingTime));
 //        return adBroadcast;
-//    }
+        return new AdBroadcast();
+    }
 
     @Transactional
     public AdBroadcast find(Integer id, String auth) {

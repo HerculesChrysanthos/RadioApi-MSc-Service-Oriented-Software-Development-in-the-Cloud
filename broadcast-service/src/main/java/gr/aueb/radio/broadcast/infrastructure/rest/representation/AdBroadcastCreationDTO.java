@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AdBroadcastCreationDTO {
     public Integer broadcastId;
-    public Integer addId;
+    public Integer adId;
 
     public String startingTime;
 }

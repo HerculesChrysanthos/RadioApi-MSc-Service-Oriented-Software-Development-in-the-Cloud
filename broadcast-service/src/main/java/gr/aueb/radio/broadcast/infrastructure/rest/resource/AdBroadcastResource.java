@@ -73,20 +73,20 @@ public class AdBroadcastResource {
     }
 
 
-//    @POST
-//    //@RolesAllowed("PRODUCER")
-//    public Response createAdBroadcast(
-//            AdBroadcastCreationDTO dto,
-//            @HeaderParam("Authorization") String auth
-//    ) {
-//        try {
-//            AdBroadcast adBroadcast = adBroadcastService.create(dto, auth);
-//            URI uri = UriBuilder.fromResource(UserResource.class).path(String.valueOf(adBroadcast.getId())).build();
-//            return Response.created(uri).entity(adBroadcastMapper.toRepresentation(adBroadcast)).build();
-//        } catch (RadioException re){
-//            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
-//        }catch (NotFoundException re){
-//            return Response.status(Response.Status.NOT_FOUND.getStatusCode(), re.getMessage()).build();
-//        }
-//    }
+    @POST
+    //@RolesAllowed("PRODUCER")
+    public Response createAdBroadcast(
+            AdBroadcastCreationDTO dto,
+            @HeaderParam("Authorization") String auth
+    ) {
+        try {
+            AdBroadcast adBroadcast = adBroadcastService.create(dto, auth);
+            URI uri = UriBuilder.fromResource(AdBroadcastResource.class).path(String.valueOf(adBroadcast.getId())).build();
+            return Response.created(uri).entity(adBroadcastMapper.toRepresentation(adBroadcast)).build();
+        } catch (RadioException re){
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+        }catch (NotFoundException re){
+            return Response.status(Response.Status.NOT_FOUND.getStatusCode(), re.getMessage()).build();
+        }
+    }
 }

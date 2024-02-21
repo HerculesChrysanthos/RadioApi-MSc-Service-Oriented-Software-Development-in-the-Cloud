@@ -1,7 +1,6 @@
 package gr.aueb.radio.content.application;
 
 import gr.aueb.radio.content.common.RadioException;
-import gr.aueb.radio.content.common.NotFoundException;
 import gr.aueb.radio.content.common.DateUtil;
 import gr.aueb.radio.content.domain.ad.Ad;
 import gr.aueb.radio.content.domain.ad.Zone;
@@ -11,6 +10,7 @@ import gr.aueb.radio.content.infrastructure.rest.representation.AdRepresentation
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.transaction.Transactional;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.*;
 
 
