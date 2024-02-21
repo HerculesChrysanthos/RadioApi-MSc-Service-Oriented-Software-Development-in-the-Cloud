@@ -176,6 +176,7 @@ public class BroadcastService {
         if (broadcast == null){
             throw new NotFoundException("Broadcast not found");
         }
+        // to retrieve the adbroadcastrs of THIS broadcast ie. of the timezone
         int adBroadcastsInTimezone = adBroadcastRepository.findByTimezoneDate(broadcast.getTimezone(), broadcast.getStartingDate()).size();
         System.out.println("adBroadcastsInTimezone - " + adBroadcastsInTimezone);
         // check restriction of maximum 4 ads per timezone
