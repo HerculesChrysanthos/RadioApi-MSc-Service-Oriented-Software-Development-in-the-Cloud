@@ -43,7 +43,7 @@ public class AdBroadcastService {
         if(!userRole.equals("PRODUCER")){
             throw new RadioException("Not Allowed to access this.", 403);
         }
-    // call content
+        // call content
         AdBasicRepresentation ad = contentService.getAdId(auth, dto.adId);
         System.out.println ("adId " + ad.id);
         if (ad == null){
