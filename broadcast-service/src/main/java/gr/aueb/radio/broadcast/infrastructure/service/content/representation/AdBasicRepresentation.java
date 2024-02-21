@@ -4,5 +4,6 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 
 @RegisterForReflection
 public class AdBasicRepresentation {
-    public Integer Id;
+
+    public Integer id;
 }
