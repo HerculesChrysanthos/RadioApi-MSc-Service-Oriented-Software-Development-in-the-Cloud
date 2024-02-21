@@ -1,7 +1,7 @@
 package gr.aueb.radio.broadcast.application;
 
 import gr.aueb.radio.broadcast.common.DateUtil;
-import gr.aueb.radio.broadcast.common.NotFoundException;
+import gr.aueb.radio.broadcast.common.NotFoundRadioException;
 import gr.aueb.radio.broadcast.domain.songBroadcast.SongBroadcast;
 import gr.aueb.radio.broadcast.infrastructure.persistence.SongBroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.SongBroadcastCreationDTO;
@@ -19,8 +19,8 @@ public class SongBroadcastService {
     @Inject
     SongBroadcastRepository songBroadcastRepository;
 
-    @Inject
-    BroadcastService broadcastService;
+//    @Inject
+//    BroadcastService broadcastService;
 
     @Inject
     UserService userService;
@@ -39,10 +39,16 @@ public class SongBroadcastService {
 //    }
 
     @Transactional
-    public SongBroadcast find(Integer id) {
+    public SongBroadcast find(Integer id, String auth) {
+        String userRole = userService.verifyAuth(auth).role;
+
+        if(!userRole.equals("PRODUCER")){
+            throw new RadioException("Not Allowed to access this.", 403);
+        }
+
         SongBroadcast songBroadcast = songBroadcastRepository.findByIdDetails(id);
         if (songBroadcast == null){
-            throw new NotFoundException("Song Broadcast does not exist");
+            throw new RadioException("Song Broadcast does not exist");
         }
         return songBroadcast;
     }

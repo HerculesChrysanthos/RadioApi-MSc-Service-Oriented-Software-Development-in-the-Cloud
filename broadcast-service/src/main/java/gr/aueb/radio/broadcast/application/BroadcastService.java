@@ -1,6 +1,6 @@
 package gr.aueb.radio.broadcast.application;
 
-import gr.aueb.radio.broadcast.common.NotFoundException;
+import gr.aueb.radio.broadcast.common.NotFoundRadioException;
 import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
 import gr.aueb.radio.broadcast.domain.broadcast.BroadcastType;
@@ -56,7 +56,7 @@ public class BroadcastService {
     public Broadcast findById(Integer id){
         Broadcast broadcast = broadcastRepository.findById(id);
         if (broadcast == null){
-            throw new NotFoundException("Broadcast not found");
+            throw new NotFoundRadioException("Broadcast not found");
         }
         return broadcast;
     }
@@ -247,13 +247,13 @@ public class BroadcastService {
 //        }
 //    }
 
-    private Broadcast updateValues(Broadcast broadcast, BroadcastRepresentation broadcastRepresentation){
-        broadcast.setType(broadcastRepresentation.type);
-        LocalDate date = DateUtil.setDate(broadcastRepresentation.startingDate);
-        LocalTime time = DateUtil.setTime(broadcastRepresentation.startingTime);
-        broadcast.setStartingTime(time);
-        broadcast.setStartingDate(date);
-        broadcast.setDuration(broadcastRepresentation.duration);
-        return broadcast;
-    }
+//    private Broadcast updateValues(Broadcast broadcast, BroadcastRepresentation broadcastRepresentation){
+//        broadcast.setType(broadcastRepresentation.type);
+//        LocalDate date = DateUtil.setDate(broadcastRepresentation.startingDate);
+//        LocalTime time = DateUtil.setTime(broadcastRepresentation.startingTime);
+//        broadcast.setStartingTime(time);
+//        broadcast.setStartingDate(date);
+//        broadcast.setDuration(broadcastRepresentation.duration);
+//        return broadcast;
+//    }
 }

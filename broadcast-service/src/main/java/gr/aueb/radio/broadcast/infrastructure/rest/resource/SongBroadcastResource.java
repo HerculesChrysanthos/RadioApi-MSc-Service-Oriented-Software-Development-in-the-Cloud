@@ -1,6 +1,7 @@
 package gr.aueb.radio.broadcast.infrastructure.rest.resource;
 
 import gr.aueb.radio.broadcast.common.RadioException;
+import gr.aueb.radio.broadcast.common.NotFoundRadioException;
 import gr.aueb.radio.broadcast.application.SongBroadcastService;
 import gr.aueb.radio.broadcast.domain.songBroadcast.SongBroadcast;
 import gr.aueb.radio.broadcast.infrastructure.rest.ApiPath.Root;
@@ -45,11 +46,14 @@ public class SongBroadcastResource {
     @GET
     @Path("/{id}")
     //@RolesAllowed("PRODUCER")
-    public Response find(@PathParam("id") Integer id) {
+    public Response find(
+            @PathParam("id") Integer id,
+            @HeaderParam("Authorization") String auth
+            ) {
         try {
-            SongBroadcast songBroadcast = songBroadcastService.find(id);
+            SongBroadcast songBroadcast = songBroadcastService.find(id, auth);
             return Response.ok().entity(songBroadcastMapper.toRepresentation(songBroadcast)).build();
-        }catch (NotFoundException e){
+        }catch (RadioException e){
             return Response.status(Response.Status.NOT_FOUND.getStatusCode(), e.getMessage()).build();
         }
     }

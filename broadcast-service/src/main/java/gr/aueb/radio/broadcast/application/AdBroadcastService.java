@@ -1,7 +1,7 @@
 package gr.aueb.radio.broadcast.application;
 
 import gr.aueb.radio.broadcast.common.DateUtil;
-import gr.aueb.radio.broadcast.common.NotFoundException;
+import gr.aueb.radio.broadcast.common.NotFoundRadioException;
 import gr.aueb.radio.broadcast.domain.adBroadcast.AdBroadcast;
 import gr.aueb.radio.broadcast.infrastructure.persistence.AdBroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.AdBroadcastCreationDTO;
@@ -37,7 +37,7 @@ public class AdBroadcastService {
     public AdBroadcast find(Integer id) {
         AdBroadcast adBroadcast = adBroadcastRepository.findByIdDetails(id);
         if (adBroadcast == null){
-            throw new NotFoundException("Ad Broadcast does not exist");
+            throw new NotFoundRadioException("Ad Broadcast does not exist");
         }
         return adBroadcast;
     }
