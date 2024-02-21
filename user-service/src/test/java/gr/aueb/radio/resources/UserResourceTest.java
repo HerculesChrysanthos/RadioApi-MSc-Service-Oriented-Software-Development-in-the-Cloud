@@ -2,16 +2,16 @@ package gr.aueb.radio.resources;
 
 import gr.aueb.radio.Fixture;
 import gr.aueb.radio.IntegrationBase;
+import gr.aueb.radio.user.application.UserService;
 import gr.aueb.radio.user.domain.user.User;
 import gr.aueb.radio.user.infrastructure.persistence.UserRepository;
 import gr.aueb.radio.user.infrastructure.rest.representation.UserRepresentation;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.Test;
-
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response.Status;
+import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
@@ -20,6 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class UserResourceTest extends IntegrationBase {
     @Inject
     UserRepository userRepository;
+
+    @Inject
+    UserService userService;
 
     @Test
     @TestTransaction
@@ -80,5 +83,7 @@ public class UserResourceTest extends IntegrationBase {
         assertEquals(userToCreate.email, userRepresentation.email);
         assertEquals(userToCreate.password, userRepresentation.password);
     }
+
+
 }
 

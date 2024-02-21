@@ -6,4 +6,6 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 public class UserBasicRepresentation {
     public Integer id;
     public String role;
+
+
 }
