@@ -30,9 +30,12 @@ public class AdBroadcastResource {
 
     @GET
     //@RolesAllowed("PRODUCER")
-    public Response search(@QueryParam("date") String date) {
+    public Response search(
+            @QueryParam("date") String date,
+            @HeaderParam("Authorization") String auth
+    ) {
         try {
-            List<AdBroadcast> found = adBroadcastService.search(date);
+            List<AdBroadcast> found = adBroadcastService.search(date, auth);
             return Response.ok().entity(adBroadcastMapper.toRepresentationList(found)).build();
         }catch (RadioException re){
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
@@ -42,9 +45,12 @@ public class AdBroadcastResource {
     @GET
     @Path("/{id}")
     //@RolesAllowed("PRODUCER")
-    public Response find(@PathParam("id") Integer id) {
+    public Response find(
+            @PathParam("id") Integer id,
+            @HeaderParam("Authorization") String auth
+    ) {
         try {
-            AdBroadcast adBroadcast = adBroadcastService.find(id);
+            AdBroadcast adBroadcast = adBroadcastService.find(id, auth);
             return Response.ok().entity(adBroadcastMapper.toRepresentation(adBroadcast)).build();
         }catch (NotFoundException e){
             return Response.status(Response.Status.NOT_FOUND.getStatusCode(), e.getMessage()).build();

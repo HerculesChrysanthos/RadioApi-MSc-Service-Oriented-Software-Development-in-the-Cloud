@@ -2,12 +2,16 @@ package gr.aueb.radio.broadcast.application;
 
 import gr.aueb.radio.broadcast.common.DateUtil;
 import gr.aueb.radio.broadcast.common.NotFoundRadioException;
+import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.domain.adBroadcast.AdBroadcast;
 import gr.aueb.radio.broadcast.infrastructure.persistence.AdBroadcastRepository;
+import gr.aueb.radio.broadcast.application.UserService;
+import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.AdBroadcastCreationDTO;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.hibernate.annotations.EmbeddableInstantiator;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,6 +20,9 @@ import java.util.List;
 public class AdBroadcastService {
     @Inject
     BroadcastService broadcastService;
+
+    @Inject
+    UserService userService;
 
     @Inject
     AdBroadcastRepository adBroadcastRepository;
@@ -34,7 +41,13 @@ public class AdBroadcastService {
 //    }
 
     @Transactional
-    public AdBroadcast find(Integer id) {
+    public AdBroadcast find(Integer id, String auth) {
+        String userRole = userService.verifyAuth(auth).role;
+
+        if(!userRole.equals("PRODUCER")){
+            throw new RadioException("Not Allowed to access this.", 403);
+        }
+
         AdBroadcast adBroadcast = adBroadcastRepository.findByIdDetails(id);
         if (adBroadcast == null){
             throw new NotFoundRadioException("Ad Broadcast does not exist");
@@ -53,7 +66,13 @@ public class AdBroadcastService {
 
 
     @Transactional
-    public List<AdBroadcast> search(String date) {
+    public List<AdBroadcast> search(String date, String auth) {
+        String userRole = userService.verifyAuth(auth).role;
+
+        if(!userRole.equals("PRODUCER")){
+            throw new RadioException("Not Allowed to access this.", 403);
+        }
+
         LocalDate dateToSearch;
         if (date == null){
             dateToSearch = DateUtil.dateNow();
