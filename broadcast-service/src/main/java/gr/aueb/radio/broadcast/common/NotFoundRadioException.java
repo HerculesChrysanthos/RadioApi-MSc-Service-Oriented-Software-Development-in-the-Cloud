@@ -1,14 +1,14 @@
 package gr.aueb.radio.broadcast.common;
 
-public class NotFoundException extends RuntimeException {
+public class NotFoundRadioException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    public NotFoundException(String message) {
+    public NotFoundRadioException(String message) {
         super(message);
     }
 
-    public NotFoundException() {
+    public NotFoundRadioException() {
         super();
     }
 
