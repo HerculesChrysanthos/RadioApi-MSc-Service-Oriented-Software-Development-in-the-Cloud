@@ -1,13 +1,15 @@
-package gr.aueb.radio.domain;
+package gr.aueb.radio.domain.ad;
 
 import gr.aueb.radio.content.common.DateUtil;
 import gr.aueb.radio.content.domain.ad.Ad;
 import gr.aueb.radio.content.domain.ad.Zone;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 public class AdTest {
 
@@ -44,39 +46,39 @@ public class AdTest {
         assertEquals(ad.getTimezone(), timeZone);
     }
 
-  //  @Test
-//    public void addValidAdBroadcast(){
-//        AdBroadcast adBroadcast = new AdBroadcast(broadcastDate, broadcastTime);
-//        ad.addBroadcastAd(adBroadcast);
-//        List<AdBroadcast> broadcasts = ad.getBroadcastAds();
-//        assertNotNull(broadcasts);
-//        assertEquals(1, broadcasts.size());
-//    }
-//
-//    @Test
-//    public void addInvalidAdBroadcast(){
-//        ad.addBroadcastAd(null);
-//        List<AdBroadcast> broadcasts = ad.getBroadcastAds();
-//        assertEquals(0, broadcasts.size());
-//    }
-//
-//    @Test
-//    public void toBeBroadcastedTest(){
-//        AdBroadcast adBroadcast = new AdBroadcast(broadcastDate, broadcastTime);
-//        assertTrue(ad.toBeBroadcasted(broadcastDate));
-//        ad.addBroadcastAd(adBroadcast);
-//        assertFalse(ad.toBeBroadcasted(broadcastDate));
-//    }
-//
-//    @Test
-//    public void removeAdBroadcast(){
-//        AdBroadcast adBroadcast = new AdBroadcast(broadcastDate, broadcastTime);
-//        ad.addBroadcastAd(adBroadcast);
-//        List<AdBroadcast> broadcasts = ad.getBroadcastAds();
-//        assertEquals(1, broadcasts.size());
-//        ad.removeAdBroadcast(adBroadcast);
-//        broadcasts = ad.getBroadcastAds();
-//        assertEquals(0, broadcasts.size());
-//    }
+    @Test
+    public void testAdCreation() {
+        // Arrange
+        Integer duration = 30;
+        Integer repPerZone = 5;
+        LocalDate startingDate = LocalDate.now();
+        LocalDate endingDate = startingDate.plusDays(30);
+        Zone timezone = Zone.EarlyMorning;
+
+        // Act
+        Ad ad = new Ad(duration, repPerZone, startingDate, endingDate, timezone);
+
+        // Assert
+        Assertions.assertNotNull(ad);
+        Assertions.assertEquals(duration, ad.getDuration());
+        Assertions.assertEquals(repPerZone, ad.getRepPerZone());
+        Assertions.assertEquals(startingDate, ad.getStartingDate());
+        Assertions.assertEquals(endingDate, ad.getEndingDate());
+        Assertions.assertEquals(timezone, ad.getTimezone());
+    }
+
+    @Test
+    public void testAdBroadcasts() {
+        // Arrange
+        Ad ad = new Ad();
+        Integer broadcastId = 1;
+
+        // Act
+        ad.addBroadcastAd(broadcastId);
+
+        // Assert
+        Assertions.assertEquals(1, ad.getBroadcastAds().size());
+        Assertions.assertTrue(ad.getBroadcastAds().contains(broadcastId));
+    }
 
 }
