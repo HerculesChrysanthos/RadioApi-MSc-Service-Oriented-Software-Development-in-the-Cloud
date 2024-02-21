@@ -8,7 +8,10 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "jakarta",injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = {BroadcastMapper.class, AdMapper.class})
+@Mapper(componentModel = "jakarta",
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR,
+        uses = {BroadcastMapper.class}
+)
 public abstract  class AdBroadcastMapper {
 
     @Mapping(target = "broadcastTime", source = "broadcastTime", qualifiedByName = "stringTimeFormatter")
