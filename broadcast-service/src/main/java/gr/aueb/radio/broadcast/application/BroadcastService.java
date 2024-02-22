@@ -68,7 +68,7 @@ public class BroadcastService {
     public Broadcast findById(Integer id){
         Broadcast broadcast = broadcastRepository.findById(id);
         if (broadcast == null){
-            throw new NotFoundRadioException("Broadcast not found");
+            throw new NotFoundException("Broadcast not found");
         }
         return broadcast;
     }

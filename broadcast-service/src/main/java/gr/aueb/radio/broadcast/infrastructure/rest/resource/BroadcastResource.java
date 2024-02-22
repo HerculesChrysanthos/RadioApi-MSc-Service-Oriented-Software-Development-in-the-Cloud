@@ -1,6 +1,7 @@
 package gr.aueb.radio.broadcast.infrastructure.rest.resource;
 
 import gr.aueb.radio.broadcast.application.BroadcastService;
+import gr.aueb.radio.broadcast.common.ErrorResponse;
 import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
 import gr.aueb.radio.broadcast.domain.broadcast.BroadcastType;
@@ -44,8 +45,8 @@ public class BroadcastResource {
         try{
             Broadcast broadcast = broadcastService.findById(id);
             return Response.ok().entity(outputBroadcastMapper.toRepresentation(broadcast)).build();
-        }catch (NotFoundException e){
-            return Response.status(Response.Status.NOT_FOUND).build();
+        } catch (NotFoundException e){
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse(e.getMessage())).build();
         }
     }
 
