@@ -84,7 +84,8 @@ public class AdBroadcastResource {
             URI uri = UriBuilder.fromResource(AdBroadcastResource.class).path(String.valueOf(adBroadcast.getId())).build();
             return Response.created(uri).entity(adBroadcastMapper.toRepresentation(adBroadcast)).build();
         } catch (RadioException re){
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode).entity(re.getMessage()).build();
         }catch (NotFoundException re){
             return Response.status(Response.Status.NOT_FOUND.getStatusCode(), re.getMessage()).build();
         }
