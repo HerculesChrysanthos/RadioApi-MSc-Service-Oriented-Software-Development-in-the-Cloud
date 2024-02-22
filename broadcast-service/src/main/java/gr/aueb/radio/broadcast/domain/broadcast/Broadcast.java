@@ -16,35 +16,35 @@ import java.util.List;
 
 
 @Entity
-@Table(name="broadcasts")
+@Table(name = "broadcasts")
 @Slf4j
 public class Broadcast {
     @Id
-    @Column(name="id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Column(name="duration", nullable = false)
+    @Column(name = "duration", nullable = false)
     private Integer duration;
 
-    @Column(name="starting_date", nullable = false)
+    @Column(name = "starting_date", nullable = false)
     private LocalDate startingDate;
 
-    @Column(name="starting_time", nullable = false)
+    @Column(name = "starting_time", nullable = false)
     private LocalTime startingTime;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="type")
+    @Column(name = "type")
     private BroadcastType type;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "timezone")
     private Zone timezone;
 
-    @OneToMany(mappedBy = "broadcast", fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "broadcast", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<AdBroadcast> adBroadcasts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "broadcast", fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "broadcast", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<SongBroadcast> songBroadcasts = new ArrayList<>();
 
     @Column(name = "user_id")
@@ -53,7 +53,8 @@ public class Broadcast {
     @Column(name = "genre_id")
     private Integer genreId;
 
-    public Broadcast() {}
+    public Broadcast() {
+    }
 
 
     public Broadcast(Integer duration, LocalDate startingDate, LocalTime startingTime, BroadcastType type) {
@@ -100,15 +101,15 @@ public class Broadcast {
         this.type = type;
     }
 
-    public List<AdBroadcast> getAdBroadcasts(){
+    public List<AdBroadcast> getAdBroadcasts() {
         return this.adBroadcasts;
     }
 
-    public List<SongBroadcast> getSongBroadcasts(){
+    public List<SongBroadcast> getSongBroadcasts() {
         return this.songBroadcasts;
     }
 
-    public Zone getTimezone(){
+    public Zone getTimezone() {
         return DateUtil.calculateTimezone(this.startingTime);
     }
 
@@ -128,12 +129,12 @@ public class Broadcast {
         this.genreId = genreId;
     }
 
-    public AdBroadcast createAdBroadcast(AdBasicRepresentation ad, LocalTime time){
-        if (!adCanBeAdded(ad, time)){
+    public AdBroadcast createAdBroadcast(AdBasicRepresentation ad, LocalTime time) {
+        if (!adCanBeAdded(ad, time)) {
             return null;
         }
 //        if(checkForOccurrence(time, ad.getDuration())){
-            if(checkForOccurrence(time, ad.duration)){
+        if (checkForOccurrence(time, ad.duration)) {
 //            log.info("Broadcast occurrence restriction");
             return null;
         }
@@ -174,7 +175,7 @@ public class Broadcast {
 //        songBroadcast.getSong().removeSongBroadcast(songBroadcast);
     }
 
-    private boolean checkForOccurrence(LocalTime startingTime, Integer duration){
+    private boolean checkForOccurrence(LocalTime startingTime, Integer duration) {
         // Starting time of song/add broadcast
         LocalDateTime startingDateTime = this.startingDate.atTime(startingTime);
         // Ending time of song/add broadcast
@@ -191,14 +192,14 @@ public class Broadcast {
 //            }
 //        }
 
-        for (AdBroadcast ab : this.adBroadcasts){
+        for (AdBroadcast ab : this.adBroadcasts) {
             LocalDateTime abStartingTime = this.startingDate.atTime(ab.getBroadcastTime());
             LocalDateTime abEndingTime = ab.getBroadcastEndingDateTime(duration);
-            if(DateUtil.between(abStartingTime, startingDateTime, abEndingTime)){
+            if (DateUtil.between(abStartingTime, startingDateTime, abEndingTime)) {
                 return true;
             }
 
-            if(DateUtil.between(abStartingTime, endingDateTime, abEndingTime)){
+            if (DateUtil.between(abStartingTime, endingDateTime, abEndingTime)) {
                 return true;
             }
         }
@@ -216,31 +217,31 @@ public class Broadcast {
 //        return false;
 //    }
 
-    private boolean exceedsLimits(LocalTime startingTime, Integer duration){
+    private boolean exceedsLimits(LocalTime startingTime, Integer duration) {
         // Starting time of song/add broadcast
         LocalDateTime startingDateTime = this.startingDate.atTime(startingTime);
         // Ending time of song/add broadcast
         LocalDateTime endingDateTime = startingDateTime.plusMinutes(duration);
 
         LocalDateTime broadcastStartingTime = this.startingDate.atTime(this.startingTime);
-        LocalDateTime broadcastEndingTime =broadcastStartingTime.plusMinutes(this.duration);
+        LocalDateTime broadcastEndingTime = broadcastStartingTime.plusMinutes(this.duration);
         // check that the starting time of a (add|song)broadcast is before or after the starting time of the broadcast itself
-        if (!DateUtil.betweenCloseOpen(broadcastStartingTime, startingDateTime, broadcastEndingTime)){
+        if (!DateUtil.betweenCloseOpen(broadcastStartingTime, startingDateTime, broadcastEndingTime)) {
             return true;
         }
         // check that the ending time of a (add|song)broadcast is before or after the starting time of the broadcast itself
-        if (!DateUtil.betweenOpenClose(startingDateTime, endingDateTime, broadcastEndingTime)){
+        if (!DateUtil.betweenOpenClose(startingDateTime, endingDateTime, broadcastEndingTime)) {
             return true;
         }
         return false;
     }
 
-    public LocalDateTime getBroadcastEndingDateTime(){
+    public LocalDateTime getBroadcastEndingDateTime() {
         LocalDateTime startingDate = this.startingDate.atTime(this.startingTime);
         return startingDate.plusMinutes(this.duration);
     }
 
-    public Integer getAllocatedTime(Integer adDuration, Integer songDuration){
+    public Integer getAllocatedTime(Integer adDuration, Integer songDuration) {
         Integer totalTime = 0;
         if (adDuration != null) {
             for (AdBroadcast addBroadcast : this.adBroadcasts) {
@@ -285,15 +286,12 @@ public class Broadcast {
 //    }
 ////
 
-    public boolean adCanBeAdded(AdBasicRepresentation ad, LocalTime time){
+    public boolean adCanBeAdded(AdBasicRepresentation ad, LocalTime time) {
 //        System.out.println ("adId " + ad.id);
 //        System.out.println ("adId " + ad.timezone);
 
         this.timezone = DateUtil.calculateTimezone(this.startingTime);
         String broadcastTimezone = this.timezone.name();
-//
-//        System.out.println("Type of broadcastTimezone: " + broadcastTimezone.getClass().getName());
-//        System.out.println("Type of ad.timezone: " + ad.timezone.getClass().getName());
 
         if (!ad.timezone.equals(broadcastTimezone)) {
 //            log.info("Broadcast timezone restriction");
@@ -310,24 +308,28 @@ public class Broadcast {
 //            log.info("Add restrictions");
 //            return false;
 //        }
+        if (!toBeBroadcasted(this.startingDate, ad)) {
+//            log.info("Add restrictions");
+            return false;
+        }
 
-        if(getAllocatedTime(ad.duration, null) + ad.duration > this.duration){
+        if (getAllocatedTime(ad.duration, null) + ad.duration > this.duration) {
 //            log.info("Broadcast duration restriction");
             return false;
         }
-        if (this.exceedsLimits(time, ad.duration)){
+        if (this.exceedsLimits(time, ad.duration)) {
 //            log.info("Broadcast limit restriction");
             return false;
         }
         return true;
     }
 
-//        public boolean toBeBroadcasted(LocalDate date){
-//        if (!DateUtil.between(this.startingDate, date, this.endingDate)){
-//            return false;
-//        }
-//        return this.adBroadcasts.size() < this.repPerZone;
-//    }
+    public boolean toBeBroadcasted(LocalDate date, AdBasicRepresentation ad) {
+        if (!DateUtil.between(ad.startingDate, date, ad.endingDate)) {
+            return false;
+        }
+        return this.adBroadcasts.size() < ad.repPerZone;
+    }
 
 }
 
