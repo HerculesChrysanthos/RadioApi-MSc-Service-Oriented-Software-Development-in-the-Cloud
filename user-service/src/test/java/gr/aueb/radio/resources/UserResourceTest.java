@@ -84,6 +84,4 @@ public class UserResourceTest extends IntegrationBase {
         assertEquals(userToCreate.password, userRepresentation.password);
     }
 
-
 }
-
