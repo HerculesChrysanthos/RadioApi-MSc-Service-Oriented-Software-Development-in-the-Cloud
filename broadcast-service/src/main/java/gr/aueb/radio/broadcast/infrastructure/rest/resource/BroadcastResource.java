@@ -64,13 +64,15 @@ public class BroadcastResource {
 //        }
 //    }
 //
-//    @GET
-//    @Path("now")
-//    //@PermitAll
-//    public Response getNow(){
-//        BroadcastOutputRepresentation playingNow = broadcastService.getNow();
-//        return Response.ok().entity(playingNow).build();
-//    }
+    @GET
+    @Path("now")
+    //@PermitAll
+    public Response getNow(
+            @HeaderParam("Authorization") String auth
+    ){
+        BroadcastOutputRepresentation playingNow = broadcastService.getNow(auth);
+        return Response.ok().entity(playingNow).build();
+    }
 //
 //    @POST
 ////    @RolesAllowed("PRODUCER")

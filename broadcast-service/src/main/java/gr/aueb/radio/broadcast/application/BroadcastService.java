@@ -10,6 +10,7 @@ import gr.aueb.radio.broadcast.infrastructure.persistence.AdBroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.persistence.BroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.persistence.SongBroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastMapper;
+import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastOutputRepresentation;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastRepresentation;
 import gr.aueb.radio.broadcast.common.DateUtil;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.OutputBroadcastMapper;
@@ -25,6 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequestScoped
 @Slf4j
@@ -51,6 +53,9 @@ public class BroadcastService {
     @Inject
     SongBroadcastRepository songBroadcastRepository;
 //
+
+    @Inject
+    UserService userService;
 
 //    @Inject
 //    PlaylistService playlistService;
@@ -247,19 +252,25 @@ public class BroadcastService {
 //        return suggestions;
 //    }
 //
-//    @Transactional
-//    public BroadcastOutputRepresentation getNow(){
-//        LocalTime timeNow = DateUtil.timeNow();
-//        LocalDate dateNow = DateUtil.dateNow();
-//        LocalDateTime dateTimeNow = dateNow.atTime(timeNow);
-//        List<Broadcast> broadcastsOfDay = broadcastRepository.findByDate(dateNow);
-//        try {
-//            broadcastsOfDay = broadcastsOfDay.stream().filter(s -> DateUtil.between(s.getStartingDate().atTime(s.getStartingTime()), dateTimeNow, s.getBroadcastEndingDateTime())).collect(Collectors.toList());
-//            return outputBroadcastMapper.toRepresentation(broadcastsOfDay.get(0));
-//        }catch (Exception e){
-//            return new BroadcastOutputRepresentation();
-//        }
-//    }
+    @Transactional
+    public BroadcastOutputRepresentation getNow(String auth){
+        String userRole = userService.verifyAuth(auth).role;
+
+        if(!userRole.equals("PRODUCER")){
+            throw new RadioException("Not Allowed to access this.", 403);
+        }
+
+        LocalTime timeNow = DateUtil.timeNow();
+        LocalDate dateNow = DateUtil.dateNow();
+        LocalDateTime dateTimeNow = dateNow.atTime(timeNow);
+        List<Broadcast> broadcastsOfDay = broadcastRepository.findByDate(dateNow);
+        try {
+            broadcastsOfDay = broadcastsOfDay.stream().filter(s -> DateUtil.between(s.getStartingDate().atTime(s.getStartingTime()), dateTimeNow, s.getBroadcastEndingDateTime())).collect(Collectors.toList());
+            return outputBroadcastMapper.toRepresentation(broadcastsOfDay.get(0));
+        }catch (Exception e){
+            return new BroadcastOutputRepresentation();
+        }
+    }
 
 //    private Broadcast updateValues(Broadcast broadcast, BroadcastRepresentation broadcastRepresentation){
 //        broadcast.setType(broadcastRepresentation.type);
