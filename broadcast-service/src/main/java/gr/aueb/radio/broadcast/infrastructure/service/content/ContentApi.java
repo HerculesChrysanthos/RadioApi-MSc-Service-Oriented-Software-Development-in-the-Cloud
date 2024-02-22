@@ -16,7 +16,7 @@ public interface ContentApi {
 
     @GET
     @Path("/ads/{id}")
-    AdBasicRepresentation getAdId(
+    AdBasicRepresentation getAd(
             @HeaderParam("Authorization") String basicAuthHeader,
             @PathParam("id") Integer id
     );

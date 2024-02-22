@@ -25,9 +25,9 @@ public class ContentServiceImpl implements ContentService {
     ContentApi contentApi;
 
     @Override
-    public AdBasicRepresentation getAdId(String auth, Integer adId) {
+    public AdBasicRepresentation getAd(String auth, Integer adId) {
         try {
-            return contentApi.getAdId(auth, adId);
+            return contentApi.getAd(auth, adId);
 
         } catch (ProcessingException error) {
             throw new RadioException("Problem on reaching content api.", 424);

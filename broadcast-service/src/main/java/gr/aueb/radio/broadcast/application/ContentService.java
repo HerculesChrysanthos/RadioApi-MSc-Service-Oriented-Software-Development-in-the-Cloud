@@ -4,5 +4,5 @@ import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdB
 
 public interface ContentService {
 
-    AdBasicRepresentation getAdId(String auth, Integer adId);
+    AdBasicRepresentation getAd(String auth, Integer adId);
 }

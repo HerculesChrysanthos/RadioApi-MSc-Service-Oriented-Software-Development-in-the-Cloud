@@ -44,7 +44,7 @@ public class AdBroadcastService {
             throw new RadioException("Not Allowed to access this.", 403);
         }
         // call content
-        AdBasicRepresentation ad = contentService.getAdId(auth, dto.adId);
+        AdBasicRepresentation ad = contentService.getAd(auth, dto.adId);
         System.out.println ("adId " + ad.id);
         System.out.println ("adId " + ad.timezone);
 
