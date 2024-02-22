@@ -181,14 +181,14 @@ public class BroadcastService {
         System.out.println("adBroadcastsInTimezone - " + adBroadcastsInTimezone);
         // check restriction of maximum 4 ads per timezone
         if (adBroadcastsInTimezone >= 4){
-            throw new RadioException("Add cannot be scheduled to broadcast");
+            throw new RadioException("Ad cannot be scheduled to broadcast");
         }
         System.out.println ("adId " + ad.id);
         System.out.println ("adId " + ad.timezone);
         AdBroadcast created = broadcast.createAdBroadcast(ad, startingTime);
         System.out.println("created - " + created);
         if (created == null){
-            throw new RadioException("Add cannot be scheduled to broadcast");
+            throw new RadioException("Ad cannot be scheduled to broadcast");
         }
         adBroadcastRepository.persist(created);
         return created;
