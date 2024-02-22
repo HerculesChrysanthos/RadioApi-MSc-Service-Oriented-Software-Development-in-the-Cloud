@@ -131,10 +131,13 @@ public class Broadcast {
 
     public AdBroadcast createAdBroadcast(AdBasicRepresentation ad, LocalTime time) {
         if (!adCanBeAdded(ad, time)) {
+            System.out.println ("adCanBeAdded " + "mpika");
+
             return null;
         }
 //        if(checkForOccurrence(time, ad.getDuration())){
         if (checkForOccurrence(time, ad.duration)) {
+            System.out.println ("checkForOccurrence " + "mpika");
 //            log.info("Broadcast occurrence restriction");
             return null;
         }
@@ -287,9 +290,8 @@ public class Broadcast {
 ////
 
     public boolean adCanBeAdded(AdBasicRepresentation ad, LocalTime time) {
-//        System.out.println ("adId " + ad.id);
-//        System.out.println ("adId " + ad.timezone);
-
+        System.out.println ("adId " + ad.id);
+        System.out.println ("adId " + ad.timezone);
         this.timezone = DateUtil.calculateTimezone(this.startingTime);
         String broadcastTimezone = this.timezone.name();
 
@@ -313,8 +315,7 @@ public class Broadcast {
             return false;
         }
 
-        if (getAllocatedTime(ad.duration, null) + ad.duration > this.duration) {
-//            log.info("Broadcast duration restriction");
+        if (getAllocatedTime(ad.duration, null) + ad.duration > this.duration) {//            log.info("Broadcast duration restriction");
             return false;
         }
         if (this.exceedsLimits(time, ad.duration)) {
@@ -326,6 +327,9 @@ public class Broadcast {
 
     public boolean toBeBroadcasted(LocalDate date, AdBasicRepresentation ad) {
         if (!DateUtil.between(ad.startingDate, date, ad.endingDate)) {
+            System.out.println ("startingDate" + ad.startingDate);
+            System.out.println ("endingDate" + ad.endingDate);
+            System.out.println ("date" + date);
             return false;
         }
         return this.adBroadcasts.size() < ad.repPerZone;

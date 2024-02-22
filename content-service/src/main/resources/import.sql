@@ -4,6 +4,7 @@ delete from genres;
 
 insert into ads (id, duration, rep_per_zone, starting_date, ending_date, timezone) values (1001, 15, 0, PARSEDATETIME('01-01-2022','dd-MM-yyyy'), PARSEDATETIME('01-03-2022','dd-MM-yyyy'), 'LateNight');
 insert into ads (id, duration, rep_per_zone, starting_date, ending_date, timezone) values (1002, 30, 0, PARSEDATETIME('01-01-2022','dd-MM-yyyy'), PARSEDATETIME('01-04-2022','dd-MM-yyyy'), 'LateNight');
+insert into ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1102, 8, 3, PARSEDATETIME('07-02-2023', 'dd-MM-yyyy'), PARSEDATETIME('23-08-2024', 'dd-MM-yyyy'), 'EarlyMorning');
 
 insert into genres (id, title) values (1, 'Hip hop');
 insert into genres (id, title) values (2, 'Rock');
