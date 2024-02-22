@@ -8,6 +8,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import org.jboss.logging.Logger;
@@ -25,13 +27,14 @@ public class ContentServiceImpl implements ContentService {
     @Override
     public AdBasicRepresentation getAdId(String auth, Integer adId) {
         try {
-            AdBasicRepresentation ad = contentApi.getAdId(auth, adId);
+            return contentApi.getAdId(auth, adId);
 
-            return ad;
         } catch (ProcessingException error) {
             throw new RadioException("Problem on reaching content api.", 424);
-        } catch (NotFoundException error) {
-            throw new RadioException("not found", 404);
+        }
+        catch(WebApplicationException e){
+            Response response = e.getResponse();
+            throw new RadioException("", response.getStatus());
         }
     }
 

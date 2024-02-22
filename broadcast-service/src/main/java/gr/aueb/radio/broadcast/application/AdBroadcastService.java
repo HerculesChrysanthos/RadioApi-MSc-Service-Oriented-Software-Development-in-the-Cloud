@@ -47,13 +47,8 @@ public class AdBroadcastService {
         AdBasicRepresentation ad = contentService.getAdId(auth, dto.adId);
         System.out.println ("adId " + ad.id);
         System.out.println ("adId " + ad.timezone);
-        if (ad == null){
-            throw new NotFoundException("Ad does not exist");
-        }
 
-        AdBroadcast adBroadcast = broadcastService.scheduleAd(dto.broadcastId, ad, DateUtil.setTime(dto.startingTime));
-        return adBroadcast;
-//        return new AdBroadcast();
+        return broadcastService.scheduleAd(dto.broadcastId, ad, DateUtil.setTime(dto.startingTime));
     }
 
     @Transactional
