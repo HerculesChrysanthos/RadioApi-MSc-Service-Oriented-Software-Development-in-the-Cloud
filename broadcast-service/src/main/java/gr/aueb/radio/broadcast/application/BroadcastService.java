@@ -256,11 +256,7 @@ public class BroadcastService {
 //
     @Transactional
     public BroadcastOutputRepresentation getNow(String auth){
-        String userRole = userService.verifyAuth(auth).role;
-
-        if(!userRole.equals("PRODUCER")){
-            throw new RadioException("Not Allowed to access this.", 403);
-        }
+        userService.verifyAuth(auth);
 
         LocalTime timeNow = DateUtil.timeNow();
         LocalDate dateNow = DateUtil.dateNow();

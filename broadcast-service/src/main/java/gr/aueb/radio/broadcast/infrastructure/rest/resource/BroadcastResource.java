@@ -39,7 +39,7 @@ public class BroadcastResource {
     public Response getBroadcast(
             @PathParam("id") Integer id,
             @HeaderParam("Authorization") String auth
-    ){
+    ) {
         try{
             Broadcast broadcast = broadcastService.findById(id, auth);
             return Response.ok()
@@ -80,9 +80,19 @@ public class BroadcastResource {
     //@PermitAll
     public Response getNow(
             @HeaderParam("Authorization") String auth
-    ){
-        BroadcastOutputRepresentation playingNow = broadcastService.getNow(auth);
-        return Response.ok().entity(playingNow).build();
+    ) {
+        try {
+            BroadcastOutputRepresentation playingNow = broadcastService.getNow(auth);
+            return Response.ok().entity(playingNow).build();
+        } catch (ExternalServiceException externalServiceException){
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
+        } catch (RadioException radioException) {
+            return Response.status(radioException.getStatusCode())
+                    .entity(new ErrorResponse(radioException.getMessage()))
+                    .build();
+        }
     }
 //
 //    @POST
