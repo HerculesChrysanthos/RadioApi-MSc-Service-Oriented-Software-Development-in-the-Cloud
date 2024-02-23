@@ -2,6 +2,7 @@ package gr.aueb.radio.broadcast.application;
 
 import gr.aueb.radio.broadcast.common.DateUtil;
 import gr.aueb.radio.broadcast.common.NotFoundRadioException;
+import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
 import gr.aueb.radio.broadcast.domain.songBroadcast.SongBroadcast;
 import gr.aueb.radio.broadcast.infrastructure.persistence.SongBroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.SongBroadcastCreationDTO;
@@ -15,6 +16,7 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @RequestScoped
@@ -28,31 +30,35 @@ public class SongBroadcastService {
     @Inject
     UserService userService;
 
+    @Inject
+    ContentService contentService;
+
 //    @Inject
 //    SongRepository songRepository;
-//
-//    @Transactional
-//    public SongBroadcast create(SongBroadcastCreationDTO dto) {
-//        // verify auth
-//        String userRole = userService.verifyAuth(auth).role;
-//
-//        if(!userRole.equals("PRODUCER")){
-//            throw new RadioException("Not Allowed to access this.", 403);
-//        }
-//
-//        // call content api
-//        SongBasicRepresentation song = contentService.getSongId(auth, dto.songId);
-//        System.out.println ("adId " + ad.song);
+
+    @Transactional
+    public SongBroadcast create(SongBroadcastCreationDTO dto, String auth) {
+        // verify auth
+        String userRole = userService.verifyAuth(auth).role;
+
+        if(!userRole.equals("PRODUCER")){
+            throw new RadioException("Not Allowed to access this.", 403);
+        }
+
+        // call content api
+        SongBasicRepresentation song = contentService.getSong(auth, dto.songId);
+        if (song == null){
+            throw new NotFoundException("Ad does not exist");
+        }
+        //Song song = songRepository.findById(dto.songId);
 //        if (song == null){
-//            throw new NotFoundException("Ad does not exist");
+//            throw new NotFoundException("Song does not exist");
 //        }
-//        //Song song = songRepository.findById(dto.songId);
-////        if (song == null){
-////            throw new NotFoundException("Song does not exist");
-////        }
-//        SongBroadcast songBroadcast = broadcastService.scheduleSong(dto.broadcastId, song, DateUtil.setTime(dto.startingTime));
-//        return songBroadcast;
-//    }
+        //songbroadcastService.scheduleSong move to
+        SongBroadcast songBroadcast = broadcastService.scheduleSong(dto.broadcastId, song, DateUtil.setTime(dto.startingTime));
+//        SongBroadcast songBroadcast = scheduleSong(dto.broadcastId, song, DateUtil.setTime(dto.startingTime));
+        return songBroadcast;
+    }
 
     @Transactional
     public SongBroadcast find(Integer id, String auth) {
@@ -102,4 +108,17 @@ public class SongBroadcastService {
         }
         return songBroadcastRepository.findByDateDetails(dateToSearch);
     }
+
+
+
+//    @Transactional
+//    public List<SongBroadcast> searchBySongId (String date, String auth) {
+//        String userRole = userService.verifyAuth(auth).role;
+//
+//        if(!userRole.equals("PRODUCER")){
+//            throw new RadioException("Not Allowed to access this.", 403);
+//        }
+//        return songBroadcastRepository.searchBySongId(songId);
+//    }
+
 }

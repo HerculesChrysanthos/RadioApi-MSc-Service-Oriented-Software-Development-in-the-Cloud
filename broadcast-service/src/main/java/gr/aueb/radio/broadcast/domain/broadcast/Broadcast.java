@@ -4,6 +4,7 @@ import gr.aueb.radio.broadcast.common.DateUtil;
 import gr.aueb.radio.broadcast.domain.adBroadcast.AdBroadcast;
 import gr.aueb.radio.broadcast.domain.songBroadcast.SongBroadcast;
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdBasicRepresentation;
+import gr.aueb.radio.broadcast.infrastructure.service.content.representation.SongBasicRepresentation;
 import jakarta.persistence.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -149,20 +150,20 @@ public class Broadcast {
         return adBroadcast;
     }
 
-//    public SongBroadcast createSongBroadcast(Song song, LocalTime time){
-//        if(!songCanBeAdded(song, time)){
-//            return null;
-//        }
-//        if(checkForOccurrence(time, song.getDuration())){
-//            log.info("Broadcast occurrence restriction");
-//            return null;
-//        }
-//        SongBroadcast songBroadcast = new SongBroadcast(this.startingDate, time);
-//        songBroadcast.setBroadcast(this);
+    public SongBroadcast createSongBroadcast(SongBasicRepresentation song, LocalTime time, List songBroadcastsOfBr, List songBroadcastsOfDay){
+        if(!songCanBeAdded(song, time, songBroadcastsOfDay)){
+            return null;
+        }
+        if(checkForOccurrence(time, song.duration)){
+            log.info("Broadcast occurrence restriction");
+            return null;
+        }
+        SongBroadcast songBroadcast = new SongBroadcast(this.startingDate, time);
+        songBroadcast.setBroadcast(this);
 //        song.addSongBroadcast(songBroadcast);
-//        this.songBroadcasts.add(songBroadcast);
-//        return  songBroadcast;
-//    }
+        this.songBroadcasts.add(songBroadcast);
+        return  songBroadcast;
+    }
 
     public void removeAdBroadcast(AdBroadcast adBroadcast) {
         this.adBroadcasts.remove(adBroadcast);
@@ -183,17 +184,17 @@ public class Broadcast {
         LocalDateTime startingDateTime = this.startingDate.atTime(startingTime);
         // Ending time of song/add broadcast
         LocalDateTime endingDateTime = startingDateTime.plusMinutes(duration);
-//        for (SongBroadcast sb : this.songBroadcasts){
-//            LocalDateTime sbStartingTime = this.startingDate.atTime(sb.getBroadcastTime());
-//            LocalDateTime sbEndingTime = sb.getBroadcastEndingDateTime();
-//            if(DateUtil.between(sbStartingTime, startingDateTime, sbEndingTime)){
-//                return true;
-//            }
-//
-//            if(DateUtil.between(sbStartingTime, endingDateTime, sbEndingTime)){
-//                return true;
-//            }
-//        }
+        for (SongBroadcast sb : this.songBroadcasts){
+            LocalDateTime sbStartingTime = this.startingDate.atTime(sb.getBroadcastTime());
+            LocalDateTime sbEndingTime = sb.getBroadcastEndingDateTime(duration);
+            if(DateUtil.between(sbStartingTime, startingDateTime, sbEndingTime)){
+                return true;
+            }
+
+            if(DateUtil.between(sbStartingTime, endingDateTime, sbEndingTime)){
+                return true;
+            }
+        }
 
         for (AdBroadcast ab : this.adBroadcasts) {
             LocalDateTime abStartingTime = this.startingDate.atTime(ab.getBroadcastTime());
@@ -244,7 +245,7 @@ public class Broadcast {
         return startingDate.plusMinutes(this.duration);
     }
 
-    public Integer getAllocatedTime(Integer adDuration, Integer songDuration) {
+        public Integer getAllocatedTime(Integer adDuration, Integer songDuration) {
         Integer totalTime = 0;
         if (adDuration != null) {
             for (AdBroadcast addBroadcast : this.adBroadcasts) {
@@ -265,29 +266,29 @@ public class Broadcast {
 //        }
         return totalTime;
     }
-//
-//    public boolean songCanBeAdded(Song song, LocalTime time){
-//        if(!song.toBeBroadcasted(this.startingDate, time)){
-//            log.info("Broadcast song broadcast restriction");
-//            return false;
-//        }
-//
+
+    public boolean songCanBeAdded(SongBasicRepresentation song, LocalTime time, List songBroadcastsOfDay){
+        if(!toBeBroadcastedSong(this.startingDate, time, songBroadcastsOfDay)){
+            log.info("Broadcast song broadcast restriction");
+            return false;
+        }
+
 //        if(!validSongGenre(song.getGenre())){
 //            log.info("Inconsistent song genre");
 //            return false;
 //        }
-//
-//        if(getAllocatedTime() + song.getDuration() > this.duration){
+
+        if(getAllocatedTime(null, song.duration) + song.duration > this.duration){
 //            log.info("Broadcast duration restriction");
-//            return false;
-//        }
-//        if (this.exceedsLimits(time, song.getDuration())){
+            return false;
+        }
+        if (this.exceedsLimits(time, song.duration)){
 //            log.info("Broadcast limit restriction");
-//            return false;
-//        }
-//        return true;
-//    }
-////
+            return false;
+        }
+        return true;
+    }
+//
 
     public boolean adCanBeAdded(AdBasicRepresentation ad, LocalTime time) {
         System.out.println ("adId " + ad.id);
@@ -310,7 +311,7 @@ public class Broadcast {
 //            log.info("Add restrictions");
 //            return false;
 //        }
-        if (!toBeBroadcasted(this.startingDate, ad)) {
+        if (!toBeBroadcastedAd(this.startingDate, ad)) {
 //            log.info("Add restrictions");
             return false;
         }
@@ -325,7 +326,7 @@ public class Broadcast {
         return true;
     }
 
-    public boolean toBeBroadcasted(LocalDate date, AdBasicRepresentation ad) {
+    public boolean toBeBroadcastedAd(LocalDate date, AdBasicRepresentation ad) {
         if (!DateUtil.between(ad.startingDate, date, ad.endingDate)) {
             System.out.println ("startingDate" + ad.startingDate);
             System.out.println ("endingDate" + ad.endingDate);
@@ -335,5 +336,19 @@ public class Broadcast {
         return this.adBroadcasts.size() < ad.repPerZone;
     }
 
+    public boolean toBeBroadcastedSong(LocalDate date, LocalTime time, List broadcastsOfDay){
+
+        // Filter from list and extract broadcasts from date
+//        List<SongBroadcast> broadcastsOfDay = getBroadcastsOfDay(date);
+        if (broadcastsOfDay.size() == 4){
+            return false;
+        }
+        LocalDateTime dateTime = date.atTime(time);
+        // Check for occurrence in last hour
+//        if (checkForPrevOccurrence(broadcastsOfDay, dateTime) || checkForNextOccurrence(broadcastsOfDay, dateTime)){
+//            return false;
+//        }
+        return true;
+    }
 }
 

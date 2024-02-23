@@ -1,5 +1,6 @@
 package gr.aueb.radio.broadcast.application;
 
+import com.arjuna.ats.internal.jdbc.drivers.modifiers.list;
 import gr.aueb.radio.broadcast.common.NotFoundRadioException;
 import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.domain.adBroadcast.AdBroadcast;
@@ -182,15 +183,13 @@ public class BroadcastService {
         }
         // to retrieve the adbroadcastrs of THIS broadcast ie. of the timezone
         int adBroadcastsInTimezone = adBroadcastRepository.findByTimezoneDate(broadcast.getTimezone(), broadcast.getStartingDate()).size();
-        System.out.println("adBroadcastsInTimezone - " + adBroadcastsInTimezone);
         // check restriction of maximum 4 ads per timezone
         if (adBroadcastsInTimezone >= 4){
             throw new RadioException("Ad cannot be scheduled to broadcast");
         }
-        System.out.println ("adId " + ad.id);
-        System.out.println ("adId " + ad.timezone);
+//        System.out.println ("adId " + ad.id);
+//        System.out.println ("adId " + ad.timezone);
         AdBroadcast created = broadcast.createAdBroadcast(ad, startingTime);
-        System.out.println("created - " + created);
         if (created == null){
             throw new RadioException("Ad cannot be scheduled to broadcast");
         }
@@ -198,20 +197,26 @@ public class BroadcastService {
         return created;
     }
 //
-//    @Transactional
-//    public SongBroadcast scheduleSong(Integer id, SongBasicRepresentation song, LocalTime startingTime){
-//        Broadcast broadcast = broadcastRepository.findByIdSongDetails(id);
-//        if (broadcast == null){
-//            throw new NotFoundException("Broadcast not found");x
-//        }
-//        SongBroadcast created = broadcast.createSongBroadcast(song, startingTime);
-//        if (created == null){
-//            throw new RadioException("Song cannot be scheduled to broadcast");
-//        }
-//        songBroadcastRepository.persist(created);
-//        return created;
-//    }
-//
+    @Transactional
+    public SongBroadcast scheduleSong(Integer id, SongBasicRepresentation song, LocalTime startingTime){
+        Broadcast broadcast = broadcastRepository.findByIdSongDetails(id);
+        if (broadcast == null){
+            throw new NotFoundException("Broadcast not found");
+        }
+        // get songBroadcasts of this song
+        List<SongBroadcast> songBroadcastsOfBr = songBroadcastRepository.searchBySongId(song.id);
+        // get songBroadcasts of the day of broadcast
+        List<SongBroadcast> songBroadcastsOfDay = songBroadcastRepository.findByDateDetails(broadcast.getStartingDate());
+
+        SongBroadcast created = broadcast.createSongBroadcast(song, startingTime, songBroadcastsOfBr, songBroadcastsOfDay);
+        if (created == null){
+            throw new RadioException("Song cannot be scheduled to broadcast");
+        }
+
+        songBroadcastRepository.persist(created);
+        return created;
+    }
+
     @Transactional
     public void removeAdBroadcast(Integer id, Integer abId){
         Broadcast broadcast = broadcastRepository.findByIdAdDetails(id);
