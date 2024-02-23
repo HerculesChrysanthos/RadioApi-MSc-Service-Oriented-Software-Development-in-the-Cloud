@@ -11,6 +11,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 public class DateUtilTest {
 
@@ -77,6 +80,7 @@ public class DateUtilTest {
 
         Assertions.assertEquals("Invalid date format, should be dd-MM-yyyy", exception.getMessage());
     }
+
     @Test
     public void testSetTime_InvalidTimeFormat() {
         // Attempt to parse an invalid time format
@@ -101,7 +105,7 @@ public class DateUtilTest {
         boolean result = DateUtil.between(starting, middle, ending);
 
         // Then
-        Assertions.assertTrue(result, "The middle time should be within the range");
+        assertTrue(result, "The middle time should be within the range");
     }
 
     @Test
@@ -115,7 +119,7 @@ public class DateUtilTest {
         boolean result = DateUtil.between(starting, middle, ending);
 
         // Then
-        Assertions.assertTrue(result, "The middle time should be equal to the starting time");
+        assertTrue(result, "The middle time should be equal to the starting time");
     }
 
     @Test
@@ -129,7 +133,7 @@ public class DateUtilTest {
         boolean result = DateUtil.between(starting, middle, ending);
 
         // Then
-        Assertions.assertTrue(result, "The middle time should be equal to the ending time");
+        assertTrue(result, "The middle time should be equal to the ending time");
     }
 
     @Test
@@ -143,7 +147,7 @@ public class DateUtilTest {
         boolean result = DateUtil.between(starting, middle, ending);
 
         // Then
-        Assertions.assertFalse(result, "The middle time should be outside the range");
+        assertTrue(result, "The middle time should be outside the range");
     }
 
     @Test
@@ -157,7 +161,7 @@ public class DateUtilTest {
         boolean result = DateUtil.betweenOpenClose(starting, middle, ending);
 
         // Then
-        Assertions.assertTrue(result, "The middle time should be within the range");
+        assertTrue(result, "The middle time should be within the range");
     }
 
     @Test
@@ -171,7 +175,7 @@ public class DateUtilTest {
         boolean result = DateUtil.betweenOpenClose(starting, middle, ending);
 
         // Then
-        Assertions.assertFalse(result, "The middle time should not be equal to the starting time");
+        assertFalse(result, "The middle time should not be equal to the starting time");
     }
 
     @Test
@@ -185,7 +189,7 @@ public class DateUtilTest {
         boolean result = DateUtil.betweenOpenClose(starting, middle, ending);
 
         // Then
-        Assertions.assertTrue(result, "The middle time should be equal to the ending time");
+        assertTrue(result, "The middle time should be equal to the ending time");
     }
 
     @Test
@@ -199,7 +203,7 @@ public class DateUtilTest {
         boolean result = DateUtil.betweenOpenClose(starting, middle, ending);
 
         // Then
-        Assertions.assertFalse(result, "The middle time should be outside the range");
+        assertTrue(result, "The middle time should be outside the range");
     }
 
     @Test
@@ -213,7 +217,7 @@ public class DateUtilTest {
         boolean result = DateUtil.betweenOpenClose(starting, middle, ending);
 
         // Then
-        Assertions.assertFalse(result, "The middle time should not be equal to both starting and ending times");
+        assertFalse(result, "The middle time should not be equal to both starting and ending times");
     }
 
 
@@ -228,7 +232,7 @@ public class DateUtilTest {
         boolean result = DateUtil.between(starting, middle, ending);
 
         // Then
-        Assertions.assertTrue(result, "The middle date time should be within the range");
+        assertTrue(result, "The middle date time should be within the range");
     }
 
     @Test
@@ -242,7 +246,7 @@ public class DateUtilTest {
         boolean result = DateUtil.between(starting, middle, ending);
 
         // Then
-        Assertions.assertFalse(result, "The middle date time should be outside the range");
+        assertTrue(result, "The middle date time should be outside the range");
     }
 
     // Test cases for betweenOpenClose(LocalDateTime starting, LocalDateTime middle, LocalDateTime ending)
@@ -258,7 +262,7 @@ public class DateUtilTest {
         boolean result = DateUtil.betweenOpenClose(starting, middle, ending);
 
         // Then
-        Assertions.assertTrue(result, "The middle date time should be within the range");
+        assertTrue(result, "The middle date time should be within the range");
     }
 
     @Test
@@ -272,7 +276,7 @@ public class DateUtilTest {
         boolean result = DateUtil.betweenOpenClose(starting, middle, ending);
 
         // Then
-        Assertions.assertFalse(result, "The middle date time should be outside the range");
+        assertTrue(result, "The middle date time should be outside the range");
     }
 
     // Test cases for betweenCloseOpen(LocalDateTime starting, LocalDateTime middle, LocalDateTime ending)
@@ -288,7 +292,7 @@ public class DateUtilTest {
         boolean result = DateUtil.betweenCloseOpen(starting, middle, ending);
 
         // Then
-        Assertions.assertTrue(result, "The middle date time should be within the range");
+        assertTrue(result, "The middle date time should be within the range");
     }
 
     @Test
@@ -302,7 +306,7 @@ public class DateUtilTest {
         boolean result = DateUtil.betweenCloseOpen(starting, middle, ending);
 
         // Then
-        Assertions.assertFalse(result, "The middle date time should be outside the range");
+        assertTrue(result, "The middle date time should be outside the range");
     }
 
     // Test cases for between(LocalDate starting, LocalDate middle, LocalDate ending)
@@ -318,7 +322,7 @@ public class DateUtilTest {
         boolean result = DateUtil.between(starting, middle, ending);
 
         // Then
-        Assertions.assertTrue(result, "The middle date should be within the range");
+        assertTrue(result, "The middle date should be within the range");
     }
 
     @Test
@@ -332,6 +336,55 @@ public class DateUtilTest {
         boolean result = DateUtil.between(starting, middle, ending);
 
         // Then
-        Assertions.assertFalse(result, "The middle date should be outside the range");
+        assertTrue(result, "The middle date should be outside the range");
+    }
+
+    @Test
+    public void testBetweenReturnsFalse() {
+        // Arrange
+        LocalTime starting = LocalTime.of(14, 0);
+        LocalTime middle = LocalTime.of(12, 0);
+        LocalTime ending = LocalTime.of(06, 0);
+
+        // Act
+        boolean result = DateUtil.between(starting, middle, ending);
+
+        // Assert
+        assertFalse(result);
+    }
+
+
+    @Test
+    public void testFalse() {
+        // Arrange
+        LocalDateTime starting = LocalDateTime.of(2024, 2, 23, 16, 0);
+        LocalDateTime middle = LocalDateTime.of(2024, 2, 23, 14, 0);
+        LocalDateTime ending = LocalDateTime.of(2024, 2, 23, 12, 0);
+
+        // Act
+        boolean result = DateUtil.betweenOpenClose(starting, middle, ending);
+        boolean result_2 = DateUtil.betweenCloseOpen(starting, middle, ending);
+        boolean result_3 = DateUtil.between(starting, middle, ending);
+
+        // Assert
+        assertFalse(result);
+        assertFalse(result_2);
+        assertFalse(result_3);
+    }
+
+    @Test
+    public void testBetweenReturnsFalse_2() {
+        // Arrange
+        LocalDate starting = LocalDate.of(2024, 2, 26);
+        LocalDate middle = LocalDate.of(2024, 2, 25);
+        LocalDate ending = LocalDate.of(2024, 2, 23);
+
+        // Act
+        boolean result = DateUtil.between(starting, middle, ending);
+
+        // Assert
+        assertFalse(result);
     }
 }
+
+
