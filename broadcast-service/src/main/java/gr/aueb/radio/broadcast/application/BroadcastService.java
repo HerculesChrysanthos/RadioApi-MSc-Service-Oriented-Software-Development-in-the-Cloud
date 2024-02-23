@@ -9,11 +9,8 @@ import gr.aueb.radio.broadcast.domain.songBroadcast.SongBroadcast;
 import gr.aueb.radio.broadcast.infrastructure.persistence.AdBroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.persistence.BroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.persistence.SongBroadcastRepository;
-import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastMapper;
-import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastOutputRepresentation;
-import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastRepresentation;
+import gr.aueb.radio.broadcast.infrastructure.rest.representation.*;
 import gr.aueb.radio.broadcast.common.DateUtil;
-import gr.aueb.radio.broadcast.infrastructure.rest.representation.OutputBroadcastMapper;
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdBasicRepresentation;
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.SongBasicRepresentation;
 import jakarta.enterprise.context.RequestScoped;
@@ -162,20 +159,20 @@ public class BroadcastService {
 //        broadcastRepository.deleteById(id);
 //    }
 
-//    @Transactional
-//    public List<BroadcastOutputRepresentation> search(BroadcastSearchDTO broadcastSearchDTO){
-//        List<Broadcast> broadcasts;
-//        if(broadcastSearchDTO.getDate() == null && broadcastSearchDTO.getType() == null){
-//            broadcasts = broadcastRepository.findByTimeRange(broadcastSearchDTO.getFromTime(), broadcastSearchDTO.getToTime());
-//        } else if (broadcastSearchDTO.getDate() == null) {
-//            broadcasts = broadcastRepository.findByTimeRangeType(broadcastSearchDTO.getFromTime(), broadcastSearchDTO.getToTime(), broadcastSearchDTO.getType());
-//        } else if (broadcastSearchDTO.getType() == null) {
-//            broadcasts = broadcastRepository.findByTimeRangeDate(broadcastSearchDTO.getFromTime(), broadcastSearchDTO.getToTime(), broadcastSearchDTO.getDate());
-//        } else {
-//            broadcasts = broadcastRepository.findByTimeRangeDateType(broadcastSearchDTO.getFromTime(), broadcastSearchDTO.getToTime(), broadcastSearchDTO.getDate(), broadcastSearchDTO.getType());
-//        }
-//        return outputBroadcastMapper.toRepresentationList(broadcasts);
-//    }
+    @Transactional
+    public List<BroadcastOutputRepresentation> search(BroadcastSearchDTO broadcastSearchDTO){
+        List<Broadcast> broadcasts;
+        if(broadcastSearchDTO.getDate() == null && broadcastSearchDTO.getType() == null){
+            broadcasts = broadcastRepository.findByTimeRange(broadcastSearchDTO.getFromTime(), broadcastSearchDTO.getToTime());
+        } else if (broadcastSearchDTO.getDate() == null) {
+            broadcasts = broadcastRepository.findByTimeRangeType(broadcastSearchDTO.getFromTime(), broadcastSearchDTO.getToTime(), broadcastSearchDTO.getType());
+        } else if (broadcastSearchDTO.getType() == null) {
+            broadcasts = broadcastRepository.findByTimeRangeDate(broadcastSearchDTO.getFromTime(), broadcastSearchDTO.getToTime(), broadcastSearchDTO.getDate());
+        } else {
+            broadcasts = broadcastRepository.findByTimeRangeDateType(broadcastSearchDTO.getFromTime(), broadcastSearchDTO.getToTime(), broadcastSearchDTO.getDate(), broadcastSearchDTO.getType());
+        }
+        return outputBroadcastMapper.toRepresentationList(broadcasts);
+    }
 
     @Transactional
     public AdBroadcast scheduleAd(Integer id, AdBasicRepresentation ad, LocalTime startingTime){

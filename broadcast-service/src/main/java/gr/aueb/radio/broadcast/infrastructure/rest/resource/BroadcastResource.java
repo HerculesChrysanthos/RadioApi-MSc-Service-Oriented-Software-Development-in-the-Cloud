@@ -5,17 +5,23 @@ import gr.aueb.radio.broadcast.common.ErrorResponse;
 import gr.aueb.radio.broadcast.common.ExternalServiceException;
 import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
+import gr.aueb.radio.broadcast.domain.broadcast.BroadcastType;
 import gr.aueb.radio.broadcast.infrastructure.rest.ApiPath.Root;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastMapper;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastOutputRepresentation;
+import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastSearchDTO;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.OutputBroadcastMapper;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Path(Root.BROADCASTS)
 @Produces(MediaType.APPLICATION_JSON)
@@ -60,21 +66,37 @@ public class BroadcastResource {
         }
     }
 
-//    @GET
-//    //@PermitAll
-//    public Response searchBroadcasts(@QueryParam("from") String from,
-//                                     @QueryParam("to") String to,
-//                                     @QueryParam("date") String date,
-//                                     @QueryParam("type") BroadcastEnum type){
-//        try {
-//            BroadcastSearchDTO searchDTO = new BroadcastSearchDTO(from, to, date, type);
-//            List<BroadcastOutputRepresentation> broadcastsFound = broadcastService.search(searchDTO);
-//            return Response.ok().entity(broadcastsFound).build();
-//        }catch (RadioException re){
-//            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
-//        }
-//    }
-//
+    @GET
+    //@PermitAll
+    public Response searchBroadcasts(@QueryParam("from") String from,
+                                     @QueryParam("to") String to,
+                                     @QueryParam("date") String date,
+                                     @QueryParam("type") String typeParam){
+        try {
+            BroadcastType type = null;
+            if (typeParam != null && !typeParam.isEmpty()) {
+                try {
+                    type = BroadcastType.valueOf(typeParam.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    String[] acceptedValues = Arrays.stream(BroadcastType.values())
+                            .map(Enum::name)
+                            .toArray(String[]::new);
+
+                    return Response.status(422)
+                            .entity(new ErrorResponse("Invalid value for 'type' parameter.", acceptedValues))
+                            .build();
+                }
+            }
+
+
+            BroadcastSearchDTO searchDTO = new BroadcastSearchDTO(from, to, date, type);
+            List<BroadcastOutputRepresentation> broadcastsFound = broadcastService.search(searchDTO);
+            return Response.ok().entity(broadcastsFound).build();
+        }catch (RadioException re){
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+        }
+    }
+
     @GET
     @Path("now")
     //@PermitAll
