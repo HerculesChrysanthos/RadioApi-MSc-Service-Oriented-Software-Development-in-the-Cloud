@@ -22,10 +22,15 @@ public class SongBroadcastRepository implements PanacheRepositoryBase<SongBroadc
         return find("select sb from SongBroadcast sb left join fetch sb.broadcast where sb.broadcastDate=:date", params).list();
     }
 
+    public List<SongBroadcast> searchBySongId(Integer id) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        return find("select sb from SongBroadcast sb left join fetch sb.broadcast where sb.songId=:id", params).list();
+    }
+
     public SongBroadcast findByIdDetails(Integer id){
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
-        //return find("select sb from SongBroadcast sb where sb.id=:id", params).singleResult();
 
         return find("select sb from SongBroadcast sb left join fetch sb.broadcast where sb.id=:id",params).singleResult();
 //        List<SongBroadcast> broadcasts = find("select sb from SongBroadcast sb left join fetch sb.song where sb.id=:id", params).list();
