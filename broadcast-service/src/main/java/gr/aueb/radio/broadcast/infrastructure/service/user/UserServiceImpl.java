@@ -7,6 +7,7 @@ import gr.aueb.radio.broadcast.infrastructure.service.user.representation.UserVe
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.WebApplicationException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.client.exception.ResteasyWebApplicationException;
@@ -30,8 +31,8 @@ public class UserServiceImpl implements UserService {
             return user;
         } catch (ProcessingException error) {
             throw new ExternalServiceException("Problem on reaching user api.");
-        } catch (ResteasyWebApplicationException rwa){
-            throw new RadioException("Auth error", rwa.getResponse().getStatus());
+        } catch (WebApplicationException webApplicationException){
+            throw new RadioException("Auth error", webApplicationException.getResponse().getStatus());
         }
 
     }
