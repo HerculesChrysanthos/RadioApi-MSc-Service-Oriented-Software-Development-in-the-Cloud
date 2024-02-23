@@ -1,6 +1,8 @@
 package gr.aueb.radio.broadcast.infrastructure.rest.resource;
 
 import gr.aueb.radio.broadcast.application.AdBroadcastService;
+import gr.aueb.radio.broadcast.common.ErrorResponse;
+import gr.aueb.radio.broadcast.common.ExternalServiceException;
 import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.domain.adBroadcast.AdBroadcast;
 import gr.aueb.radio.broadcast.infrastructure.rest.ApiPath.Root;
@@ -83,11 +85,19 @@ public class AdBroadcastResource {
             AdBroadcast adBroadcast = adBroadcastService.create(dto, auth);
             URI uri = UriBuilder.fromResource(AdBroadcastResource.class).path(String.valueOf(adBroadcast.getId())).build();
             return Response.created(uri).entity(adBroadcastMapper.toRepresentation(adBroadcast)).build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         } catch (RadioException re){
             int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
-            return Response.status(statusCode).entity(re.getMessage()).build();
-        }catch (NotFoundException re){
-            return Response.status(Response.Status.NOT_FOUND.getStatusCode(), re.getMessage()).build();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ErrorResponse(e.getMessage()))
+                    .build();
         }
     }
 }
