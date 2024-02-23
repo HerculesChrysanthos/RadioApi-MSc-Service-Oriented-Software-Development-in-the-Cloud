@@ -1,17 +1,15 @@
 package gr.aueb.radio.broadcast.infrastructure.service.user;
 
 import gr.aueb.radio.broadcast.application.UserService;
+import gr.aueb.radio.broadcast.common.ExternalServiceException;
 import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.infrastructure.service.user.representation.UserVerifiedRepresentation;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.ProcessingException;
-import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.client.exception.ResteasyWebApplicationException;
-
-import java.util.Base64;
 
 @ApplicationScoped
 public class UserServiceImpl implements UserService {
@@ -30,12 +28,11 @@ public class UserServiceImpl implements UserService {
             System.out.println("returned id "+ user.id);
 
             return user;
-        } catch(ProcessingException error) {
-            throw new RadioException("Problem on reaching user api.", 424);
+        } catch (ProcessingException error) {
+            throw new ExternalServiceException("Problem on reaching user api.");
+        } catch (ResteasyWebApplicationException rwa){
+            throw new RadioException("Auth error", rwa.getResponse().getStatus());
         }
-//        catch (ResteasyWebApplicationException rwa){
-//            throw new RadioException("Fo", 403);
-//        }
 
     }
 }

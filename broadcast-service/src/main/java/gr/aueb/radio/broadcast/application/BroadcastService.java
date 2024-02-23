@@ -65,7 +65,9 @@ public class BroadcastService {
 
 
     @Transactional
-    public Broadcast findById(Integer id){
+    public Broadcast findById(Integer id, String auth){
+        userService.verifyAuth(auth);
+
         Broadcast broadcast = broadcastRepository.findById(id);
         if (broadcast == null){
             throw new NotFoundException("Broadcast not found");

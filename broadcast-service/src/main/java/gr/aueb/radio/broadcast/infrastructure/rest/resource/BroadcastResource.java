@@ -2,25 +2,20 @@ package gr.aueb.radio.broadcast.infrastructure.rest.resource;
 
 import gr.aueb.radio.broadcast.application.BroadcastService;
 import gr.aueb.radio.broadcast.common.ErrorResponse;
+import gr.aueb.radio.broadcast.common.ExternalServiceException;
 import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
-import gr.aueb.radio.broadcast.domain.broadcast.BroadcastType;
 import gr.aueb.radio.broadcast.infrastructure.rest.ApiPath.Root;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastMapper;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastOutputRepresentation;
-import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastRepresentation;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.OutputBroadcastMapper;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.UriBuilder;
 import lombok.extern.slf4j.Slf4j;
-
-import java.net.URI;
 
 @Path(Root.BROADCASTS)
 @Produces(MediaType.APPLICATION_JSON)
@@ -41,12 +36,27 @@ public class BroadcastResource {
     @Path("/{id}")
     //@PermitAll
     @Transactional
-    public Response getBroadcast(@PathParam("id") Integer id){
+    public Response getBroadcast(
+            @PathParam("id") Integer id,
+            @HeaderParam("Authorization") String auth
+    ){
         try{
-            Broadcast broadcast = broadcastService.findById(id);
-            return Response.ok().entity(outputBroadcastMapper.toRepresentation(broadcast)).build();
+            Broadcast broadcast = broadcastService.findById(id, auth);
+            return Response.ok()
+                    .entity(outputBroadcastMapper.toRepresentation(broadcast))
+                    .build();
+        } catch (ExternalServiceException externalServiceException){
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
+        } catch (RadioException radioException){
+            return Response.status(radioException.getStatusCode())
+                    .entity(new ErrorResponse(radioException.getMessage()))
+                    .build();
         } catch (NotFoundException e){
-            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse(e.getMessage())).build();
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ErrorResponse(e.getMessage()))
+                    .build();
         }
     }
 
