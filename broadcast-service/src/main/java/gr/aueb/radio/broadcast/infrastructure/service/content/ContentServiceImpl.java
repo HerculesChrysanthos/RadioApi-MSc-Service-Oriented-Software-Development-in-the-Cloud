@@ -1,6 +1,7 @@
 package gr.aueb.radio.broadcast.infrastructure.service.content;
 
 import gr.aueb.radio.broadcast.application.ContentService;
+import gr.aueb.radio.broadcast.common.ExternalServiceException;
 import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdBasicRepresentation;
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.SongBasicRepresentation;
@@ -30,11 +31,9 @@ public class ContentServiceImpl implements ContentService {
             return contentApi.getAd(auth, adId);
 
         } catch (ProcessingException error) {
-            throw new RadioException("Problem on reaching content api.", 424);
-        }
-        catch(WebApplicationException e){
-            Response response = e.getResponse();
-            throw new RadioException("", response.getStatus());
+            throw new ExternalServiceException("Problem on reaching content api.");
+        } catch (WebApplicationException webApplicationException){
+            throw new RadioException("Ad not found", webApplicationException.getResponse().getStatus());
         }
     }
 
