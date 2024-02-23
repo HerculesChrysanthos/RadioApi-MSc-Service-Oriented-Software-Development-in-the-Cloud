@@ -37,15 +37,14 @@ public class ContentServiceImpl implements ContentService {
         }
     }
 
-//    @Override
-//    public SongBasicRepresentation getSongId(String auth, Integer Id) {
-//        try {
-//            return contentApi.getSongId(auth, songId);
-//        } catch (ProcessingException error) {
-//            throw new RadioException("Problem on reaching content api.", 424);
-//        } catch (NotFoundException error) {
-//            throw new RadioException("not found", 404);
-//        }
-//    }
+    public SongBasicRepresentation getSong(String auth, Integer songId) {
+        try {
+            return contentApi.getSongId(auth, songId);
+        } catch (ProcessingException error) {
+            throw new RadioException("Problem on reaching content api.", 424);
+        } catch (NotFoundException error) {
+            throw new RadioException("not found", 404);
+        }
+    }
 
 }

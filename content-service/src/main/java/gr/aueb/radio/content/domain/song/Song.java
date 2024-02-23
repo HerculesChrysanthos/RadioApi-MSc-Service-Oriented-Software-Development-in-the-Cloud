@@ -3,6 +3,9 @@ package gr.aueb.radio.content.domain.song;
 import gr.aueb.radio.content.domain.genre.Genre;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,15 +100,6 @@ public class Song {
         this.year = year;
     }
 
-//    private List<SongBroadcast> getBroadcastsOfDay(LocalDate date){
-//        List<SongBroadcast> broadcastsOfDay = new ArrayList<>();
-//        for (SongBroadcast b : this.songBroadcasts){
-//            if(b.getBroadcastDate().isEqual(date)){
-//                broadcastsOfDay.add(b);
-//            }
-//        }
-//        return broadcastsOfDay;
-//    }
 
 //    private boolean checkForPrevOccurrence(List<SongBroadcast> broadcasts, LocalDateTime dateTime){
 //        // 1 hour before starting time
@@ -135,20 +129,6 @@ public class Song {
 //
 //
 //
-//    public boolean toBeBroadcasted(LocalDate date, LocalTime time){
-//
-//        // Filter from list and extract broadcasts from date
-//        List<SongBroadcast> broadcastsOfDay = getBroadcastsOfDay(date);
-//        if (broadcastsOfDay.size() == 4){
-//            return false;
-//        }
-//        LocalDateTime dateTime = date.atTime(time);
-//        // Check for occurrence in last hour
-//        if (checkForPrevOccurrence(broadcastsOfDay, dateTime) || checkForNextOccurrence(broadcastsOfDay, dateTime)){
-//            return false;
-//        }
-//        return true;
-//    }
 //
 //    public void removeSongBroadcast(SongBroadcast songBroadcast){
 //        songBroadcast.setSong(null);

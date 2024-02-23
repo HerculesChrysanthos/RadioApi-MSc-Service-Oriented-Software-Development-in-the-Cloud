@@ -155,7 +155,7 @@ public class Broadcast {
             return null;
         }
         if(checkForOccurrence(time, song.duration)){
-            log.info("Broadcast occurrence restriction");
+//            log.info("Broadcast occurrence restriction");
             return null;
         }
         SongBroadcast songBroadcast = new SongBroadcast(this.startingDate, time);
@@ -269,7 +269,7 @@ public class Broadcast {
 
     public boolean songCanBeAdded(SongBasicRepresentation song, LocalTime time, List songBroadcastsOfDay){
         if(!toBeBroadcastedSong(this.startingDate, time, songBroadcastsOfDay)){
-            log.info("Broadcast song broadcast restriction");
+//            log.info("Broadcast song broadcast restriction");
             return false;
         }
 
