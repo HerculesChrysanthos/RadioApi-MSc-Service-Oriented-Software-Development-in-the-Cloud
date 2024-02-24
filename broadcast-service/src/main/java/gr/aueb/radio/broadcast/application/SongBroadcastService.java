@@ -4,6 +4,7 @@ import gr.aueb.radio.broadcast.common.DateUtil;
 import gr.aueb.radio.broadcast.common.NotFoundRadioException;
 import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
 import gr.aueb.radio.broadcast.domain.songBroadcast.SongBroadcast;
+import gr.aueb.radio.broadcast.infrastructure.persistence.BroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.persistence.SongBroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.SongBroadcastCreationDTO;
 import gr.aueb.radio.broadcast.application.UserService;
@@ -23,6 +24,9 @@ import java.util.List;
 public class SongBroadcastService {
     @Inject
     SongBroadcastRepository songBroadcastRepository;
+
+    @Inject
+    BroadcastRepository broadcastRepository;
 
     @Inject
     BroadcastService broadcastService;
@@ -48,14 +52,31 @@ public class SongBroadcastService {
         // call content api
         SongBasicRepresentation song = contentService.getSong(auth, dto.songId);
         if (song == null){
-            throw new NotFoundException("Ad does not exist");
+            throw new NotFoundException("Song does not exist");
         }
+
+        // query songbroadcast repo me vash to broadcastId
+        // apo to query tha paroume songIds
+
+        Broadcast broadcast = broadcastRepository.findById(dto.broadcastId);
+        StringBuilder songsIds = new StringBuilder();
+        for(int i = 0; i < broadcast.getSongBroadcasts().size(); i++ ){
+            int songId = broadcast.getSongBroadcasts().get(i).getSongId();
+
+            songsIds.append(songId);
+            if(i != broadcast.getSongBroadcasts().size() - 1) {
+                songsIds.append(",");
+            }
+        }
+
+
+        List<SongBasicRepresentation> broadcastSongs = contentService.getSongsByIds(auth, songsIds.toString());
         //Song song = songRepository.findById(dto.songId);
 //        if (song == null){
 //            throw new NotFoundException("Song does not exist");
 //        }
         //songbroadcastService.scheduleSong move to
-        SongBroadcast songBroadcast = broadcastService.scheduleSong(dto.broadcastId, song, DateUtil.setTime(dto.startingTime));
+        SongBroadcast songBroadcast = broadcastService.scheduleSong(dto.broadcastId, song, DateUtil.setTime(dto.startingTime), broadcastSongs);
 //        SongBroadcast songBroadcast = scheduleSong(dto.broadcastId, song, DateUtil.setTime(dto.startingTime));
         return songBroadcast;
     }

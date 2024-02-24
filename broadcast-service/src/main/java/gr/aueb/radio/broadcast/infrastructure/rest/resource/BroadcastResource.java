@@ -7,10 +7,7 @@ import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
 import gr.aueb.radio.broadcast.domain.broadcast.BroadcastType;
 import gr.aueb.radio.broadcast.infrastructure.rest.ApiPath.Root;
-import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastMapper;
-import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastOutputRepresentation;
-import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastSearchDTO;
-import gr.aueb.radio.broadcast.infrastructure.rest.representation.OutputBroadcastMapper;
+import gr.aueb.radio.broadcast.infrastructure.rest.representation.*;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -18,8 +15,10 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriBuilder;
 import lombok.extern.slf4j.Slf4j;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
@@ -119,9 +118,12 @@ public class BroadcastResource {
 //
 //    @POST
 ////    @RolesAllowed("PRODUCER")
-//    public Response create(@Valid BroadcastRepresentation broadcastRepresentation){
+//    public Response create(
+//            @Valid BroadcastRepresentation broadcastRepresentation,
+//            @HeaderParam("Authorization") String auth
+//    ) {
 //        try{
-//            Broadcast broadcast = broadcastService.create(broadcastRepresentation);
+//            Broadcast broadcast = broadcastService.create(broadcastRepresentation, auth);
 //            URI uri = UriBuilder.fromResource(BroadcastResource.class).path(String.valueOf(broadcast.getId())).build();
 //            return Response.created(uri).entity(outputBroadcastMapper.toRepresentation(broadcast)).build();
 //        }catch (RadioException re){

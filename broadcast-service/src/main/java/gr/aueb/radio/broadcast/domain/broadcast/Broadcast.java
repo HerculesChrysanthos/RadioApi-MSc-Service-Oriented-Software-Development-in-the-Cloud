@@ -150,8 +150,8 @@ public class Broadcast {
         return adBroadcast;
     }
 
-    public SongBroadcast createSongBroadcast(SongBasicRepresentation song, LocalTime time, List songBroadcastsOfBr, List songBroadcastsOfDay){
-        if(!songCanBeAdded(song, time, songBroadcastsOfDay)){
+    public SongBroadcast createSongBroadcast(SongBasicRepresentation song, LocalTime time, List songBroadcastsOfBr, List songBroadcastsOfDay, List<SongBasicRepresentation> broadcastSongs){
+        if(!songCanBeAdded(song, time, songBroadcastsOfDay, broadcastSongs)){
             return null;
         }
         if(checkForOccurrence(time, song.duration)){
@@ -245,16 +245,16 @@ public class Broadcast {
         return startingDate.plusMinutes(this.duration);
     }
 
-        public Integer getAllocatedTime(Integer adDuration, Integer songDuration) {
+    public Integer getAllocatedTime(List<AdBasicRepresentation> ads, List<SongBasicRepresentation> songs) {
         Integer totalTime = 0;
-        if (adDuration != null) {
-            for (AdBroadcast addBroadcast : this.adBroadcasts) {
-                totalTime += adDuration;
+        if (ads != null) {
+            for (AdBasicRepresentation ad : ads) {
+                totalTime += ad.duration;
             }
         }
-        if (songDuration != null) {
-            for (SongBroadcast songBroadcast : this.songBroadcasts) {
-                totalTime += songDuration;
+        if (songs != null) {
+            for (SongBasicRepresentation song : songs) {
+                totalTime += song.duration;
             }
         }
 
@@ -267,7 +267,7 @@ public class Broadcast {
         return totalTime;
     }
 
-    public boolean songCanBeAdded(SongBasicRepresentation song, LocalTime time, List songBroadcastsOfDay){
+    public boolean songCanBeAdded(SongBasicRepresentation song, LocalTime time, List songBroadcastsOfDay, List<SongBasicRepresentation> broadcastSongs){
         if(!toBeBroadcastedSong(this.startingDate, time, songBroadcastsOfDay)){
 //            log.info("Broadcast song broadcast restriction");
             return false;
@@ -278,7 +278,7 @@ public class Broadcast {
 //            return false;
 //        }
 
-        if(getAllocatedTime(null, song.duration) + song.duration > this.duration){
+        if(getAllocatedTime(null, broadcastSongs) + song.duration > this.duration){
 //            log.info("Broadcast duration restriction");
             return false;
         }
@@ -316,9 +316,10 @@ public class Broadcast {
             return false;
         }
 
-        if (getAllocatedTime(ad.duration, null) + ad.duration > this.duration) {//            log.info("Broadcast duration restriction");
-            return false;
-        }
+        // TODO
+//        if (getAllocatedTime(broa, null) + ad.duration > this.duration) {//            log.info("Broadcast duration restriction");
+//            return false;
+//        }
         if (this.exceedsLimits(time, ad.duration)) {
 //            log.info("Broadcast limit restriction");
             return false;

@@ -74,17 +74,20 @@ public class SongBroadcastResource {
     }
 
 
-//    @POST
-//    //@RolesAllowed("PRODUCER")
-//    public Response createSongBroadcast(SongBroadcastCreationDTO dto) {
-//        try {
-//            SongBroadcast songBroadcast = songBroadcastService.create(dto);
-//            //URI uri = UriBuilder.fromResource(UserResource.class).path(String.valueOf(songBroadcast.getId())).build();
-//            return Response.created(uri).entity(songBroadcastMapper.toRepresentation(songBroadcast)).build();
-//        } catch (RadioException re){
-//            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
-//        } catch (NotFoundException e){
-//            return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
-//        }
-//    }
+    @POST
+    //@RolesAllowed("PRODUCER")
+    public Response createSongBroadcast(
+            SongBroadcastCreationDTO dto,
+            @HeaderParam("Authorization") String auth
+    ) {
+        try {
+            SongBroadcast songBroadcast = songBroadcastService.create(dto, auth);
+            URI uri = UriBuilder.fromResource(SongBroadcastResource.class).path(String.valueOf(songBroadcast.getId())).build();
+            return Response.created(uri).entity(songBroadcastMapper.toRepresentation(songBroadcast)).build();
+        } catch (RadioException re){
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+        } catch (NotFoundException e){
+            return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
+        }
+    }
 }

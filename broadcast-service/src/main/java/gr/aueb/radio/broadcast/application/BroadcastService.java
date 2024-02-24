@@ -55,8 +55,8 @@ public class BroadcastService {
     @Inject
     UserService userService;
 
-//    @Inject
-//    PlaylistService playlistService;
+    @Inject
+    PlaylistService playlistService;
 //
 //    @Inject
 //    SuggestionsService suggestionsService;
@@ -96,7 +96,7 @@ public class BroadcastService {
     }
 
 //    @Transactional
-//    public Broadcast create(BroadcastRepresentation broadcastRepresentation){
+//    public Broadcast create(BroadcastRepresentation broadcastRepresentation, String auth){
 //        Broadcast broadcastToCreate = broadcastMapper.toModel(broadcastRepresentation);
 //        LocalDate date = broadcastToCreate.getStartingDate();
 //        LocalTime startingTime = broadcastToCreate.getStartingTime();
@@ -111,7 +111,7 @@ public class BroadcastService {
 //        if (checkForOverlapping(date, startingTime, endingTime, -1)){
 //            throw new RadioException("Overlapping found cannot create Broadcast");
 //        }
-//        if(broadcastToCreate.getType().(BroadcastType.PLAYLIST)){
+//        if(broadcastToCreate.getType().equals(BroadcastType.PLAYLIST)){
 //            playlistService.populateBroadcast(broadcastToCreate);
 //        }
 //
@@ -198,7 +198,7 @@ public class BroadcastService {
     }
 //
     @Transactional
-    public SongBroadcast scheduleSong(Integer id, SongBasicRepresentation song, LocalTime startingTime){
+    public SongBroadcast scheduleSong(Integer id, SongBasicRepresentation song, LocalTime startingTime, List<SongBasicRepresentation> broadcastSongs){
         Broadcast broadcast = broadcastRepository.findByIdSongDetails(id);
         if (broadcast == null){
             throw new NotFoundException("Broadcast not found");
@@ -208,7 +208,8 @@ public class BroadcastService {
         // get songBroadcasts of the day of broadcast
         List<SongBroadcast> songBroadcastsOfDay = songBroadcastRepository.findByDateDetails(broadcast.getStartingDate());
 
-        SongBroadcast created = broadcast.createSongBroadcast(song, startingTime, songBroadcastsOfBr, songBroadcastsOfDay);
+
+        SongBroadcast created = broadcast.createSongBroadcast(song, startingTime, songBroadcastsOfBr, songBroadcastsOfDay, broadcastSongs);
         if (created == null){
             throw new RadioException("Song cannot be scheduled to broadcast");
         }
