@@ -3,11 +3,10 @@ package gr.aueb.radio.broadcast.infrastructure.service.content;
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdBasicRepresentation;
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.SongBasicRepresentation;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.HeaderParam;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.*;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+
+import java.util.List;
 
 @Path("/api")
 @ApplicationScoped
@@ -26,5 +25,12 @@ public interface ContentApi {
     SongBasicRepresentation getSongId(
             @HeaderParam("Authorization") String basicAuthHeader,
             @PathParam("id") Integer id
+    );
+
+    @GET
+    @Path("/songs")
+    List<SongBasicRepresentation> getSongsByIds(
+            @HeaderParam("Authorization") String basicAuthHeader,
+            @QueryParam("songsIds") String songsIds
     );
 }

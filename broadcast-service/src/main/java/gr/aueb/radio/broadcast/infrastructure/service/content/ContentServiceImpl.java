@@ -15,6 +15,8 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import org.jboss.logging.Logger;
 
+import java.util.List;
+
 @ApplicationScoped
 public class ContentServiceImpl implements ContentService {
 
@@ -37,9 +39,21 @@ public class ContentServiceImpl implements ContentService {
         }
     }
 
+    @Override
     public SongBasicRepresentation getSong(String auth, Integer songId) {
         try {
             return contentApi.getSongId(auth, songId);
+        } catch (ProcessingException error) {
+            throw new RadioException("Problem on reaching content api.", 424);
+        } catch (NotFoundException error) {
+            throw new RadioException("not found", 404);
+        }
+    }
+
+    @Override
+    public List<SongBasicRepresentation> getSongsByIds(String auth, String songsIds) {
+        try {
+            return contentApi.getSongsByIds(auth, songsIds);
         } catch (ProcessingException error) {
             throw new RadioException("Problem on reaching content api.", 424);
         } catch (NotFoundException error) {
