@@ -33,4 +33,11 @@ public interface ContentApi {
             @HeaderParam("Authorization") String basicAuthHeader,
             @QueryParam("songsIds") String songsIds
     );
+
+    @GET
+    @Path("/ads")
+    List<AdBasicRepresentation> getAdsByIds(
+            @HeaderParam("Authorization") String basicAuthHeader,
+            @QueryParam("adsIds") String adsIds
+    );
 }

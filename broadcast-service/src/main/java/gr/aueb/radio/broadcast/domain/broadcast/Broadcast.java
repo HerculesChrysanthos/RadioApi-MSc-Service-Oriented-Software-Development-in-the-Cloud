@@ -7,6 +7,7 @@ import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdB
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.SongBasicRepresentation;
 import jakarta.persistence.*;
 import lombok.extern.slf4j.Slf4j;
+import org.glassfish.jaxb.core.v2.TODO;
 
 
 import java.time.LocalDate;
@@ -130,15 +131,18 @@ public class Broadcast {
         this.genreId = genreId;
     }
 
-    public AdBroadcast createAdBroadcast(AdBasicRepresentation ad, LocalTime time) {
-        if (!adCanBeAdded(ad, time)) {
-            System.out.println ("adCanBeAdded " + "mpika");
+    public AdBroadcast createAdBroadcast
+            (AdBasicRepresentation ad,
+             LocalTime time,
+             List<AdBasicRepresentation> broadcastAds
+            ) {
+        if (!adCanBeAdded(ad, time, broadcastAds)) {
+            System.out.println("adCanBeAdded " + "mpika");
 
             return null;
         }
-//        if(checkForOccurrence(time, ad.getDuration())){
         if (checkForOccurrence(time, ad.duration)) {
-            System.out.println ("checkForOccurrence " + "mpika");
+            System.out.println("checkForOccurrence " + "mpika");
 //            log.info("Broadcast occurrence restriction");
             return null;
         }
@@ -150,11 +154,17 @@ public class Broadcast {
         return adBroadcast;
     }
 
-    public SongBroadcast createSongBroadcast(SongBasicRepresentation song, LocalTime time, List songBroadcastsOfBr, List songBroadcastsOfDay, List<SongBasicRepresentation> broadcastSongs){
-        if(!songCanBeAdded(song, time, songBroadcastsOfDay, broadcastSongs)){
+    public SongBroadcast createSongBroadcast(
+            SongBasicRepresentation song,
+            LocalTime time,
+            List songBroadcastsOfBr,
+            List songBroadcastsOfDay,
+            List<SongBasicRepresentation> broadcastSongs
+    ) {
+        if (!songCanBeAdded(song, time, songBroadcastsOfDay, broadcastSongs)) {
             return null;
         }
-        if(checkForOccurrence(time, song.duration)){
+        if (checkForOccurrence(time, song.duration)) {
 //            log.info("Broadcast occurrence restriction");
             return null;
         }
@@ -162,7 +172,7 @@ public class Broadcast {
         songBroadcast.setBroadcast(this);
 //        song.addSongBroadcast(songBroadcast);
         this.songBroadcasts.add(songBroadcast);
-        return  songBroadcast;
+        return songBroadcast;
     }
 
     public void removeAdBroadcast(AdBroadcast adBroadcast) {
@@ -184,14 +194,14 @@ public class Broadcast {
         LocalDateTime startingDateTime = this.startingDate.atTime(startingTime);
         // Ending time of song/add broadcast
         LocalDateTime endingDateTime = startingDateTime.plusMinutes(duration);
-        for (SongBroadcast sb : this.songBroadcasts){
+        for (SongBroadcast sb : this.songBroadcasts) {
             LocalDateTime sbStartingTime = this.startingDate.atTime(sb.getBroadcastTime());
             LocalDateTime sbEndingTime = sb.getBroadcastEndingDateTime(duration);
-            if(DateUtil.between(sbStartingTime, startingDateTime, sbEndingTime)){
+            if (DateUtil.between(sbStartingTime, startingDateTime, sbEndingTime)) {
                 return true;
             }
 
-            if(DateUtil.between(sbStartingTime, endingDateTime, sbEndingTime)){
+            if (DateUtil.between(sbStartingTime, endingDateTime, sbEndingTime)) {
                 return true;
             }
         }
@@ -267,8 +277,13 @@ public class Broadcast {
         return totalTime;
     }
 
-    public boolean songCanBeAdded(SongBasicRepresentation song, LocalTime time, List songBroadcastsOfDay, List<SongBasicRepresentation> broadcastSongs){
-        if(!toBeBroadcastedSong(this.startingDate, time, songBroadcastsOfDay)){
+    public boolean songCanBeAdded(
+            SongBasicRepresentation song,
+            LocalTime time,
+            List songBroadcastsOfDay,
+            List<SongBasicRepresentation> broadcastSongs
+    ) {
+        if (!toBeBroadcastedSong(this.startingDate, time, songBroadcastsOfDay)) {
 //            log.info("Broadcast song broadcast restriction");
             return false;
         }
@@ -278,21 +293,24 @@ public class Broadcast {
 //            return false;
 //        }
 
-        if(getAllocatedTime(null, broadcastSongs) + song.duration > this.duration){
+        if (getAllocatedTime(null, broadcastSongs) + song.duration > this.duration) {
 //            log.info("Broadcast duration restriction");
             return false;
         }
-        if (this.exceedsLimits(time, song.duration)){
+        if (this.exceedsLimits(time, song.duration)) {
 //            log.info("Broadcast limit restriction");
             return false;
         }
         return true;
     }
-//
 
-    public boolean adCanBeAdded(AdBasicRepresentation ad, LocalTime time) {
-        System.out.println ("adId " + ad.id);
-        System.out.println ("adId " + ad.timezone);
+
+    public boolean adCanBeAdded(
+            AdBasicRepresentation ad,
+            LocalTime time,
+            List<AdBasicRepresentation> broadcastAds) {
+        System.out.println("adId " + ad.id);
+        System.out.println("adId " + ad.timezone);
         this.timezone = DateUtil.calculateTimezone(this.startingTime);
         String broadcastTimezone = this.timezone.name();
 
@@ -316,10 +334,10 @@ public class Broadcast {
             return false;
         }
 
-        // TODO
-//        if (getAllocatedTime(broa, null) + ad.duration > this.duration) {//            log.info("Broadcast duration restriction");
-//            return false;
-//        }
+
+        if (getAllocatedTime(broadcastAds, null) + ad.duration > this.duration) {
+            return false;
+        }
         if (this.exceedsLimits(time, ad.duration)) {
 //            log.info("Broadcast limit restriction");
             return false;
@@ -329,19 +347,19 @@ public class Broadcast {
 
     public boolean toBeBroadcastedAd(LocalDate date, AdBasicRepresentation ad) {
         if (!DateUtil.between(ad.startingDate, date, ad.endingDate)) {
-            System.out.println ("startingDate" + ad.startingDate);
-            System.out.println ("endingDate" + ad.endingDate);
-            System.out.println ("date" + date);
+            System.out.println("startingDate" + ad.startingDate);
+            System.out.println("endingDate" + ad.endingDate);
+            System.out.println("date" + date);
             return false;
         }
         return this.adBroadcasts.size() < ad.repPerZone;
     }
 
-    public boolean toBeBroadcastedSong(LocalDate date, LocalTime time, List broadcastsOfDay){
+    public boolean toBeBroadcastedSong(LocalDate date, LocalTime time, List broadcastsOfDay) {
 
         // Filter from list and extract broadcasts from date
 //        List<SongBroadcast> broadcastsOfDay = getBroadcastsOfDay(date);
-        if (broadcastsOfDay.size() == 4){
+        if (broadcastsOfDay.size() == 4) {
             return false;
         }
         LocalDateTime dateTime = date.atTime(time);

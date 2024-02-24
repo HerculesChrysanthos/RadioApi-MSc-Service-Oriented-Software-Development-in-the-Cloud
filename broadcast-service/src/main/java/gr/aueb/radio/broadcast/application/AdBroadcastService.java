@@ -4,11 +4,14 @@ import gr.aueb.radio.broadcast.common.DateUtil;
 import gr.aueb.radio.broadcast.common.NotFoundRadioException;
 import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.domain.adBroadcast.AdBroadcast;
+import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
 import gr.aueb.radio.broadcast.infrastructure.persistence.AdBroadcastRepository;
 import gr.aueb.radio.broadcast.application.UserService;
 import gr.aueb.radio.broadcast.common.RadioException;
+import gr.aueb.radio.broadcast.infrastructure.persistence.BroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.AdBroadcastCreationDTO;
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdBasicRepresentation;
+import gr.aueb.radio.broadcast.infrastructure.service.content.representation.SongBasicRepresentation;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -22,6 +25,9 @@ import java.util.List;
 public class AdBroadcastService {
     @Inject
     BroadcastService broadcastService;
+
+    @Inject
+    BroadcastRepository broadcastRepository;
 
     @Inject
     UserService userService;
@@ -47,8 +53,25 @@ public class AdBroadcastService {
         AdBasicRepresentation ad = contentService.getAd(auth, dto.adId);
         System.out.println ("adId " + ad.id);
         System.out.println ("adId " + ad.timezone);
+        if (ad == null){
+            throw new NotFoundException("Ad does not exist");
+        }
 
-        return broadcastService.scheduleAd(dto.broadcastId, ad, DateUtil.setTime(dto.startingTime));
+        Broadcast broadcast = broadcastRepository.findById(dto.broadcastId);
+        StringBuilder adsIds = new StringBuilder();
+        for(int i = 0; i < broadcast.getAdBroadcasts().size(); i++ ){
+            int adId = broadcast.getAdBroadcasts().get(i).getAdId();
+
+            adsIds.append(adId);
+            if(i != broadcast.getSongBroadcasts().size() - 1) {
+                adsIds.append(",");
+            }
+        }
+        List<AdBasicRepresentation> broadcastAds = contentService.getAdsByIds(auth, adsIds.toString());
+
+
+
+        return broadcastService.scheduleAd(dto.broadcastId, ad, DateUtil.setTime(dto.startingTime), broadcastAds);
     }
 
     @Transactional

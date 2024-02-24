@@ -61,7 +61,9 @@ public class AdBroadcast {
 //    public void setAd(Ad ad) {
 //        this.ad = ad;
 //    }
-
+    public Integer getAdId(){
+        return adId;
+    }
     public Broadcast getBroadcast() {
         return this.broadcast;
     }

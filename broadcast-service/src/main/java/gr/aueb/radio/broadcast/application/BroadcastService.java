@@ -176,7 +176,12 @@ public class BroadcastService {
     }
 
     @Transactional
-    public AdBroadcast scheduleAd(Integer id, AdBasicRepresentation ad, LocalTime startingTime){
+    public AdBroadcast scheduleAd(
+            Integer id,
+            AdBasicRepresentation ad,
+            LocalTime startingTime,
+            List<AdBasicRepresentation> broadcastAds
+    ){
         Broadcast broadcast = broadcastRepository.findByIdAdDetails(id);
         if (broadcast == null){
             throw new NotFoundException("Broadcast not found");
@@ -189,7 +194,7 @@ public class BroadcastService {
         }
 //        System.out.println ("adId " + ad.id);
 //        System.out.println ("adId " + ad.timezone);
-        AdBroadcast created = broadcast.createAdBroadcast(ad, startingTime);
+        AdBroadcast created = broadcast.createAdBroadcast(ad, startingTime, broadcastAds);
         if (created == null){
             throw new RadioException("Ad cannot be scheduled to broadcast");
         }
@@ -207,7 +212,6 @@ public class BroadcastService {
         List<SongBroadcast> songBroadcastsOfBr = songBroadcastRepository.searchBySongId(song.id);
         // get songBroadcasts of the day of broadcast
         List<SongBroadcast> songBroadcastsOfDay = songBroadcastRepository.findByDateDetails(broadcast.getStartingDate());
-
 
         SongBroadcast created = broadcast.createSongBroadcast(song, startingTime, songBroadcastsOfBr, songBroadcastsOfDay, broadcastSongs);
         if (created == null){

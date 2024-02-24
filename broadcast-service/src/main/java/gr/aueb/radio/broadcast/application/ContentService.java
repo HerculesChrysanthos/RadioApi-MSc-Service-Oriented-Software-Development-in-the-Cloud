@@ -9,6 +9,8 @@ public interface ContentService {
 
     AdBasicRepresentation getAd(String auth, Integer adId);
 
+    List<AdBasicRepresentation> getAdsByIds(String auth, String adsIds);
+
     SongBasicRepresentation getSong(String auth, Integer songId);
 
     List<SongBasicRepresentation> getSongsByIds(String auth, String songsIds);

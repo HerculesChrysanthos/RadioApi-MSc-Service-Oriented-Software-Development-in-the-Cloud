@@ -1,5 +1,6 @@
 package gr.aueb.radio.broadcast.infrastructure.service.content;
 
+import gr.aueb.radio.broadcast.application.AdBroadcastService;
 import gr.aueb.radio.broadcast.application.ContentService;
 import gr.aueb.radio.broadcast.common.ExternalServiceException;
 import gr.aueb.radio.broadcast.common.RadioException;
@@ -54,6 +55,17 @@ public class ContentServiceImpl implements ContentService {
     public List<SongBasicRepresentation> getSongsByIds(String auth, String songsIds) {
         try {
             return contentApi.getSongsByIds(auth, songsIds);
+        } catch (ProcessingException error) {
+            throw new RadioException("Problem on reaching content api.", 424);
+        } catch (NotFoundException error) {
+            throw new RadioException("not found", 404);
+        }
+    }
+
+    @Override
+    public List<AdBasicRepresentation> getAdsByIds(String auth, String adsIds) {
+        try {
+            return contentApi.getAdsByIds(auth, adsIds);
         } catch (ProcessingException error) {
             throw new RadioException("Problem on reaching content api.", 424);
         } catch (NotFoundException error) {
