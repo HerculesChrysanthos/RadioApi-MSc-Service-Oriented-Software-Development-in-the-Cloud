@@ -5,13 +5,17 @@ import gr.aueb.radio.IntegrationBase;
 import gr.aueb.radio.user.application.UserService;
 import gr.aueb.radio.user.domain.user.User;
 import gr.aueb.radio.user.infrastructure.persistence.UserRepository;
+import gr.aueb.radio.user.infrastructure.rest.representation.UserMapper;
 import gr.aueb.radio.user.infrastructure.rest.representation.UserRepresentation;
+import gr.aueb.radio.user.infrastructure.rest.resource.UserResource;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.SecurityContext;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
@@ -22,7 +26,36 @@ public class UserResourceTest extends IntegrationBase {
     UserRepository userRepository;
 
     @Inject
+    UserResource userResource;
+
+    @Inject
     UserService userService;
+
+
+    @Inject
+    SecurityContext securityContext;
+
+    @Mock
+    private UserService mockUserService;
+    @Mock
+    private UserMapper mockUserMapper;
+    @Mock
+    private SecurityContext mockSecurityContext;
+
+    private UserResource userResourceUnderTest;
+
+//    @Test
+//    @TestTransaction
+//    void testVerifyAuth() {
+//        // Setup
+//        //Mockito.when(mockSecurityContext.getUserPrincipal()).thenReturn(new UserPrincipal("user"));
+//        Mockito.when(mockUserService.findUserByUsername("user")).thenReturn(new UserBasicRepresentation());
+//
+//        // Run the test
+//        final Response result = userResourceUnderTest.verifyAuth();
+//
+//        // Verify the results
+//    }
 
     @Test
     @TestTransaction

@@ -7,4 +7,9 @@ public class GenreRepresentation {
 
     public Integer Id;
     public String title;
+
+    public Integer getId() {
+        return Id;
+    }
+
 }

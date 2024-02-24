@@ -12,9 +12,11 @@ import jakarta.inject.Inject;
 public class GenreService {
 
     @Inject
+    public
     GenreRepository genreRepository;
 
     @Inject
+    public
     GenreMapper genreMapper;
 
     public GenreRepresentation getGenreById(Integer genreId){

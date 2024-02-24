@@ -37,8 +37,28 @@ public class AdServiceTest extends IntegrationBase {
     public void findAdTest(){
         List<Ad> ads  = adRepository.listAll();
         Integer adId = ads.get(0).getId();
-        AdRepresentation ad = adService.findAd(adId,"PRODUCER");
+        AdRepresentation ad = adService.findAd(1001,"PRODUCER");
         assertNotNull(ad);
+    }
+
+    @Test
+    @TestTransaction
+    public void findAd(){
+        try {
+            AdRepresentation expectedValue = null;
+            Integer id=0;
+            String auth="";
+
+
+            AdService adservice  =new AdService();
+            AdRepresentation actualValue=adservice.findAd( id ,auth);
+            System.out.println("Expected Value="+ expectedValue +" . Actual Value="+actualValue);
+            assertEquals(expectedValue, actualValue);
+        } catch (Exception exception) {
+
+            exception.printStackTrace();
+            assertFalse(false);
+        }
     }
 
     @Test
