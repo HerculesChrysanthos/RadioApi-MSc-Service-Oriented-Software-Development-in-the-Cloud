@@ -20,5 +20,10 @@ public class SongRepository implements PanacheRepositoryBase<Song, Integer> {
         return find("select distinct song.genre from Song song group by song.genre having count(*) >= 10").project(String.class).list();
     }
 
+    public List<Song> findSongsByIds(List<Integer> ids) {
+        PanacheQuery<Song> query = find("select s from Song s left join fetch s.genre where s.id IN :ids ", Parameters.with("ids", ids).map());
+
+        return query.list();
+    }
 
 }

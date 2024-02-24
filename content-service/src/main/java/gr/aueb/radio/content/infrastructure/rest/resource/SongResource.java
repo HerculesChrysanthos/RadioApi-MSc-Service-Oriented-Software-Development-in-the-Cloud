@@ -14,7 +14,9 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path(Root.SONGS)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -52,9 +54,13 @@ public class SongResource {
             @QueryParam("artist") String artist,
             @QueryParam("genre") String genre,
             @QueryParam("title") String title,
+            @QueryParam("songsIds") String songsIds,
             @HeaderParam("Authorization") String auth
     ) {
-        List<SongRepresentation> found = songService.search(artist, genre, title, auth);
+        List<Integer> convertedSongsId = Arrays.stream(songsIds.split(","))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+        List<SongRepresentation> found = songService.search(artist, genre, title, convertedSongsId, auth);
         return Response.ok().entity(found).build();
     }
 

@@ -37,23 +37,32 @@ public class SongService {
     //BroadcastService broadcastService;
 
     @Transactional
-    public List<SongRepresentation> search(String artist, String genre, String title, String auth){
-        List<Song> songs = songRepository.listAll();
-
+    public List<SongRepresentation> search(String artist, String genre, String title, List<Integer> songsIds, String auth){
         userService.verifyAuth(auth);
 
-        if(artist != null){
-            // will filter and return all songs based on artist
-            songs = songs.stream().filter(s -> s.getArtist().equals(artist)).collect(Collectors.toList());
+        List<Song> songs = null;
+
+        if(!songsIds.isEmpty()) {
+            songs = songRepository.findSongsByIds(songsIds);
         }
-        if(genre != null){
-            // will filter and return all songs based on genre
-            songs = songs.stream().filter(s -> s.getGenre().equals(genre)).collect(Collectors.toList());
-        }
-        if(title != null){
-            // will filter and return all songs based on title
-            songs = songs.stream().filter(s -> s.getTitle().equals(title)).collect(Collectors.toList());
-        }
+
+        // TODO needs refactor to get songs from db according to filters
+//        List<Song> songs = songRepository.listAll();
+//
+//        userService.verifyAuth(auth);
+//
+//        if(artist != null){
+//            // will filter and return all songs based on artist
+//            songs = songs.stream().filter(s -> s.getArtist().equals(artist)).collect(Collectors.toList());
+//        }
+//        if(genre != null){
+//            // will filter and return all songs based on genre
+//            songs = songs.stream().filter(s -> s.getGenre().equals(genre)).collect(Collectors.toList());
+//        }
+//        if(title != null){
+//            // will filter and return all songs based on title
+//            songs = songs.stream().filter(s -> s.getTitle().equals(title)).collect(Collectors.toList());
+//        }
         return songMapper.toRepresentationList(songs);
     }
 
