@@ -11,4 +11,5 @@ insert into genres (id, title) values (2, 'Rock');
 
 insert into songs (id, title, artist, release_year, duration, genre_id) values(7001, 'Ride', 'Twenty One Pilots', 2015, 25, 1);
 insert into songs (id, title, artist, release_year, duration, genre_id) values(7002, 'Stressed Out', 'Twenty One Pilots', 2015, 5, 1);
+insert into songs (id, title, artist, release_year, duration, genre_id) values(7003, 'Stressed Out2', 'Twenty One Pilots2', 2015, 5, 1);
 

@@ -8,5 +8,5 @@ insert into broadcasts (id, duration, starting_date, starting_time, type, user_i
 insert into ad_broadcasts (id, broadcast_date, broadcast_time, ad_id, broadcast_id) values (4001, PARSEDATETIME('01-02-2022','dd-MM-yyyy'), '00:40', 1001, 3001);
 insert into ad_broadcasts (id, broadcast_date, broadcast_time, ad_id, broadcast_id) values (4002, PARSEDATETIME('01-02-2022','dd-MM-yyyy'), '01:50', 1002, 3001);
 
-insert into song_broadcasts (id, broadcast_date, broadcast_time, song_id, broadcast_id) values (5001, PARSEDATETIME('01-02-2022','dd-MM-yyyy'), '00:00', 2001, 3001);
-insert into song_broadcasts (id, broadcast_date, broadcast_time, song_id, broadcast_id) values (5002, PARSEDATETIME('01-02-2022','dd-MM-yyyy'), '01:10', 2002, 3001);
+insert into song_broadcasts (id, broadcast_date, broadcast_time, song_id, broadcast_id) values (5001, PARSEDATETIME('01-02-2022','dd-MM-yyyy'), '00:00', 7001, 3001);
+insert into song_broadcasts (id, broadcast_date, broadcast_time, song_id, broadcast_id) values (5002, PARSEDATETIME('01-02-2022','dd-MM-yyyy'), '01:10', 7002, 3001);
