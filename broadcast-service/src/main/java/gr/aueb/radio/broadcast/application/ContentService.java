@@ -13,5 +13,5 @@ public interface ContentService {
 
     SongBasicRepresentation getSong(String auth, Integer songId);
 
-    List<SongBasicRepresentation> getSongsByIds(String auth, String songsIds);
+    List<SongBasicRepresentation> getSongsByFilters(String auth, String artist, String genre, String title, String songsIds);
 }

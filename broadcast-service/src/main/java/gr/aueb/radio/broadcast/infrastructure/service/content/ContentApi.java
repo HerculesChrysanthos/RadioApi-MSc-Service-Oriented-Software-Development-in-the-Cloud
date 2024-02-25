@@ -29,8 +29,11 @@ public interface ContentApi {
 
     @GET
     @Path("/songs")
-    List<SongBasicRepresentation> getSongsByIds(
+    List<SongBasicRepresentation> getSongsByFilters(
             @HeaderParam("Authorization") String basicAuthHeader,
+            @QueryParam("artist") String artist,
+            @QueryParam("genre") String genre,
+            @QueryParam("title") String title,
             @QueryParam("songsIds") String songsIds
     );
 
