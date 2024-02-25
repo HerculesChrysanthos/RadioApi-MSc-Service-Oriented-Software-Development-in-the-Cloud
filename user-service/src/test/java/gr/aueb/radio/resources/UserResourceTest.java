@@ -1,10 +1,12 @@
 package gr.aueb.radio.resources;
 
+import com.sun.security.auth.UserPrincipal;
 import gr.aueb.radio.Fixture;
 import gr.aueb.radio.IntegrationBase;
 import gr.aueb.radio.user.application.UserService;
 import gr.aueb.radio.user.domain.user.User;
 import gr.aueb.radio.user.infrastructure.persistence.UserRepository;
+import gr.aueb.radio.user.infrastructure.rest.representation.UserBasicRepresentation;
 import gr.aueb.radio.user.infrastructure.rest.representation.UserMapper;
 import gr.aueb.radio.user.infrastructure.rest.representation.UserRepresentation;
 import gr.aueb.radio.user.infrastructure.rest.resource.UserResource;
@@ -12,14 +14,22 @@ import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.core.Response;
+import gr.aueb.radio.user.common.RadioException;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.SecurityContext;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.MockitoAnnotations.openMocks;
+
+
 @QuarkusTest
 public class UserResourceTest extends IntegrationBase {
     @Inject
@@ -44,18 +54,41 @@ public class UserResourceTest extends IntegrationBase {
 
     private UserResource userResourceUnderTest;
 
-//    @Test
-//    @TestTransaction
-//    void testVerifyAuth() {
-//        // Setup
-//        //Mockito.when(mockSecurityContext.getUserPrincipal()).thenReturn(new UserPrincipal("user"));
-//        Mockito.when(mockUserService.findUserByUsername("user")).thenReturn(new UserBasicRepresentation());
-//
-//        // Run the test
-//        final Response result = userResourceUnderTest.verifyAuth();
-//
-//        // Verify the results
-//    }
+
+    private AutoCloseable mockitoCloseable;
+
+    @BeforeEach
+    void setUp() {
+        mockitoCloseable = openMocks(this);
+        userResourceUnderTest = new UserResource();
+        userResourceUnderTest.userService = mockUserService;
+        userResourceUnderTest.userMapper = mockUserMapper;
+        userResourceUnderTest.securityContext = mockSecurityContext;
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        mockitoCloseable.close();
+    }
+
+    @Test
+    void testVerifyAuth() {
+
+        Mockito.when(mockSecurityContext.getUserPrincipal()).thenReturn(new UserPrincipal("name"));
+        Mockito.when(mockUserService.findUserByUsername("username")).thenReturn(new UserBasicRepresentation());
+
+
+        final Response result = userResourceUnderTest.verifyAuth();
+
+        Mockito.when(mockUserService.findUserByUsername("different_username")).thenThrow(new RadioException("Bad Request"));
+
+        // Verifying the response when an exception is thrown
+        final Response exceptionResult = userResourceUnderTest.verifyAuth();
+        assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), 400);
+        assertEquals(null, exceptionResult.getEntity());
+
+    }
+
 
     @Test
     @TestTransaction
@@ -71,6 +104,7 @@ public class UserResourceTest extends IntegrationBase {
         assertEquals(validUser.getEmail(), userRepresentation.email);
         assertEquals(validUser.getPassword(), userRepresentation.password);
     }
+
 
     @Test
     @TestTransaction

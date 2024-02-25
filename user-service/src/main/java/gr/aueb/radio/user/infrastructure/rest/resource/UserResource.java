@@ -28,12 +28,15 @@ import java.net.URI;
 public class UserResource {
 
     @Inject
+    public
     UserService userService;
 
     @Inject
+    public
     UserMapper userMapper;
 
     @Inject
+    public
     SecurityContext securityContext;
 
     @GET
