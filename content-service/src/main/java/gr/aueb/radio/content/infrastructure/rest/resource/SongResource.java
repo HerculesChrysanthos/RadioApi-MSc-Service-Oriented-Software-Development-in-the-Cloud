@@ -2,8 +2,10 @@ package gr.aueb.radio.content.infrastructure.rest.resource;
 
 import gr.aueb.radio.content.application.SongService;
 import gr.aueb.radio.content.common.RadioException;
+import gr.aueb.radio.content.domain.genre.Genre;
 import gr.aueb.radio.content.domain.song.Song;
 import gr.aueb.radio.content.infrastructure.rest.ApiPath.Root;
+import gr.aueb.radio.content.infrastructure.rest.representation.GenreRepresentation;
 import gr.aueb.radio.content.infrastructure.rest.representation.SongInputDTO;
 import gr.aueb.radio.content.infrastructure.rest.representation.SongMapper;
 import gr.aueb.radio.content.infrastructure.rest.representation.SongRepresentation;
@@ -77,7 +79,9 @@ public class SongResource {
             @HeaderParam("Authorization") String auth
     ) {
         try {
-            Song song = songService.create(songRepresentation.toRepresentation(), auth);
+//            GenreRepresentation genreRepresentation = songRepresentation.getGenre();
+//            Song song = songService.create(songRepresentation.toRepresentation(genreRepresentation), auth);
+            Song song = songService.create(songRepresentation, auth);
             URI uri = UriBuilder.fromResource(SongResource.class).path(String.valueOf(song.getId())).build();
             SongRepresentation createdSongRepresentation = songMapper.toRepresentation(song);
             return Response.created(uri).entity(createdSongRepresentation).build();
@@ -103,21 +107,21 @@ public class SongResource {
         }
     }
 
-    @PUT
-    @Path("/{id}")
-    //@PermitAll
-    public Response update(
-            @PathParam("id") Integer id,
-            @Valid SongInputDTO songRepresentation,
-            @HeaderParam("Authorization") String auth
-    ) {
-        try{
-            songService.update(id, songRepresentation.toRepresentation(), auth);
-            return Response.noContent().build();
-        }catch (NotFoundException e){
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }catch (RadioException e){
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(e.getMessage()).build();
-        }
-    }
+//    @PUT
+//    @Path("/{id}")
+//    //@PermitAll
+//    public Response update(
+//            @PathParam("id") Integer id,
+//            @Valid SongInputDTO songRepresentation,
+//            @HeaderParam("Authorization") String auth
+//    ) {
+//        try{
+//            songService.update(id, songRepresentation, auth);
+//            return Response.noContent().build();
+//        }catch (NotFoundException e){
+//            return Response.status(Response.Status.NOT_FOUND).build();
+//        }catch (RadioException e){
+//            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(e.getMessage()).build();
+//        }
+//    }
 }

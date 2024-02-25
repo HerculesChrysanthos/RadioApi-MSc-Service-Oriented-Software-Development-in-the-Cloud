@@ -5,9 +5,7 @@ import gr.aueb.radio.content.common.RadioException;
 import gr.aueb.radio.content.domain.genre.Genre;
 import gr.aueb.radio.content.domain.song.Song;
 import gr.aueb.radio.content.infrastructure.persistence.SongRepository;
-import gr.aueb.radio.content.infrastructure.rest.representation.GenreMapper;
-import gr.aueb.radio.content.infrastructure.rest.representation.SongMapper;
-import gr.aueb.radio.content.infrastructure.rest.representation.SongRepresentation;
+import gr.aueb.radio.content.infrastructure.rest.representation.*;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -100,12 +98,14 @@ public class SongService {
     }
 
     @Transactional
-    public Song create(SongRepresentation songRepresentation, String auth) {
+    public Song create(SongInputDTO songInputDTO, String auth) {
+        GenreRepresentation genreRepresentation = genreService.getGenreById(songInputDTO.genreId);
+        SongRepresentation songRepresentation = songInputDTO.toRepresentation(genreRepresentation);
         Song song = songMapper.toModel(songRepresentation);
 
         userService.verifyAuth(auth);
 
         songRepository.persist(song);
-        return song;
+        return new Song();
     }
 }

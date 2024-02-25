@@ -6,4 +6,8 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 public class GenreRepresentation {
     public Integer id;
     public String title;
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }
