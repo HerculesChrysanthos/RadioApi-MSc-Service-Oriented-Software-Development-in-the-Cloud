@@ -14,6 +14,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,9 +59,13 @@ public class SongResource {
             @QueryParam("songsIds") String songsIds,
             @HeaderParam("Authorization") String auth
     ) {
-        List<Integer> convertedSongsId = Arrays.stream(songsIds.split(","))
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
+        List<Integer> convertedSongsId = new ArrayList<>();
+        if(songsIds != null) {
+            convertedSongsId = Arrays.stream(songsIds.split(","))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+        }
+
         List<SongRepresentation> found = songService.search(artist, genreId, genreTitle, title, convertedSongsId, auth);
         return Response.ok().entity(found).build();
     }
