@@ -52,9 +52,9 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public List<SongBasicRepresentation> getSongsByFilters(String auth, String artist, String genre, String title, String songsIds) {
+    public List<SongBasicRepresentation> getSongsByFilters(String auth, String artist, Integer genreId, String genreTitle, String title, String songsIds) {
         try {
-            return contentApi.getSongsByFilters(auth, artist, genre, title, songsIds);
+            return contentApi.getSongsByFilters(auth, artist, genreId, genreTitle, title, songsIds);
         } catch (ProcessingException error) {
             throw new RadioException("Problem on reaching content api.", 424);
         } catch (NotFoundException error) {

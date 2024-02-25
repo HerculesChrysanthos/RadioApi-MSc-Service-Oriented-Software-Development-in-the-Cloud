@@ -37,7 +37,7 @@ public class SongService {
     //BroadcastService broadcastService;
 
     @Transactional
-    public List<SongRepresentation> search(String artist, String genre, String title, List<Integer> songsIds, String auth){
+    public List<SongRepresentation> search(String artist, Integer genreId, String genreTitle, String title, List<Integer> songsIds, String auth){
         userService.verifyAuth(auth);
 
         List<Song> songs = null;

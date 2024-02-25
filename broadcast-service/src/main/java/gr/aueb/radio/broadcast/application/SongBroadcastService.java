@@ -70,7 +70,7 @@ public class SongBroadcastService {
         }
 
 
-        List<SongBasicRepresentation> broadcastSongs = contentService.getSongsByFilters(auth, null, null, null, songsIds.toString());
+        List<SongBasicRepresentation> broadcastSongs = contentService.getSongsByFilters(auth, null,null, null, null, songsIds.toString());
         //Song song = songRepository.findById(dto.songId);
 //        if (song == null){
 //            throw new NotFoundException("Song does not exist");

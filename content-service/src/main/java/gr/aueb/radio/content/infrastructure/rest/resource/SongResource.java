@@ -52,7 +52,8 @@ public class SongResource {
     //@PermitAll
     public Response search(
             @QueryParam("artist") String artist,
-            @QueryParam("genre") String genre,
+            @QueryParam("genreId") Integer genreId,
+            @QueryParam("genreTitle") String genreTitle, // maybe will be deleted later if not used
             @QueryParam("title") String title,
             @QueryParam("songsIds") String songsIds,
             @HeaderParam("Authorization") String auth
@@ -60,7 +61,7 @@ public class SongResource {
         List<Integer> convertedSongsId = Arrays.stream(songsIds.split(","))
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
-        List<SongRepresentation> found = songService.search(artist, genre, title, convertedSongsId, auth);
+        List<SongRepresentation> found = songService.search(artist, genreId, genreTitle, title, convertedSongsId, auth);
         return Response.ok().entity(found).build();
     }
 

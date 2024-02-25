@@ -32,7 +32,8 @@ public interface ContentApi {
     List<SongBasicRepresentation> getSongsByFilters(
             @HeaderParam("Authorization") String basicAuthHeader,
             @QueryParam("artist") String artist,
-            @QueryParam("genre") String genre,
+            @QueryParam("genreId") Integer genreId,
+            @QueryParam("genreTitle") String genreTitle,
             @QueryParam("title") String title,
             @QueryParam("songsIds") String songsIds
     );
