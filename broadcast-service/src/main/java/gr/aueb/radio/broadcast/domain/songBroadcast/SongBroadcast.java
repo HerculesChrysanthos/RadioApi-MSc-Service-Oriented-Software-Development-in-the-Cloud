@@ -38,6 +38,12 @@ public class SongBroadcast {
         this.broadcastTime = broadcastTime;
     }
 
+    public SongBroadcast(LocalDate broadcastDate, LocalTime broadcastTime, Integer songId) {
+        this.broadcastDate = broadcastDate;
+        this.broadcastTime = broadcastTime;
+        this.songId = songId;
+    }
+
     public Integer getId() {
         return id;
     }

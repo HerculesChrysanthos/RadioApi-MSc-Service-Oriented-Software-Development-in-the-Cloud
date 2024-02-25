@@ -168,7 +168,7 @@ public class Broadcast {
 //            log.info("Broadcast occurrence restriction");
             return null;
         }
-        SongBroadcast songBroadcast = new SongBroadcast(this.startingDate, time);
+        SongBroadcast songBroadcast = new SongBroadcast(this.startingDate, time, song.id);
         songBroadcast.setBroadcast(this);
 //        song.addSongBroadcast(songBroadcast);
         this.songBroadcasts.add(songBroadcast);
