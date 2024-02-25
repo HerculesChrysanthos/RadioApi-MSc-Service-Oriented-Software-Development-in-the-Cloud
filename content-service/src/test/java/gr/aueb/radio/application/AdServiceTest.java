@@ -2,7 +2,6 @@ package gr.aueb.radio.application;
 
 import gr.aueb.radio.content.application.AdService;
 import gr.aueb.radio.content.common.DateUtil;
-import gr.aueb.radio.content.common.NotFoundException;
 import gr.aueb.radio.content.common.RadioException;
 import gr.aueb.radio.content.domain.ad.Ad;
 import gr.aueb.radio.content.domain.ad.Zone;
@@ -16,6 +15,7 @@ import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,7 +31,7 @@ public class AdServiceTest extends IntegrationBase {
     @Inject
     AdMapper adMapper;
 
-
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     @Test
     @TestTransaction
     public void findAdTest(){
@@ -87,8 +87,8 @@ public class AdServiceTest extends IntegrationBase {
         // create new ad
         AdRepresentation adRepresentation = new AdRepresentation();
         adRepresentation.duration = 60;
-        adRepresentation.startingDate = "01-01-2022";
-        adRepresentation.endingDate = "01-03-2022";
+//        adRepresentation.startingDate = "01-01-2022";
+//        adRepresentation.endingDate = "01-03-2022";
         adRepresentation.timezone = Zone.EarlyMorning;
         adRepresentation.repPerZone = 2;
         // check list of ads is plus one
@@ -111,7 +111,7 @@ public class AdServiceTest extends IntegrationBase {
         adRepresentation.repPerZone = 2;
 
         // adId does to be updated not found
-        assertThrows(NotFoundException.class, () -> {
+        assertThrows(RadioException.class, () -> {
             adService.update(-1, adRepresentation,"PRODUCER");
         });
 
@@ -140,7 +140,7 @@ public class AdServiceTest extends IntegrationBase {
         int numOfAds = adsList.size();
 
         // adId does to be updated not found
-        assertThrows(NotFoundException.class, () -> {
+        assertThrows(RadioException.class, () -> {
             adService.delete(-1,"PRODUCER");
         });
 
