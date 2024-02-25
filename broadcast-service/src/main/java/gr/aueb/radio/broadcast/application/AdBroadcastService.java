@@ -63,7 +63,7 @@ public class AdBroadcastService {
             int adId = broadcast.getAdBroadcasts().get(i).getAdId();
 
             adsIds.append(adId);
-            if(i != broadcast.getSongBroadcasts().size() - 1) {
+            if(i != broadcast.getAdBroadcasts().size() - 1) {
                 adsIds.append(",");
             }
         }
