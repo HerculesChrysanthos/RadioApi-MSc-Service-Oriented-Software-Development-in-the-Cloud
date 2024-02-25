@@ -48,7 +48,7 @@ public class AdService {
 
     @Transactional
     public List<AdRepresentation> search(Zone timezone, List<Integer> adsIds, String auth) {
-        List<Ad> ads = null;
+
         // verify user role - producer
         String userRole = userService.verifyAuth(auth).role;
 
@@ -56,16 +56,7 @@ public class AdService {
             throw new RadioException("Not Allowed to change this.", 403);
         }
 
-        if (!adsIds.isEmpty()) {
-            ads = adRepository.findAdsByIds(adsIds);
-        } else {
-
-            if (timezone == null) {
-                ads = adRepository.listAll();
-            } else {
-                ads = adRepository.findByTimezone(timezone);
-            }
-        }
+        List<Ad> ads = adRepository.findByFilters(adsIds, timezone);
         return adMapper.toRepresentationList(ads);
     }
 

@@ -27,16 +27,17 @@ public class AdRepository implements PanacheRepositoryBase <Ad, Integer> {
         return query.list();
     }
 
-    public List<Ad> findByFilters(LocalDate date, String timezone) {
+    public List<Ad> findByFilters(List<Integer> ids, Zone timezone) {
         Map<String, Object> params = new HashMap<>();
-        StringBuilder queryBuilder = new StringBuilder("select ad from Ad ad left join fetch ab.broadcast where");
+        StringBuilder queryBuilder = new StringBuilder("select ad from Ad ad where 1=1");
 
-        if (date != null) {
-            queryBuilder.append(" and ad.broadcastDate = :date");
-            params.put("date", date);
+
+        if (ids != null && !ids.isEmpty()) {
+            queryBuilder.append(" and ad.id in :ids");
+            params.put("ids", ids);
         }
 
-        if (timezone != null && !timezone.isEmpty()) {
+        if (timezone != null) {
             queryBuilder.append(" and ad.timezone = :timezone");
             params.put("timezone", timezone);
         }

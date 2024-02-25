@@ -17,6 +17,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,10 +54,15 @@ public class AdResource {
     public Response search(
             @QueryParam("timezone") Zone timezone,
             @QueryParam("adsIds") String adsIds,
-            @HeaderParam("Authorization") String auth) {
-        List<Integer> convertedAdsId = Arrays.stream(adsIds.split(","))
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
+            @HeaderParam("Authorization") String auth
+    ) {
+        List<Integer> convertedAdsId = new ArrayList<>();
+        if(adsIds != null) {
+            convertedAdsId = Arrays.stream(adsIds.split(","))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+        }
+
         List<AdRepresentation> adsFound = adService.search(timezone, convertedAdsId, auth);
         return Response.ok().entity(adsFound).build();
     }
