@@ -67,7 +67,7 @@ public class AdBroadcastService {
                 adsIds.append(",");
             }
         }
-        List<AdBasicRepresentation> broadcastAds = contentService.getAdsByIds(auth, adsIds.toString());
+        List<AdBasicRepresentation> broadcastAds = contentService.getAdsByFilters(auth, null, adsIds.toString());
 
 
 

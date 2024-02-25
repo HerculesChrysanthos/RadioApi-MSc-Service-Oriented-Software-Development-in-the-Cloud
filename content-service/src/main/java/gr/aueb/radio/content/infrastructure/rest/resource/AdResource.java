@@ -17,7 +17,10 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Path(ApiPath.Root.ADS)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -47,11 +50,15 @@ public class AdResource {
 
     @GET
 //    @RolesAllowed("PRODUCER")
-    public Response getAdsOfTimezone(
+    public Response search(
             @QueryParam("timezone") Zone timezone,
+            @QueryParam("adsIds") String adsIds,
             @HeaderParam("Authorization") String auth) {
-        List<AdRepresentation> adsByTimezone = adService.search(timezone, auth);
-        return Response.ok().entity(adsByTimezone).build();
+        List<Integer> convertedAdsId = Arrays.stream(adsIds.split(","))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+        List<AdRepresentation> adsFound = adService.search(timezone, convertedAdsId, auth);
+        return Response.ok().entity(adsFound).build();
     }
 
     @POST

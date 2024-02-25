@@ -63,9 +63,9 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public List<AdBasicRepresentation> getAdsByIds(String auth, String adsIds) {
+    public List<AdBasicRepresentation> getAdsByFilters(String auth, String timezone, String adsIds) {
         try {
-            return contentApi.getAdsByIds(auth, adsIds);
+            return contentApi.getAdsByFilters(auth, timezone, adsIds);
         } catch (ProcessingException error) {
             throw new RadioException("Problem on reaching content api.", 424);
         } catch (NotFoundException error) {

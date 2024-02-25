@@ -15,6 +15,7 @@ import jakarta.ws.rs.core.*;
 
 
 import java.util.List;
+
 @RequestScoped
 public class AdService {
     @Inject
@@ -34,7 +35,7 @@ public class AdService {
     public AdRepresentation findAd(Integer id, String auth) {
         String userRole = userService.verifyAuth(auth).role;
 
-        if(!userRole.equals("PRODUCER")){
+        if (!userRole.equals("PRODUCER")) {
             throw new RadioException("Not Allowed to change this.", 403);
         }
 
@@ -46,21 +47,26 @@ public class AdService {
     }
 
     @Transactional
-    public List<AdRepresentation> search(Zone timezone, String auth) {
-        List<Ad> adsByTimezone;
+    public List<AdRepresentation> search(Zone timezone, List<Integer> adsIds, String auth) {
+        List<Ad> ads = null;
         // verify user role - producer
         String userRole = userService.verifyAuth(auth).role;
 
-        if(!userRole.equals("PRODUCER")){
+        if (!userRole.equals("PRODUCER")) {
             throw new RadioException("Not Allowed to change this.", 403);
         }
 
-        if (timezone == null) {
-            adsByTimezone = adRepository.listAll();
+        if (!adsIds.isEmpty()) {
+            ads = adRepository.findAdsByIds(adsIds);
         } else {
-            adsByTimezone = adRepository.findByTimezone(timezone);
+
+            if (timezone == null) {
+                ads = adRepository.listAll();
+            } else {
+                ads = adRepository.findByTimezone(timezone);
+            }
         }
-        return adMapper.toRepresentationList(adsByTimezone);
+        return adMapper.toRepresentationList(ads);
     }
 
     @Transactional
@@ -71,7 +77,7 @@ public class AdService {
 
         String userRole = userService.verifyAuth(auth).role;
 
-        if(!userRole.equals("PRODUCER")){
+        if (!userRole.equals("PRODUCER")) {
             throw new RadioException("Not Allowed to change this.", 403);
         }
 
@@ -83,26 +89,26 @@ public class AdService {
     public Ad update(Integer id, AdRepresentation adRepresentation, String auth) {
         String userRole = userService.verifyAuth(auth).role;
 
-        if(!userRole.equals("PRODUCER")){
+        if (!userRole.equals("PRODUCER")) {
             throw new RadioException("Not Allowed to change this.", 403);
         }
 
         Ad ad = adRepository.findById(id);
-        if(ad == null){
+        if (ad == null) {
             throw new NotFoundException("Ad not found");
         }
-        if (ad.getBroadcastAds() != null && ad.getBroadcastAds().size() != 0){
+        if (ad.getBroadcastAds() != null && ad.getBroadcastAds().size() != 0) {
             throw new RadioException("Ad is immutable, it has scheduled broadcasts");
         }
         ad.setDuration(adRepresentation.duration);
         ad.setTimezone(adRepresentation.timezone);
         ad.setRepPerZone(adRepresentation.repPerZone);
 
-        if(adRepresentation.startingDate != null){
+        if (adRepresentation.startingDate != null) {
             ad.setStartingDate(DateUtil.setDate(adRepresentation.startingDate));
         }
 
-        if(adRepresentation.endingDate !=null){
+        if (adRepresentation.endingDate != null) {
             ad.setEndingDate(DateUtil.setDate(adRepresentation.endingDate));
         }
 
@@ -111,15 +117,15 @@ public class AdService {
     }
 
     @Transactional
-    public void delete(Integer id, String auth ) {
+    public void delete(Integer id, String auth) {
         String userRole = userService.verifyAuth(auth).role;
 
-        if(!userRole.equals("PRODUCER")){
+        if (!userRole.equals("PRODUCER")) {
             throw new RadioException("Not Allowed to change this.", 403);
         }
 
         Ad ad = adRepository.findById(id);
-        if(ad == null){
+        if (ad == null) {
             throw new NotFoundException("Ad not found");
         }
 //        List<AdBroadcast> adBroadcasts = ad.getBroadcastAds();

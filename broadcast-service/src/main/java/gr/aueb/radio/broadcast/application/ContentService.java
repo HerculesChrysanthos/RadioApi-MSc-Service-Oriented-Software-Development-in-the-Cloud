@@ -9,7 +9,7 @@ public interface ContentService {
 
     AdBasicRepresentation getAd(String auth, Integer adId);
 
-    List<AdBasicRepresentation> getAdsByIds(String auth, String adsIds);
+    List<AdBasicRepresentation> getAdsByFilters(String auth, String timezone, String adsIds);
 
     SongBasicRepresentation getSong(String auth, Integer songId);
 

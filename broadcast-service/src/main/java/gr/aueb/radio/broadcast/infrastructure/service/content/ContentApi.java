@@ -39,8 +39,9 @@ public interface ContentApi {
 
     @GET
     @Path("/ads")
-    List<AdBasicRepresentation> getAdsByIds(
+    List<AdBasicRepresentation> getAdsByFilters(
             @HeaderParam("Authorization") String basicAuthHeader,
+            @QueryParam("timezone") String timezone,
             @QueryParam("adsIds") String adsIds
     );
 }
