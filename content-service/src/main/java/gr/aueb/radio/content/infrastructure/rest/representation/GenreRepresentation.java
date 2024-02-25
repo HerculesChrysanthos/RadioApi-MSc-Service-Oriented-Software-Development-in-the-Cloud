@@ -4,12 +4,6 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 
 @RegisterForReflection
 public class GenreRepresentation {
-
-    public Integer Id;
+    public Integer id;
     public String title;
-
-    public Integer getId() {
-        return Id;
-    }
-
 }

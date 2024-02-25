@@ -57,7 +57,7 @@ public class SongService {
             throw new RadioException("Song is immutable, it has scheduled broadcasts");
         }
 
-        Genre genre = genreMapper.toModel(genreService.getGenreById(songRepresentation.genreId));
+        Genre genre = genreMapper.toModel(genreService.getGenreById(songRepresentation.genre.id));
 
         song.setGenre(genre);
         song.setDuration(songRepresentation.duration);
@@ -91,6 +91,7 @@ public class SongService {
     public SongRepresentation findSong(Integer Id, String auth){
         userService.verifyAuth(auth);
 
+//        Song song = songRepository.findByIdDetails(Id);
         Song song = songRepository.findById(Id);
         if (song == null) {
             throw new NotFoundException("Song not found");

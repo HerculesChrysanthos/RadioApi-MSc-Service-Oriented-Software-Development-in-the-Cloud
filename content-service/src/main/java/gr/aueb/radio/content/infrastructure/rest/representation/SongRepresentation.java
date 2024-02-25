@@ -10,5 +10,5 @@ public class SongRepresentation {
     public String artist;
     public Integer year;
     public Integer duration;
-    public Integer genreId;
+    public GenreRepresentation genre;
 }

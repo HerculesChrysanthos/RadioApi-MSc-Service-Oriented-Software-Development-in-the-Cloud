@@ -18,6 +18,22 @@ public class Genre {
     @Column(name = "title", nullable = false, length = 100)
     private String title;
 
-    @OneToMany(mappedBy = "genre", fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "genre",fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Song> songs = new ArrayList<>();
+
+    public Genre() {
+    }
+
+    public Genre(String title) {
+        this.title = title;
+    }
+    public Integer getId(){
+        return this.id;
+    }
+    public String getTitle() {
+        return this.title;
+    }
+    public List<Song> getSongs() {
+        return this.songs;
+    }
 }
