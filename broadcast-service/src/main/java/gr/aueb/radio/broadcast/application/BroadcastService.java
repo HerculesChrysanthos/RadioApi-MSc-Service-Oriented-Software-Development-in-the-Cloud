@@ -151,19 +151,25 @@ public class BroadcastService {
         return broadcast;
     }
 
-//    @Transactional
-//    public void delete(Integer id){
-//        Broadcast broadcast = this.findById(id);
-//        while (broadcast.getAdBroadcasts().size() != 0){
-//            AdBroadcast ab = broadcast.getAdBroadcasts().get(0);
-//            this.removeAdBroadcast(broadcast.getId(), ab.getId());
-//        }
-//        while (broadcast.getSongBroadcasts().size() != 0){
-//            SongBroadcast sb = broadcast.getSongBroadcasts().get(0);
-//            this.removeSongBroadcast(broadcast.getId(), sb.getId());
-//        }
-//        broadcastRepository.deleteById(id);
-//    }
+    @Transactional
+    public void delete(Integer id, String auth){
+        String userRole = userService.verifyAuth(auth).role;
+
+        if(!userRole.equals("PRODUCER")) {
+            throw new RadioException("Not Allowed to change this.", 403);
+        }
+
+        Broadcast broadcast = findById(id, auth);
+        while (broadcast.getAdBroadcasts().size() != 0){
+            AdBroadcast ab = broadcast.getAdBroadcasts().get(0);
+            this.removeAdBroadcast(broadcast.getId(), ab.getId());
+        }
+        while (broadcast.getSongBroadcasts().size() != 0){
+            SongBroadcast sb = broadcast.getSongBroadcasts().get(0);
+            this.removeSongBroadcast(broadcast.getId(), sb.getId());
+        }
+        broadcastRepository.deleteById(id);
+    }
 
     @Transactional
     public List<BroadcastOutputRepresentation> search(BroadcastSearchDTO broadcastSearchDTO){

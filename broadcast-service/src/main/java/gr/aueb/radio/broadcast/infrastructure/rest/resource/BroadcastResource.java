@@ -8,6 +8,7 @@ import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
 import gr.aueb.radio.broadcast.domain.broadcast.BroadcastType;
 import gr.aueb.radio.broadcast.infrastructure.rest.ApiPath.Root;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.*;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -153,19 +154,22 @@ public class BroadcastResource {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
         }
     }
-//
-//    @Path("/{id}")
-//    @DELETE
-//    //@RolesAllowed("PRODUCER")
-//    public Response delete(@PathParam("id") Integer id){
-//        try{
-//            broadcastService.delete(id);
-//            return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
-//        } catch (NotFoundException e){
-//            log.error("Broadcast not found");
-//            return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
-//        }
-//    }
+
+    @Path("/{id}")
+    @DELETE
+    //@RolesAllowed("PRODUCER")
+    public Response delete(
+            @PathParam("id") Integer id,
+            @HeaderParam("Authorization") String auth
+    ) {
+        try{
+            broadcastService.delete(id, auth);
+            return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
+        } catch (NotFoundException e){
+            Log.error("Broadcast not found");
+            return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
+        }
+    }
 //
 //    @Path("/{id}/suggestions")
 //    @GET
