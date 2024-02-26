@@ -9,7 +9,8 @@ import java.util.List;
 
 @Mapper(componentModel = "jakarta",
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
-        uses = {SongMapper.class})
+        uses = { GenreMapper.class }
+)
 public abstract class SongMapper {
 
     public abstract SongRepresentation toRepresentation(Song song);

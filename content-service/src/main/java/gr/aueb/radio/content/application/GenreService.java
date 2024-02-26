@@ -7,6 +7,7 @@ import gr.aueb.radio.content.infrastructure.rest.representation.GenreMapper;
 import gr.aueb.radio.content.infrastructure.rest.representation.GenreRepresentation;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 @RequestScoped
 public class GenreService {
@@ -19,6 +20,7 @@ public class GenreService {
     public
     GenreMapper genreMapper;
 
+    @Transactional
     public GenreRepresentation getGenreById(Integer genreId){
         Genre foundGenre = genreRepository.findById(genreId);
 

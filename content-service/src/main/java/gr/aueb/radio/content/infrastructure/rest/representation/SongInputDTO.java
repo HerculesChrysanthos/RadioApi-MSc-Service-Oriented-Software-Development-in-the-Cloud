@@ -1,11 +1,13 @@
 package gr.aueb.radio.content.infrastructure.rest.representation;
 
 import gr.aueb.radio.content.domain.genre.Genre;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
+@RegisterForReflection
 @AllArgsConstructor
 public class SongInputDTO {
     @NotNull
@@ -32,16 +34,14 @@ public class SongInputDTO {
     public Integer genreId;
 
     public GenreRepresentation genre;
-    public GenreRepresentation getGenre() {
-        return this.genre;
-    }
-    public SongRepresentation toRepresentation(GenreRepresentation genre) {
+
+    public SongRepresentation toRepresentation(GenreRepresentation genreRepresentation) {
         SongRepresentation songRepresentation = new SongRepresentation();
         songRepresentation.title = this.title;
         songRepresentation.artist = this.artist;
         songRepresentation.year = this.year;
         songRepresentation.duration = this.duration;
-        songRepresentation.genre = genre;
+        songRepresentation.genre = genreRepresentation;
         return songRepresentation;
     }
 }

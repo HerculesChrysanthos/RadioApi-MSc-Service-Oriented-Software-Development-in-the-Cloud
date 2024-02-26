@@ -9,7 +9,6 @@ import gr.aueb.radio.content.infrastructure.rest.representation.*;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.core.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,9 +50,9 @@ public class SongService {
         if(song == null){
             throw new NotFoundException("Song not found");
         }
-        if (song.getSongBroadcasts().size() != 0){
-            throw new RadioException("Song is immutable, it has scheduled broadcasts");
-        }
+//        if (song.getSongBroadcasts().size() != 0){
+//            throw new RadioException("Song is immutable, it has scheduled broadcasts");
+//        }
 
         Genre genre = genreMapper.toModel(genreService.getGenreById(songRepresentation.genre.id));
 
@@ -76,10 +75,10 @@ public class SongService {
         }
 
         // remove while , send one request for deleting songbroadcasts according to this song id
-        while (song.getSongBroadcasts().size() != 0){
-            //SongBroadcast songBroadcast = song.getSongBroadcasts().get(0);
-           // broadcastService.removeSongBroadcast(songBroadcast.getBroadcast().getId(), songBroadcast.getId());
-        }
+//        while (song.getSongBroadcasts().size() != 0){
+//            //SongBroadcast songBroadcast = song.getSongBroadcasts().get(0);
+//           // broadcastService.removeSongBroadcast(songBroadcast.getBroadcast().getId(), songBroadcast.getId());
+//        }
 
         songRepository.deleteById(id);
     }
@@ -99,13 +98,14 @@ public class SongService {
 
     @Transactional
     public Song create(SongInputDTO songInputDTO, String auth) {
-        GenreRepresentation genreRepresentation = genreService.getGenreById(songInputDTO.genreId);
-        SongRepresentation songRepresentation = songInputDTO.toRepresentation(genreRepresentation);
-        Song song = songMapper.toModel(songRepresentation);
-
         userService.verifyAuth(auth);
 
+        GenreRepresentation genreRepresentation = genreService.getGenreById(songInputDTO.genreId);
+        SongRepresentation songRepresentation = songInputDTO.toRepresentation(genreRepresentation);
+
+        Song song = songMapper.toModel(songRepresentation);
+
         songRepository.persist(song);
-        return new Song();
+        return song;
     }
 }

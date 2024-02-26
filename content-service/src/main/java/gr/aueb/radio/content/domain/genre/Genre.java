@@ -18,8 +18,8 @@ public class Genre {
     @Column(name = "title", nullable = false, length = 100)
     private String title;
 
-    @OneToMany(mappedBy = "genre",fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<Song> songs = new ArrayList<>();
+//    @OneToMany(mappedBy = "genre",fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//    private List<Song> songs = new ArrayList<>();
 
     public Genre() {
     }
@@ -33,7 +33,19 @@ public class Genre {
     public String getTitle() {
         return this.title;
     }
-    public List<Song> getSongs() {
-        return this.songs;
+//    public List<Song> getSongs() {
+//        return this.songs;
+//    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+//    public void setSongs(List<Song> songs) {
+//        this.songs = songs;
+//    }
 }
