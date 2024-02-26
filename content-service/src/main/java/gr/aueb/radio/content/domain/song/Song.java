@@ -33,7 +33,7 @@ public class Song {
     @JoinColumn(name= "genre_id")
     private Genre genre;
 
-    private List<Integer> songBroadcasts = new ArrayList<>();
+//    private List<Integer> songBroadcasts = new ArrayList<>();
     public Song() {
     }
 
@@ -49,16 +49,16 @@ public class Song {
         return this.id;
     }
 
-    public void addSongBroadcast(Integer songBroadcast) {
-        if(songBroadcast != null){
-            //songBroadcast.setSong(this);
-            this.songBroadcasts.add(songBroadcast);
-        }
-    }
+//    public void addSongBroadcast(Integer songBroadcast) {
+//        if(songBroadcast != null){
+//            //songBroadcast.setSong(this);
+//            this.songBroadcasts.add(songBroadcast);
+//        }
+//    }
 
-    public List<Integer> getSongBroadcasts() {
-        return this.songBroadcasts;
-    }
+//    public List<Integer> getSongBroadcasts() {
+//        return this.songBroadcasts;
+//    }
 
     public String getTitle() {
         return this.title;
