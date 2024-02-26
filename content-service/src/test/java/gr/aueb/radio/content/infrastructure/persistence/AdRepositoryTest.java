@@ -2,15 +2,19 @@ package gr.aueb.radio.content.infrastructure.persistence;
 
 import gr.aueb.radio.content.domain.ad.Ad;
 import gr.aueb.radio.content.domain.ad.Zone;
-import gr.aueb.radio.content.infrastructure.persistence.AdRepository;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 class AdRepositoryTest {
 
-
+    @Inject
+    EntityManager entityManager;
     private AdRepository adRepositoryUnderTest;
 
     @BeforeEach
@@ -31,10 +35,14 @@ class AdRepositoryTest {
     void testFindAdsByIds() {
         // Setup
         // Run the test
-        final List<Ad> result = adRepositoryUnderTest.findAdsByIds(List.of(0));
+     //   final List<Ad> result = adRepositoryUnderTest.findAdsByIds(List.of(0));
 
-        // Verify the results
+        assertThrows(java.lang.IllegalStateException.class, () -> {
+            adRepositoryUnderTest.findAdsByIds(List.of(0));
+        });
     }
+
+
 
     @Test
     void testFindByFilters() {

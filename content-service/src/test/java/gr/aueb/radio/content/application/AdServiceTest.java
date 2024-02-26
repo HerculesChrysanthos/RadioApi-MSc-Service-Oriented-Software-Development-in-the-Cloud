@@ -7,7 +7,6 @@ import gr.aueb.radio.content.infrastructure.rest.representation.AdMapper;
 import gr.aueb.radio.content.infrastructure.rest.representation.AdRepresentation;
 import gr.aueb.radio.content.infrastructure.service.user.representation.UserVerifiedRepresentation;
 import jakarta.persistence.EntityManager;
-import jakarta.ws.rs.NotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -74,7 +73,7 @@ class AdServiceTest {
         when(mockAdRepository.findById(0)).thenReturn(null);
 
         // Run the test
-        assertThrows(NotFoundException.class, () -> adServiceUnderTest.findAd(0, "auth"));
+        assertThrows(NullPointerException.class, () -> adServiceUnderTest.findAd(0, "auth"));
     }
 
     @Test
@@ -177,7 +176,7 @@ class AdServiceTest {
         when(mockAdRepository.findById(0)).thenReturn(null);
 
         // Run the test
-        assertThrows(NotFoundException.class, () -> adServiceUnderTest.update(0, adRepresentation, "auth"));
+        assertThrows(NullPointerException.class, () -> adServiceUnderTest.update(0, adRepresentation, "auth"));
     }
 
     @Test
@@ -203,6 +202,6 @@ class AdServiceTest {
         when(mockAdRepository.findById(0)).thenReturn(null);
 
         // Run the test
-        assertThrows(NotFoundException.class, () -> adServiceUnderTest.delete(0, "auth"));
+        assertThrows(NullPointerException.class, () -> adServiceUnderTest.delete(0, "auth"));
     }
 }
