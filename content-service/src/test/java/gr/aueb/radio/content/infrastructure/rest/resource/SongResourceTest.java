@@ -63,11 +63,11 @@ class SongResourceTest {
     @Test
     void testSearch() {
         // Setup
-        when(mockSongService.search("artist", "genre", "title", List.of(0), "auth"))
+        when(mockSongService.search("artist", 0, "genreTitle", "title", List.of(0), "auth"))
                 .thenReturn(List.of(new SongRepresentation()));
 
         // Run the test
-        final Response result = songResourceUnderTest.search("artist", "genre", "title", "songsIds", "auth");
+        final Response result = songResourceUnderTest.search("artist", 0, "genreTitle", "title", "songsIds", "auth");
 
         // Verify the results
     }
@@ -75,11 +75,11 @@ class SongResourceTest {
     @Test
     void testSearch_SongServiceReturnsNoItems() {
         // Setup
-        when(mockSongService.search("artist", "genre", "title", List.of(0), "auth"))
+        when(mockSongService.search("artist", 0, "genreTitle", "title", List.of(0), "auth"))
                 .thenReturn(Collections.emptyList());
 
         // Run the test
-        final Response result = songResourceUnderTest.search("artist", "genre", "title", "songsIds", "auth");
+        final Response result = songResourceUnderTest.search("artist", 0, "genreTitle", "title", "songsIds", "auth");
 
         // Verify the results
     }
@@ -90,9 +90,14 @@ class SongResourceTest {
         final SongInputDTO songRepresentation = new SongInputDTO();
 
         // Configure SongService.create(...).
+        final Song song = new Song();
+        song.setTitle("title");
+        song.setArtist("artist");
+        song.setDuration(0);
         final Genre genre = new Genre();
-        final Song song = new Song("title", genre, 0, "artist", 2020);
-        when(mockSongService.create(any(SongRepresentation.class), eq("auth"))).thenReturn(song);
+        genre.setId(0);
+        song.setGenre(genre);
+        when(mockSongService.create(any(SongInputDTO.class), eq("auth"))).thenReturn(song);
 
         when(mockSongMapper.toRepresentation(any(Song.class))).thenReturn(new SongRepresentation());
 
@@ -110,17 +115,5 @@ class SongResourceTest {
 
         // Verify the results
         verify(mockSongService).delete(0, "auth");
-    }
-
-    @Test
-    void testUpdate() {
-        // Setup
-        final SongInputDTO songRepresentation = new SongInputDTO();
-
-        // Run the test
-        final Response result = songResourceUnderTest.update(0, songRepresentation, "auth");
-
-        // Verify the results
-        verify(mockSongService).update(eq(0), any(SongRepresentation.class), eq("auth"));
     }
 }

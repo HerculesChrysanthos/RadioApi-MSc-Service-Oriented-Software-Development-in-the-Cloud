@@ -62,23 +62,23 @@ class AdResourceTest {
     }
 
     @Test
-    void testGetAdsOfTimezone() {
+    void testSearch() {
         // Setup
-        when(mockAdService.search(Zone.EarlyMorning, "auth")).thenReturn(List.of(new AdRepresentation()));
+        when(mockAdService.search(Zone.EarlyMorning, List.of(0), "auth")).thenReturn(List.of(new AdRepresentation()));
 
         // Run the test
-        final Response result = adResourceUnderTest.getAdsOfTimezone(Zone.EarlyMorning, "auth");
+        final Response result = adResourceUnderTest.search(Zone.EarlyMorning, "adsIds", "auth");
 
         // Verify the results
     }
 
     @Test
-    void testGetAdsOfTimezone_AdServiceReturnsNoItems() {
+    void testSearch_AdServiceReturnsNoItems() {
         // Setup
-        when(mockAdService.search(Zone.EarlyMorning, "auth")).thenReturn(Collections.emptyList());
+        when(mockAdService.search(Zone.EarlyMorning, List.of(0), "auth")).thenReturn(Collections.emptyList());
 
         // Run the test
-        final Response result = adResourceUnderTest.getAdsOfTimezone(Zone.EarlyMorning, "auth");
+        final Response result = adResourceUnderTest.search(Zone.EarlyMorning, "adsIds", "auth");
 
         // Verify the results
     }

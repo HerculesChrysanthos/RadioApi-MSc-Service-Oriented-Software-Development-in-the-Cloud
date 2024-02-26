@@ -1,4 +1,4 @@
-package gr.aueb.radio.infrastructure.persistence;
+package gr.aueb.radio.content.infrastructure.persistence;
 
 
 import gr.aueb.radio.content.domain.ad.Ad;

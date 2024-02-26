@@ -4,10 +4,9 @@ import gr.aueb.radio.content.common.DateUtil;
 import gr.aueb.radio.content.domain.genre.Genre;
 import gr.aueb.radio.content.domain.song.Song;
 import gr.aueb.radio.content.infrastructure.persistence.SongRepository;
-import org.junit.jupiter.api.Assertions;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import jakarta.inject.Inject;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -49,19 +48,7 @@ public class SongTest {
 
     }
 
-    @Test
-    public void testSongBroadcasts() {
-        // Arrange
-        Song song = new Song();
-        Integer broadcastId = 1;
 
-        // Act
-        song.addSongBroadcast(broadcastId);
-
-        // Assert
-        assertEquals(1, song.getSongBroadcasts().size());
-        Assertions.assertTrue(song.getSongBroadcasts().contains(broadcastId));
-    }
 
     public void testSetArtist() {
 

@@ -82,49 +82,30 @@ class AdServiceTest {
         // Setup
         when(mockUserService.verifyAuth("auth")).thenReturn(new UserVerifiedRepresentation());
 
-        // Configure AdRepository.listAll(...).
+        // Configure AdRepository.findByFilters(...).
         final List<Ad> ads = List.of(
                 new Ad(0, 0, LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 1), Zone.EarlyMorning));
-        when(mockAdRepository.listAll()).thenReturn(ads);
-
-        // Configure AdRepository.findByTimezone(...).
-        final List<Ad> ads1 = List.of(
-                new Ad(0, 0, LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 1), Zone.EarlyMorning));
-        when(mockAdRepository.findByTimezone(Zone.EarlyMorning)).thenReturn(ads1);
+        when(mockAdRepository.findByFilters(List.of(0), Zone.EarlyMorning)).thenReturn(ads);
 
         when(mockAdMapper.toRepresentationList(List.of(new Ad(0, 0, LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 1),
                 Zone.EarlyMorning)))).thenReturn(List.of(new AdRepresentation()));
 
         // Run the test
-        final List<AdRepresentation> result = adServiceUnderTest.search(Zone.EarlyMorning, "auth");
+        final List<AdRepresentation> result = adServiceUnderTest.search(Zone.EarlyMorning, List.of(0), "auth");
 
         // Verify the results
     }
 
     @Test
-    void testSearch_AdRepositoryListAllReturnsNoItems() {
+    void testSearch_AdRepositoryReturnsNoItems() {
         // Setup
         when(mockUserService.verifyAuth("auth")).thenReturn(new UserVerifiedRepresentation());
-        when(mockAdRepository.listAll()).thenReturn(Collections.emptyList());
+        when(mockAdRepository.findByFilters(List.of(0), Zone.EarlyMorning)).thenReturn(Collections.emptyList());
         when(mockAdMapper.toRepresentationList(List.of(new Ad(0, 0, LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 1),
                 Zone.EarlyMorning)))).thenReturn(List.of(new AdRepresentation()));
 
         // Run the test
-        final List<AdRepresentation> result = adServiceUnderTest.search(Zone.EarlyMorning, "auth");
-
-        // Verify the results
-    }
-
-    @Test
-    void testSearch_AdRepositoryFindByTimezoneReturnsNoItems() {
-        // Setup
-        when(mockUserService.verifyAuth("auth")).thenReturn(new UserVerifiedRepresentation());
-        when(mockAdRepository.findByTimezone(Zone.EarlyMorning)).thenReturn(Collections.emptyList());
-        when(mockAdMapper.toRepresentationList(List.of(new Ad(0, 0, LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 1),
-                Zone.EarlyMorning)))).thenReturn(List.of(new AdRepresentation()));
-
-        // Run the test
-        final List<AdRepresentation> result = adServiceUnderTest.search(Zone.EarlyMorning, "auth");
+        final List<AdRepresentation> result = adServiceUnderTest.search(Zone.EarlyMorning, List.of(0), "auth");
 
         // Verify the results
     }
@@ -134,16 +115,16 @@ class AdServiceTest {
         // Setup
         when(mockUserService.verifyAuth("auth")).thenReturn(new UserVerifiedRepresentation());
 
-        // Configure AdRepository.listAll(...).
+        // Configure AdRepository.findByFilters(...).
         final List<Ad> ads = List.of(
                 new Ad(0, 0, LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 1), Zone.EarlyMorning));
-        when(mockAdRepository.listAll()).thenReturn(ads);
+        when(mockAdRepository.findByFilters(List.of(0), Zone.EarlyMorning)).thenReturn(ads);
 
         when(mockAdMapper.toRepresentationList(List.of(new Ad(0, 0, LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 1),
                 Zone.EarlyMorning)))).thenReturn(Collections.emptyList());
 
         // Run the test
-        final List<AdRepresentation> result = adServiceUnderTest.search(Zone.EarlyMorning, "auth");
+        final List<AdRepresentation> result = adServiceUnderTest.search(Zone.EarlyMorning, List.of(0), "auth");
 
         // Verify the results
         assertEquals(Collections.emptyList(), result);
