@@ -14,6 +14,7 @@ import gr.aueb.radio.broadcast.infrastructure.rest.representation.*;
 import gr.aueb.radio.broadcast.common.DateUtil;
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdBasicRepresentation;
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.SongBasicRepresentation;
+import gr.aueb.radio.broadcast.infrastructure.service.user.representation.UserVerifiedRepresentation;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -98,8 +99,8 @@ public class BroadcastService {
     @Transactional
     public Broadcast create(BroadcastRepresentation broadcastRepresentation, String auth){
         //verify auth user producer role
-        String userRole = userService.verifyAuth(auth).role;
-        if(!userRole.equals("PRODUCER")){
+        UserVerifiedRepresentation user = userService.verifyAuth(auth);
+        if(!user.role.equals("PRODUCER")){
             throw new RadioException("Not Allowed to change this.", 403);
         }
 
@@ -114,6 +115,8 @@ public class BroadcastService {
         if(broadcastToCreate.getType().equals(BroadcastType.PLAYLIST)){
             playlistService.populateBroadcast(broadcastToCreate, auth);
         }
+
+        broadcastToCreate.setUserId(user.id);
 
         broadcastRepository.persist(broadcastToCreate);
         return broadcastToCreate;
