@@ -50,6 +50,7 @@ public class PlaylistService {
         while(songsIterator.hasNext() && broadcast.getAllocatedTime(possibleAds, possibleSongs) < broadcast.getDuration()){
             SongBasicRepresentation song = songsIterator.next();
             // get songBroadcasts of this song ? maybe not. we want the sb of br until now. Are they attached with broadcast?
+            // maybe when creating a sb in line 70 we can push it into an array of sb and use it as songBroadcastsOfBr. Same about ads below
             List<SongBroadcast> songBroadcastsOfBr = songBroadcastRepository.searchBySongId(song.id);
             // get songBroadcasts of the day of broadcast
             List<SongBroadcast> songBroadcastsOfDay = songBroadcastRepository.findByDateDetails(broadcast.getStartingDate());
