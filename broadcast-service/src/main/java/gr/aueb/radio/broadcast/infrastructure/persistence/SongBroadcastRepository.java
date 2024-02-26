@@ -40,4 +40,12 @@ public class SongBroadcastRepository implements PanacheRepositoryBase<SongBroadc
 //            return null;
 //        }
     }
+
+    public List<SongBroadcast> findBySongIdDate(Integer id, LocalDate date) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        params.put("date", date);
+
+        return find("select sb from SongBroadcast sb left join fetch sb.broadcast where sb.broadcastDate=:date and sb.id=:id", params).list();
+    }
 }

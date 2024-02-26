@@ -197,7 +197,10 @@ public class BroadcastService {
         }
 //        System.out.println ("adId " + ad.id);
 //        System.out.println ("adId " + ad.timezone);
-        AdBroadcast created = broadcast.createAdBroadcast(ad, startingTime, broadcastAds);
+
+        List<AdBroadcast> adBroadcastsOfAd = adBroadcastRepository.findByAdId(ad.id);
+
+        AdBroadcast created = broadcast.createAdBroadcast(ad, startingTime, adBroadcastsOfAd, broadcastAds);
         if (created == null){
             throw new RadioException("Ad cannot be scheduled to broadcast");
         }
@@ -211,12 +214,10 @@ public class BroadcastService {
         if (broadcast == null){
             throw new NotFoundException("Broadcast not found");
         }
-        // get songBroadcasts of this song
-        List<SongBroadcast> songBroadcastsOfBr = songBroadcastRepository.searchBySongId(song.id);
         // get songBroadcasts of the day of broadcast
         List<SongBroadcast> songBroadcastsOfDay = songBroadcastRepository.findByDateDetails(broadcast.getStartingDate());
 
-        SongBroadcast created = broadcast.createSongBroadcast(song, startingTime, songBroadcastsOfBr, songBroadcastsOfDay, broadcastSongs);
+        SongBroadcast created = broadcast.createSongBroadcast(song, startingTime, songBroadcastsOfDay, broadcastSongs);
         if (created == null){
             throw new RadioException("Song cannot be scheduled to broadcast");
         }

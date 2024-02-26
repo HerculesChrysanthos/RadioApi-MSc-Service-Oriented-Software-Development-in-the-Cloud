@@ -40,10 +40,12 @@ public class PlaylistService {
         Collections.shuffle(possibleSongs);
         Iterator<SongBasicRepresentation> songsIterator = possibleSongs.iterator();
 
+        List<SongBasicRepresentation> songsAdded = new ArrayList<>();
+
         List<AdBasicRepresentation> possibleAds = contentService.getAdsByFilters(auth, broadcast.getTimezone().toString(), null);
         Collections.shuffle(possibleAds);
         Iterator<AdBasicRepresentation> adsIterator = possibleAds.iterator();
-
+        List<AdBasicRepresentation> adsAdded = new ArrayList<>();
 
         LocalTime trackedTime = broadcast.getStartingTime();
         //first loop
@@ -51,28 +53,27 @@ public class PlaylistService {
             SongBasicRepresentation song = songsIterator.next();
             // get songBroadcasts of this song ? maybe not. we want the sb of br until now. Are they attached with broadcast?
             // maybe when creating a sb in line 70 we can push it into an array of sb and use it as songBroadcastsOfBr. Same about ads below
-            List<SongBroadcast> songBroadcastsOfBr = songBroadcastRepository.searchBySongId(song.id);
-            // get songBroadcasts of the day of broadcast
-            List<SongBroadcast> songBroadcastsOfDay = songBroadcastRepository.findByDateDetails(broadcast.getStartingDate());
+           // List<SongBroadcast> songBroadcastsOfBr = broadcast.getSongBroadcasts();
+            // get song's songBroadcasts of the day of broadcast
+            List<SongBroadcast> songBroadcastsOfDay = songBroadcastRepository.findBySongIdDate(song.id, broadcast.getStartingDate());
 
-            List<Integer> broadcastSongIds = new ArrayList<>();
-            for (SongBroadcast songBroadcast : songBroadcastsOfBr) {
-                broadcastSongIds.add(songBroadcast.getSongId());
-            }
+//            List<Integer> broadcastSongIds = new ArrayList<>();
+//            for (SongBroadcast songBroadcast : songBroadcastsOfBr) {
+//                broadcastSongIds.add(songBroadcast.getSongId());
+//            }
 
-            List<SongBasicRepresentation> existingBroadcastSongBroadcasts = new ArrayList<>();
-            for (SongBasicRepresentation searchingSong: possibleSongs) {
-                if (broadcastSongIds.contains(searchingSong.id)) {
-                    existingBroadcastSongBroadcasts.add(searchingSong);
-                }
-            }
+            //List<SongBasicRepresentation> existingBroadcastSongBroadcasts = new ArrayList<>();
+//            for (SongBasicRepresentation searchingSong: possibleSongs) {
+//                if (broadcastSongIds.contains(searchingSong.id)) {
+//                    existingBroadcastSongBroadcasts.add(searchingSong);
+//                }
+//            }
 
-            SongBroadcast sb = broadcast.createSongBroadcast(
-                    song, trackedTime, songBroadcastsOfBr, songBroadcastsOfDay, existingBroadcastSongBroadcasts
-            );
+            SongBroadcast sb = broadcast.createSongBroadcast(song, trackedTime, songBroadcastsOfDay, songsAdded);
 
             if(sb != null){
                 trackedTime = trackedTime.plusMinutes(song.duration).plusMinutes(1);
+                songsAdded.add(song);
                 songsIterator.remove();
                 possibleSongs.remove(song);
             }
@@ -81,13 +82,13 @@ public class PlaylistService {
                 while (!adScheduled && adsIterator.hasNext()){
                     AdBasicRepresentation ad = adsIterator.next();
 
-                    // maybe not List<AdBroadcast> adBroadcastsOfBr = adBroadcastRepository.findByIdDetails(ad.id);
+                    List<AdBroadcast> adBroadcastsOfDay = adBroadcastRepository.findByAdId(ad.id);
 
-
-                    AdBroadcast ab = broadcast.createAdBroadcast(ad, trackedTime);
+                    AdBroadcast ab = broadcast.createAdBroadcast(ad, trackedTime, adBroadcastsOfDay, adsAdded);
                     if(ab != null){
                         trackedTime = trackedTime.plusMinutes(ad.duration).plusMinutes(1);
                         adScheduled = true;
+                        adsAdded.add(ad);
                     }
                 }
             }
@@ -97,9 +98,12 @@ public class PlaylistService {
         //second loop
         while(songsIterator.hasNext() && broadcast.getAllocatedTime(possibleAds, possibleSongs) < broadcast.getDuration()){
             SongBasicRepresentation song = songsIterator.next();
-            SongBroadcast sb = broadcast.createSongBroadcast(song, trackedTime);
+            List<SongBroadcast> songBroadcastsOfDay = songBroadcastRepository.findBySongIdDate(song.id, broadcast.getStartingDate());
+
+            SongBroadcast sb = broadcast.createSongBroadcast(song, trackedTime, songBroadcastsOfDay, songsAdded);
             if(sb != null){
                 trackedTime = trackedTime.plusMinutes(song.duration).plusMinutes(1);
+                songsAdded.add(song);
                 songsIterator.remove();
                 possibleSongs.remove(song);
             }

@@ -69,15 +69,9 @@ public class SongBroadcastService {
             }
         }
 
-
         List<SongBasicRepresentation> broadcastSongs = contentService.getSongsByFilters(auth, null,null, null, null, songsIds.toString());
-        //Song song = songRepository.findById(dto.songId);
-//        if (song == null){
-//            throw new NotFoundException("Song does not exist");
-//        }
-        //songbroadcastService.scheduleSong move to
+
         SongBroadcast songBroadcast = broadcastService.scheduleSong(dto.broadcastId, song, DateUtil.setTime(dto.startingTime), broadcastSongs);
-//        SongBroadcast songBroadcast = scheduleSong(dto.broadcastId, song, DateUtil.setTime(dto.startingTime));
         return songBroadcast;
     }
 

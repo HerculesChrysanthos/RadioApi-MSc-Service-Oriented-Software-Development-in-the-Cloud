@@ -3,6 +3,8 @@ package gr.aueb.radio.broadcast.infrastructure.rest.representation;
 import gr.aueb.radio.broadcast.domain.broadcast.BroadcastType;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
+import java.util.List;
+
 @RegisterForReflection
 public class BroadcastOutputRepresentation {
 
@@ -11,7 +13,6 @@ public class BroadcastOutputRepresentation {
     public String startingDate;
     public String startingTime;
     public BroadcastType type;
-//    public List<SongBroadcastRepresentation> songBroadcasts;
-//    public List<AdBroadcastRepresentation> adBroadcasts;
-//
+    public List<SongBroadcastRepresentation> songBroadcasts;
+    public List<AdBroadcastRepresentation> adBroadcasts;
  }

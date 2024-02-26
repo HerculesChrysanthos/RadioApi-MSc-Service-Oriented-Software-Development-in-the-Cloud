@@ -134,9 +134,10 @@ public class Broadcast {
     public AdBroadcast createAdBroadcast
             (AdBasicRepresentation ad,
              LocalTime time,
+             List<AdBroadcast> adBroadcastsOfDay,
              List<AdBasicRepresentation> broadcastAds
             ) {
-        if (!adCanBeAdded(ad, time, broadcastAds)) {
+        if (!adCanBeAdded(ad, time, adBroadcastsOfDay, broadcastAds)) {
             System.out.println("adCanBeAdded " + "mpika");
 
             return null;
@@ -157,7 +158,6 @@ public class Broadcast {
     public SongBroadcast createSongBroadcast(
             SongBasicRepresentation song,
             LocalTime time,
-            List songBroadcastsOfBr,
             List songBroadcastsOfDay,
             List<SongBasicRepresentation> broadcastSongs
     ) {
@@ -268,12 +268,6 @@ public class Broadcast {
             }
         }
 
-//        for (SongBroadcast songBroadcast : this.songBroadcasts){
-//            totalTime += songBroadcast.getSong().getDuration();
-//        }
-//        for (AdBroadcast addBroadcast : this.adBroadcasts){
-//            totalTime += addBroadcast.getAd().getDuration();
-//        }
         return totalTime;
     }
 
@@ -308,6 +302,7 @@ public class Broadcast {
     public boolean adCanBeAdded(
             AdBasicRepresentation ad,
             LocalTime time,
+            List<AdBroadcast> adBroadcastsOfDay,
             List<AdBasicRepresentation> broadcastAds) {
         System.out.println("adId " + ad.id);
         System.out.println("adId " + ad.timezone);
@@ -329,7 +324,7 @@ public class Broadcast {
 //            log.info("Add restrictions");
 //            return false;
 //        }
-        if (!toBeBroadcastedAd(this.startingDate, ad)) {
+        if (!toBeBroadcastedAd(this.startingDate, ad, adBroadcastsOfDay)) {
 //            log.info("Add restrictions");
             return false;
         }
@@ -345,14 +340,14 @@ public class Broadcast {
         return true;
     }
 
-    public boolean toBeBroadcastedAd(LocalDate date, AdBasicRepresentation ad) {
+    public boolean toBeBroadcastedAd(LocalDate date, AdBasicRepresentation ad, List<AdBroadcast> adBroadcastsOfDay) {
         if (!DateUtil.between(ad.startingDate, date, ad.endingDate)) {
             System.out.println("startingDate" + ad.startingDate);
             System.out.println("endingDate" + ad.endingDate);
             System.out.println("date" + date);
             return false;
         }
-        return this.adBroadcasts.size() < ad.repPerZone;
+        return adBroadcastsOfDay.size() < ad.repPerZone;
     }
 
     public boolean toBeBroadcastedSong(LocalDate date, LocalTime time, List broadcastsOfDay) {
