@@ -116,21 +116,21 @@ public class BroadcastResource {
         }
     }
 //
-//    @POST
-////    @RolesAllowed("PRODUCER")
-//    public Response create(
-//            @Valid BroadcastRepresentation broadcastRepresentation,
-//            @HeaderParam("Authorization") String auth
-//    ) {
-//        try{
-//            Broadcast broadcast = broadcastService.create(broadcastRepresentation, auth);
-//            URI uri = UriBuilder.fromResource(BroadcastResource.class).path(String.valueOf(broadcast.getId())).build();
-//            return Response.created(uri).entity(outputBroadcastMapper.toRepresentation(broadcast)).build();
-//        }catch (RadioException re){
-//            log.error("Broadcast overlapping restriction triggered");
-//            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
-//        }
-//    }
+    @POST
+//    @RolesAllowed("PRODUCER")
+    public Response create(
+            @Valid BroadcastRepresentation broadcastRepresentation,
+            @HeaderParam("Authorization") String auth
+    ) {
+        try{
+            Broadcast broadcast = broadcastService.create(broadcastRepresentation, auth);
+            URI uri = UriBuilder.fromResource(BroadcastResource.class).path(String.valueOf(broadcast.getId())).build();
+            return Response.created(uri).entity(outputBroadcastMapper.toRepresentation(broadcast)).build();
+        }catch (RadioException re){
+            log.error("Broadcast overlapping restriction triggered");
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+        }
+    }
 //
 //
 //    @PUT

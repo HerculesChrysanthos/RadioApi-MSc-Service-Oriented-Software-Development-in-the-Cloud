@@ -95,29 +95,29 @@ public class BroadcastService {
         return false;
     }
 
-//    @Transactional
-//    public Broadcast create(BroadcastRepresentation broadcastRepresentation, String auth){
-//        Broadcast broadcastToCreate = broadcastMapper.toModel(broadcastRepresentation);
-//        LocalDate date = broadcastToCreate.getStartingDate();
-//        LocalTime startingTime = broadcastToCreate.getStartingTime();
-//        LocalTime endingTime = broadcastToCreate.getBroadcastEndingDateTime().toLocalTime();
-//
-//        //verify auth user producer role
-//        String userRole = userService.verifyAuth(auth).role;
-//        if(!userRole.equals("PRODUCER")){
-//            throw new RadioException("Not Allowed to change this.", 403);
-//        }
-//
-//        if (checkForOverlapping(date, startingTime, endingTime, -1)){
-//            throw new RadioException("Overlapping found cannot create Broadcast");
-//        }
-//        if(broadcastToCreate.getType().equals(BroadcastType.PLAYLIST)){
-//            playlistService.populateBroadcast(broadcastToCreate);
-//        }
-//
-//        broadcastRepository.persist(broadcastToCreate);
-//        return broadcastToCreate;
-//    }
+    @Transactional
+    public Broadcast create(BroadcastRepresentation broadcastRepresentation, String auth){
+        //verify auth user producer role
+        String userRole = userService.verifyAuth(auth).role;
+        if(!userRole.equals("PRODUCER")){
+            throw new RadioException("Not Allowed to change this.", 403);
+        }
+
+        Broadcast broadcastToCreate = broadcastMapper.toModel(broadcastRepresentation);
+        LocalDate date = broadcastToCreate.getStartingDate();
+        LocalTime startingTime = broadcastToCreate.getStartingTime();
+        LocalTime endingTime = broadcastToCreate.getBroadcastEndingDateTime().toLocalTime();
+
+        if (checkForOverlapping(date, startingTime, endingTime, -1)){
+            throw new RadioException("Overlapping found cannot create Broadcast");
+        }
+        if(broadcastToCreate.getType().equals(BroadcastType.PLAYLIST)){
+            playlistService.populateBroadcast(broadcastToCreate, auth);
+        }
+
+        broadcastRepository.persist(broadcastToCreate);
+        return broadcastToCreate;
+    }
 
 //    @Transactional
 //    public Broadcast update(Integer id, BroadcastRepresentation broadcastRepresentation){
