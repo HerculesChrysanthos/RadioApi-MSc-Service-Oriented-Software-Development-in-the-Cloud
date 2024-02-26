@@ -122,32 +122,34 @@ public class BroadcastService {
         return broadcastToCreate;
     }
 
-//    @Transactional
-//    public Broadcast update(Integer id, BroadcastRepresentation broadcastRepresentation){
-//        // try to find broadcast, if broadcast is not found, find func will throw NotFoundException
-//        String userRole = userService.verifyAuth(auth).role;
-//
-//        if(!userRole.equals("PRODUCER")){
-//            throw new RadioException("Not Allowed to change this.", 403);
-//        }
-//        Broadcast broadcast = this.findById(id);
-//        int addBroadcastSize = broadcast.getAdBroadcasts().size();
-//        int songBroadcastSize = broadcast.getSongBroadcasts().size();
-//        // Broadcast is immutable because it has registered song/add broadcasts
-//        if (addBroadcastSize != 0 || songBroadcastSize != 0){
-//            throw new RadioException("Broadcast has songs/adds scheduled, cannot be updated");
-//        }
-//        LocalDate date = DateUtil.setDate(broadcastRepresentation.startingDate);
-//        LocalTime startingTime = DateUtil.setTime(broadcastRepresentation.startingTime);
-//        LocalTime endingTime = startingTime.plusMinutes(broadcastRepresentation.duration);
-//        // Cannot update broadcast because the updated values will overlap another broadcast
-//        if(checkForOverlapping(date, startingTime, endingTime, broadcast.getId())){
-//            throw new RadioException("Overlapping found cannot update Broadcast");
-//        }
-//        broadcast = updateValues(broadcast, broadcastRepresentation);
-//        broadcastRepository.getEntityManager().merge(broadcast);
-//        return broadcast;
-//    }
+    @Transactional
+    public Broadcast update(Integer id, BroadcastRepresentation broadcastRepresentation, String auth){
+        // try to find broadcast, if broadcast is not found, find func will throw NotFoundException
+        String userRole = userService.verifyAuth(auth).role;
+
+        if(!userRole.equals("PRODUCER")){
+            throw new RadioException("Not Allowed to change this.", 403);
+        }
+
+        Broadcast broadcast = findById(id, auth);
+
+        int addBroadcastSize = broadcast.getAdBroadcasts().size();
+        int songBroadcastSize = broadcast.getSongBroadcasts().size();
+        // Broadcast is immutable because it has registered song/add broadcasts
+        if (addBroadcastSize != 0 || songBroadcastSize != 0){
+            throw new RadioException("Broadcast has songs/adds scheduled, cannot be updated");
+        }
+        LocalDate date = DateUtil.setDate(broadcastRepresentation.startingDate);
+        LocalTime startingTime = DateUtil.setTime(broadcastRepresentation.startingTime);
+        LocalTime endingTime = startingTime.plusMinutes(broadcastRepresentation.duration);
+        // Cannot update broadcast because the updated values will overlap another broadcast
+        if(checkForOverlapping(date, startingTime, endingTime, broadcast.getId())){
+            throw new RadioException("Overlapping found cannot update Broadcast");
+        }
+        broadcast = updateValues(broadcast, broadcastRepresentation);
+        broadcastRepository.getEntityManager().merge(broadcast);
+        return broadcast;
+    }
 
 //    @Transactional
 //    public void delete(Integer id){
@@ -281,13 +283,16 @@ public class BroadcastService {
         }
     }
 
-//    private Broadcast updateValues(Broadcast broadcast, BroadcastRepresentation broadcastRepresentation){
-//        broadcast.setType(broadcastRepresentation.type);
-//        LocalDate date = DateUtil.setDate(broadcastRepresentation.startingDate);
-//        LocalTime time = DateUtil.setTime(broadcastRepresentation.startingTime);
-//        broadcast.setStartingTime(time);
-//        broadcast.setStartingDate(date);
-//        broadcast.setDuration(broadcastRepresentation.duration);
-//        return broadcast;
-//    }
+    private Broadcast updateValues(Broadcast broadcast, BroadcastRepresentation broadcastRepresentation){
+        broadcast.setType(broadcastRepresentation.type);
+        LocalDate date = DateUtil.setDate(broadcastRepresentation.startingDate);
+        LocalTime time = DateUtil.setTime(broadcastRepresentation.startingTime);
+        broadcast.setStartingTime(time);
+        broadcast.setStartingDate(date);
+        broadcast.setDuration(broadcastRepresentation.duration);
+
+        // TODO call on genre service to check if genre exists
+        broadcast.setGenreId(broadcastRepresentation.genreId);
+        return broadcast;
+    }
 }

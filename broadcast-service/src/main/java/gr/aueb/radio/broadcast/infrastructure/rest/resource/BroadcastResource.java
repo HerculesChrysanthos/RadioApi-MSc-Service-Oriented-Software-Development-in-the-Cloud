@@ -133,22 +133,26 @@ public class BroadcastResource {
     }
 //
 //
-//    @PUT
-//    @Path("/{id}")
-//    //@RolesAllowed("PRODUCER")
-//    public Response update(@PathParam("id") Integer id, @Valid BroadcastRepresentation broadcastRepresentation){
-//        try{
-//            broadcastService.update(id, broadcastRepresentation);
-//            return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
-//        } catch (RadioException re){
-//            log.error("Broadcast cannot be updated");
-//            log.error(re.getMessage());
-//            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
-//        } catch (NotFoundException e){
-//            log.error("Broadcast not found");
-//            return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
-//        }
-//    }
+    @PUT
+    @Path("/{id}")
+    //@RolesAllowed("PRODUCER")
+    public Response update(
+            @PathParam("id") Integer id,
+            @Valid BroadcastRepresentation broadcastRepresentation,
+            @HeaderParam("Authorization") String auth
+    ) {
+        try{
+            broadcastService.update(id, broadcastRepresentation, auth);
+            return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
+        } catch (RadioException re){
+           // log.error("Broadcast cannot be updated");
+            //log.error(re.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+        } catch (NotFoundException e){
+            //log.error("Broadcast not found");
+            return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
+        }
+    }
 //
 //    @Path("/{id}")
 //    @DELETE

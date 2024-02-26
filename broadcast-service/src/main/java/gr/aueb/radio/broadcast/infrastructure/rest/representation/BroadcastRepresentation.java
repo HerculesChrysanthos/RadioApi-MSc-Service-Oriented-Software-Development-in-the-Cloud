@@ -18,7 +18,7 @@ public class BroadcastRepresentation {
     public String startingTime;
     @NotNull
     public BroadcastType type;
-    //public Integer userId;
+    public Integer userId;
     @NotNull
     public Integer genreId;
 

@@ -13,6 +13,8 @@ public class BroadcastOutputRepresentation {
     public String startingDate;
     public String startingTime;
     public BroadcastType type;
+    public Integer userId;
+    public Integer genreId;
     public List<SongBroadcastRepresentation> songBroadcasts;
     public List<AdBroadcastRepresentation> adBroadcasts;
  }
