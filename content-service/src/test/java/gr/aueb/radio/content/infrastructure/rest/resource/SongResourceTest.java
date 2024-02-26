@@ -67,7 +67,7 @@ class SongResourceTest {
                 .thenReturn(List.of(new SongRepresentation()));
 
         // Run the test
-        final Response result = songResourceUnderTest.search("artist", 0, "genreTitle", "title", "songsIds", "auth");
+        final Response result = songResourceUnderTest.search("artist", 0, "genreTitle", "title", "1002", "auth");
 
         // Verify the results
     }
@@ -79,7 +79,7 @@ class SongResourceTest {
                 .thenReturn(Collections.emptyList());
 
         // Run the test
-        final Response result = songResourceUnderTest.search("artist", 0, "genreTitle", "title", "songsIds", "auth");
+        final Response result = songResourceUnderTest.search("artist", 0, "genreTitle", "title", "1002", "auth");
 
         // Verify the results
     }

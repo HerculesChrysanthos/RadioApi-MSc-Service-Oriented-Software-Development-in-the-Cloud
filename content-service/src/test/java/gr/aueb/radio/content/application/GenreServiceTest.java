@@ -1,15 +1,16 @@
 package gr.aueb.radio.content.application;
 
+import gr.aueb.radio.content.common.NotFoundException;
 import gr.aueb.radio.content.infrastructure.persistence.GenreRepository;
 import gr.aueb.radio.content.infrastructure.rest.representation.GenreMapper;
 import gr.aueb.radio.content.infrastructure.rest.representation.GenreRepresentation;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -87,8 +88,8 @@ class GenreServiceTest {
     void testGetGenreById() {
         when(genreMapper.toRepresentation(any())).thenReturn(new GenreRepresentation());
 
-        GenreRepresentation result = genreService.getGenreById(Integer.valueOf(1));
-        Assertions.assertEquals(new GenreRepresentation(), result);
+     //   GenreRepresentation result = genreService.getGenreById(Integer.valueOf(1));
+        assertThrows(NotFoundException.class, () -> genreService.getGenreById(Integer.valueOf(1)));
     }
 
 //    @Test

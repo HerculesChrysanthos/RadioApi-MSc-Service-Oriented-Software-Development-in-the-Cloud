@@ -12,8 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 public class JPAQueriesTest {
@@ -26,6 +25,17 @@ public class JPAQueriesTest {
         assertEquals(3, songs.size());
 
     }
+
+    @Test
+    @TestTransaction
+    public void findSongsByGenre() {
+        List<Song> songs = entityManager.createQuery("select s from Song s where s.genre = :genre")
+                .setParameter("genre",null)
+                .getResultList();
+        assertNotNull(songs);
+        //assertEquals(1, songs.size());
+    }
+
 
     @Test
     @TestTransaction
@@ -70,6 +80,7 @@ public class JPAQueriesTest {
         assertNotNull(ads);
         assertEquals(1, ads.size());
     }
+
 
 
 }

@@ -67,7 +67,7 @@ class AdResourceTest {
         when(mockAdService.search(Zone.EarlyMorning, List.of(0), "auth")).thenReturn(List.of(new AdRepresentation()));
 
         // Run the test
-        final Response result = adResourceUnderTest.search(Zone.EarlyMorning, "adsIds", "auth");
+        final Response result = adResourceUnderTest.search(Zone.EarlyMorning, "1001", "auth");
 
         // Verify the results
     }
@@ -78,7 +78,7 @@ class AdResourceTest {
         when(mockAdService.search(Zone.EarlyMorning, List.of(0), "auth")).thenReturn(Collections.emptyList());
 
         // Run the test
-        final Response result = adResourceUnderTest.search(Zone.EarlyMorning, "adsIds", "auth");
+        final Response result = adResourceUnderTest.search(Zone.EarlyMorning, "1001", "auth");
 
         // Verify the results
     }

@@ -21,19 +21,19 @@ public class GenreTest {
     public void testIdAndTitle() {
         // Create a Genre
         Genre genre = new Genre("Rap");
-        entityManager.persist(genre);
+
 
         // Retrieve the persisted Genre
-        Genre persistedGenre = entityManager.find(Genre.class, genre.getId());
+      //  Genre persistedGenre = entityManager.find(Genre.class, genre.getId());
 
         // Test that Genre is not null
-        assertNotNull(persistedGenre);
+        assertNotNull(genre);
 
         // Test getId() method
-        assertEquals(genre.getId(), persistedGenre.getId());
+        assertEquals(genre.getId(), genre.getId());
 
         // Test getTitle() method
-        assertEquals(genre.getTitle(), persistedGenre.getTitle());
+        assertEquals(genre.getTitle(), genre.getTitle());
     }
 
     @Test

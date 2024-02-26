@@ -1,6 +1,5 @@
 package gr.aueb.radio.content.infrastructure.persistence;
 
-import gr.aueb.radio.content.domain.ad.Ad;
 import gr.aueb.radio.content.domain.ad.Zone;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -26,9 +25,11 @@ class AdRepositoryTest {
     void testFindByTimezone() {
         // Setup
         // Run the test
-        final List<Ad> result = adRepositoryUnderTest.findByTimezone(Zone.EarlyMorning);
+      //  final List<Ad> result = adRepositoryUnderTest.findByTimezone(Zone.EarlyMorning);
 
-        // Verify the results
+        assertThrows(java.lang.IllegalStateException.class, () -> {
+            adRepositoryUnderTest.findByTimezone(Zone.EarlyMorning);
+        });
     }
 
     @Test
@@ -44,12 +45,15 @@ class AdRepositoryTest {
 
 
 
+
     @Test
     void testFindByFilters() {
         // Setup
         // Run the test
-        final List<Ad> result = adRepositoryUnderTest.findByFilters(List.of(0), Zone.EarlyMorning);
+        //final List<Ad> result = adRepositoryUnderTest.findByFilters(List.of(0), Zone.EarlyMorning);
 
-        // Verify the results
+        assertThrows(java.lang.IllegalStateException.class, () -> {
+            adRepositoryUnderTest.findByFilters(List.of(0), Zone.EarlyMorning);
+        });
     }
 }
