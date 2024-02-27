@@ -136,4 +136,15 @@ public class SongBroadcastService {
 //        return songBroadcastRepository.searchBySongId(songId);
 //    }
 
+    @Transactional
+    public void deleteByFilters(String auth, Integer songId) {
+        String userRole = userService.verifyAuth(auth).role;
+
+        if(!userRole.equals("PRODUCER")){
+            throw new RadioException("Not Allowed to access this.", 403);
+        }
+
+        songBroadcastRepository.deleteBySongId(songId);
+    }
+
 }

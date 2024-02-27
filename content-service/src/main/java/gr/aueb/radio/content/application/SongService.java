@@ -1,6 +1,5 @@
 package gr.aueb.radio.content.application;
 
-import gr.aueb.radio.content.common.NotFoundException;
 import gr.aueb.radio.content.common.RadioException;
 import gr.aueb.radio.content.domain.genre.Genre;
 import gr.aueb.radio.content.domain.song.Song;
@@ -10,6 +9,7 @@ import gr.aueb.radio.content.infrastructure.service.broadcast.representation.Son
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -77,11 +77,7 @@ public class SongService {
             throw new NotFoundException("Song not found");
         }
 
-        // remove while , send one request for deleting songbroadcasts according to this song id
-//        while (song.getSongBroadcasts().size() != 0){
-//            //SongBroadcast songBroadcast = song.getSongBroadcasts().get(0);
-//           // broadcastService.removeSongBroadcast(songBroadcast.getBroadcast().getId(), songBroadcast.getId());
-//        }
+        broadcastService.deleteSongBroadcastsBySongId(auth, id);
 
         songRepository.deleteById(id);
     }

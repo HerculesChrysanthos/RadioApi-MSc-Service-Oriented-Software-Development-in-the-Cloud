@@ -91,4 +91,17 @@ public class SongBroadcastResource {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
         }
     }
+
+    @DELETE
+    public Response deleteByFilters(
+            @HeaderParam("Authorization") String auth,
+            @QueryParam("songId") Integer songId
+    ) {
+        try {
+            songBroadcastService.deleteByFilters(auth, songId);
+            return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
+        } catch (RadioException re){
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+        }
+    }
 }

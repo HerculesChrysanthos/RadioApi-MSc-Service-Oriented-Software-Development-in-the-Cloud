@@ -15,14 +15,14 @@ import java.util.List;
 public interface BroadcastApi {
 
     @DELETE
-    @Path("/song-broadcasts/")
+    @Path("/song-broadcasts")
     Response deleteSongBroadcastsBySongId(
             @HeaderParam("Authorization") String basicAuthHeader,
             @QueryParam("songId") Integer songId
     );
 
     @DELETE
-    @Path("/ad-broadcasts/")
+    @Path("/ad-broadcasts")
     Response deleteAdBroadcastsByAdId(
             @HeaderParam("Authorization") String basicAuthHeader,
             @QueryParam("adId") Integer adId

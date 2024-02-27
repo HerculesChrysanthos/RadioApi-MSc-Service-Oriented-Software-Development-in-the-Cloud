@@ -68,4 +68,8 @@ public class SongBroadcastRepository implements PanacheRepositoryBase<SongBroadc
         return query.list();
     }
 
+    public void deleteBySongId(Integer songId) {
+        delete("songId", songId);
+    }
+
 }

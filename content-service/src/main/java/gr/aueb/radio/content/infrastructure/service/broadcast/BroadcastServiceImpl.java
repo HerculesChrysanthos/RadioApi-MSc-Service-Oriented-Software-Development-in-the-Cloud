@@ -4,6 +4,7 @@ import gr.aueb.radio.content.application.BroadcastService;
 import gr.aueb.radio.content.common.RadioException;
 import gr.aueb.radio.content.infrastructure.service.broadcast.representation.AdBroadcastBasicRepresentation;
 import gr.aueb.radio.content.infrastructure.service.broadcast.representation.SongBroadcastBasicRepresentation;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
@@ -21,8 +22,12 @@ public class BroadcastServiceImpl implements BroadcastService {
     BroadcastApi broadcastApi;
 
     @Override
-    public Optional deleteSongBroadcastsBySongId(String auth, Integer songId) {
-        return Optional.empty();
+    public void deleteSongBroadcastsBySongId(String auth, Integer songId) {
+        try {
+            broadcastApi.deleteSongBroadcastsBySongId(auth, songId);
+        }  catch (ProcessingException error) {
+            throw new RadioException("Problem on reaching content api.", 424);
+        }
     }
 
     @Override
@@ -35,7 +40,7 @@ public class BroadcastServiceImpl implements BroadcastService {
         try {
             return broadcastApi.getSongBroadcastsBySongId(auth, id);
         }  catch (ProcessingException error) {
-            throw new RadioException("Problem on reaching content api.", 424);
+            throw new RadioException("Problem on reaching broadcast api.", 424);
         }
     }
 
@@ -44,7 +49,7 @@ public class BroadcastServiceImpl implements BroadcastService {
         try {
             return broadcastApi.getAdBroadcastsByAdId(auth, id);
         }  catch (ProcessingException error) {
-            throw new RadioException("Problem on reaching content api.", 424);
+            throw new RadioException("Problem on reaching broadcast api.", 424);
         }
     }
 }
