@@ -1,5 +1,6 @@
 package gr.aueb.radio.content.infrastructure.rest.resource;
 
+import gr.aueb.radio.content.common.ErrorResponse;
 import gr.aueb.radio.content.infrastructure.rest.ApiPath;
 import jakarta.inject.Inject;
 import gr.aueb.radio.content.application.AdService;
@@ -98,7 +99,7 @@ public class AdResource {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
         } catch (RadioException re){
             int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
-            return Response.status(statusCode).entity(re.getMessage()).build();
+            return Response.status(statusCode).entity(new ErrorResponse(re.getMessage())).build();
         }
     }
 

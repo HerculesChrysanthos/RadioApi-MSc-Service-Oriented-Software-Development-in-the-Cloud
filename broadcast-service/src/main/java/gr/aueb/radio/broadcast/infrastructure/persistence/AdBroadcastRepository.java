@@ -3,6 +3,7 @@ package gr.aueb.radio.broadcast.infrastructure.persistence;
 import gr.aueb.radio.broadcast.domain.adBroadcast.AdBroadcast;
 import gr.aueb.radio.broadcast.domain.broadcast.BroadcastType;
 import gr.aueb.radio.broadcast.domain.broadcast.Zone;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -67,6 +68,24 @@ public class AdBroadcastRepository implements PanacheRepositoryBase<AdBroadcast,
         params.put("id", id);
 
         return find("select ab from AdBroadcast ab left join fetch ab.broadcast where ab.adId=:id", params).list();
+    }
+
+    public List<AdBroadcast> findByFilters(LocalDate date, Integer adId) {
+        Map<String, Object> params = new HashMap<>();
+        StringBuilder queryBuilder = new StringBuilder("select ab from AdBroadcast ab left join fetch ab.broadcast where 1=1");
+
+        if (date != null) {
+            queryBuilder.append(" and ab.broadcastDate = :date");
+            params.put("date", date);
+        }
+
+        if (adId != null) {
+            queryBuilder.append(" and ab.adId = :adId");
+            params.put("adId", adId);
+        }
+
+        PanacheQuery<AdBroadcast> query = find(queryBuilder.toString(), params);
+        return query.list();
     }
 
 }

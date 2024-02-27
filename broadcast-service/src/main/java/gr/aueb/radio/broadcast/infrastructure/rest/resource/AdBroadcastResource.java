@@ -34,10 +34,11 @@ public class AdBroadcastResource {
     //@RolesAllowed("PRODUCER")
     public Response search(
             @QueryParam("date") String date,
+            @QueryParam("adId") Integer adId,
             @HeaderParam("Authorization") String auth
     ) {
         try {
-            List<AdBroadcast> found = adBroadcastService.search(date, auth);
+            List<AdBroadcast> found = adBroadcastService.search(date, adId, auth);
             return Response.ok().entity(adBroadcastMapper.toRepresentationList(found)).build();
         }catch (RadioException re){
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();

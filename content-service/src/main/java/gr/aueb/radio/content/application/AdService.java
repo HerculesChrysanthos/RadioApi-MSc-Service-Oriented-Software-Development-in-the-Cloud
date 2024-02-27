@@ -7,6 +7,7 @@ import gr.aueb.radio.content.domain.ad.Zone;
 import gr.aueb.radio.content.infrastructure.persistence.AdRepository;
 import gr.aueb.radio.content.infrastructure.rest.representation.AdMapper;
 import gr.aueb.radio.content.infrastructure.rest.representation.AdRepresentation;
+import gr.aueb.radio.content.infrastructure.service.broadcast.representation.AdBroadcastBasicRepresentation;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.transaction.Transactional;
 import jakarta.inject.Inject;
@@ -21,8 +22,8 @@ public class AdService {
     @Inject
     AdRepository adRepository;
 
-//    @Inject
-//    BroadcastService broadcastService;
+    @Inject
+    BroadcastService broadcastService;
 
     @Inject
     AdMapper adMapper;
@@ -88,9 +89,12 @@ public class AdService {
         if (ad == null) {
             throw new NotFoundException("Ad not found");
         }
-        if (ad.getBroadcastAds() != null && ad.getBroadcastAds().size() != 0) {
+
+        List<AdBroadcastBasicRepresentation> adBroadcast = broadcastService.getAdBroadcastsByAdId(auth, id);
+        if (adBroadcast.size() != 0) {
             throw new RadioException("Ad is immutable, it has scheduled broadcasts");
         }
+
         ad.setDuration(adRepresentation.duration);
         ad.setTimezone(adRepresentation.timezone);
         ad.setRepPerZone(adRepresentation.repPerZone);

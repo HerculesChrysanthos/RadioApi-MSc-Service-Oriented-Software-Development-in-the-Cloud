@@ -107,7 +107,7 @@ public class AdBroadcastService {
 
 
     @Transactional
-    public List<AdBroadcast> search(String date, String auth) {
+    public List<AdBroadcast> search(String date, Integer adId, String auth) {
         String userRole = userService.verifyAuth(auth).role;
 
         if(!userRole.equals("PRODUCER")){
@@ -116,10 +116,10 @@ public class AdBroadcastService {
 
         LocalDate dateToSearch;
         if (date == null){
-            dateToSearch = DateUtil.dateNow();
-        }else{
+            dateToSearch = null;
+        } else{
             dateToSearch = DateUtil.setDate(date);
         }
-        return adBroadcastRepository.findByDateDetails(dateToSearch);
+        return adBroadcastRepository.findByFilters(dateToSearch, adId);
     }
 }
