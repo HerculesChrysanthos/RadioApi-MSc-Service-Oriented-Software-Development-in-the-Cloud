@@ -58,9 +58,9 @@ public class BroadcastService {
 
     @Inject
     PlaylistService playlistService;
-//
-//    @Inject
-//    SuggestionsService suggestionsService;
+
+    @Inject
+    SuggestionsService suggestionsService;
 
 
     @Transactional
@@ -262,17 +262,21 @@ public class BroadcastService {
         broadcast.removeSongBroadcast(songBroadcast);
         songBroadcastRepository.deleteById(sbId);
     }
-//
-//    @Transactional
-//    public SuggestionsDTO suggestions(Integer id){
-//        SuggestionsDTO suggestions = new SuggestionsDTO();
-//        List<Ad> ads = suggestionsService.suggestAds(id);
-//        suggestions.ads = adMapper.toRepresentationList(ads);
-//        List<Song> songs = suggestionsService.suggestSongs(id);
-//        suggestions.songs = songMapper.toRepresentationList(songs);
-//        return suggestions;
-//    }
-//
+
+    @Transactional
+    public SuggestionsDTO suggestions(Integer id, String auth){
+        String userRole = userService.verifyAuth(auth).role;
+
+        if(!userRole.equals("PRODUCER")) {
+            throw new RadioException("Not Allowed to change this.", 403);
+        }
+
+        SuggestionsDTO suggestions = new SuggestionsDTO();
+        suggestions.ads = suggestionsService.suggestAds(id, auth);
+        suggestions.songs = suggestionsService.suggestSongs(id, auth);
+        return suggestions;
+    }
+
     @Transactional
     public BroadcastOutputRepresentation getNow(String auth){
         userService.verifyAuth(auth);

@@ -170,16 +170,20 @@ public class BroadcastResource {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
         }
     }
-//
-//    @Path("/{id}/suggestions")
-//    @GET
-//    //@RolesAllowed("PRODUCER")
-//    public Response suggest(@PathParam("id") Integer id){
-//        try{
-//            SuggestionsDTO dto = broadcastService.suggestions(id);
-//            return Response.ok().entity(dto).build();
-//        } catch (NotFoundException e){
-//            log.error("Broadcast not found");
-//            return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
-//        }
+
+    @Path("/{id}/suggestions")
+    @GET
+    //@RolesAllowed("PRODUCER")
+    public Response suggest(
+            @PathParam("id") Integer id,
+            @HeaderParam("Authorization") String auth
+    ) {
+        try {
+            SuggestionsDTO dto = broadcastService.suggestions(id, auth);
+            return Response.ok().entity(dto).build();
+        } catch (NotFoundException e) {
+            Log.error("Broadcast not found");
+            return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
+        }
+    }
 }
