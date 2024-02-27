@@ -43,24 +43,25 @@ public class SongService {
     }
 
     @Transactional
-    public Song update(Integer id, SongRepresentation songRepresentation, String auth) {
+    public Song update(Integer id, SongInputDTO songInputDTO, String auth) {
         userService.verifyAuth(auth);
 
         Song song = songRepository.findById(id);
         if(song == null){
             throw new NotFoundException("Song not found");
         }
+
 //        if (song.getSongBroadcasts().size() != 0){
 //            throw new RadioException("Song is immutable, it has scheduled broadcasts");
 //        }
 
-        Genre genre = genreMapper.toModel(genreService.getGenreById(songRepresentation.genre.id));
 
+        Genre genre = genreMapper.toModel(genreService.getGenreById(songInputDTO.genreId));
         song.setGenre(genre);
-        song.setDuration(songRepresentation.duration);
-        song.setArtist(songRepresentation.artist);
-        song.setYear(songRepresentation.year);
-        song.setTitle(songRepresentation.title);
+        song.setDuration(songInputDTO.duration);
+        song.setArtist(songInputDTO.artist);
+        song.setYear(songInputDTO.year);
+        song.setTitle(songInputDTO.title);
         songRepository.getEntityManager().merge(song);
         return song;
     }

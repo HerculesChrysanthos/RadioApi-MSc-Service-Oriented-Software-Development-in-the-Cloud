@@ -107,21 +107,21 @@ public class SongResource {
         }
     }
 
-//    @PUT
-//    @Path("/{id}")
-//    //@PermitAll
-//    public Response update(
-//            @PathParam("id") Integer id,
-//            @Valid SongInputDTO songRepresentation,
-//            @HeaderParam("Authorization") String auth
-//    ) {
-//        try{
-//            songService.update(id, songRepresentation, auth);
-//            return Response.noContent().build();
-//        }catch (NotFoundException e){
-//            return Response.status(Response.Status.NOT_FOUND).build();
-//        }catch (RadioException e){
-//            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(e.getMessage()).build();
-//        }
-//    }
+    @PUT
+    @Path("/{id}")
+    //@PermitAll
+    public Response update(
+            @PathParam("id") Integer id,
+            @Valid SongInputDTO songRepresentation,
+            @HeaderParam("Authorization") String auth
+    ) {
+        try{
+            songService.update(id, songRepresentation, auth);
+            return Response.noContent().build();
+        }catch (NotFoundException e){
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }catch (RadioException e){
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(e.getMessage()).build();
+        }
+    }
 }
