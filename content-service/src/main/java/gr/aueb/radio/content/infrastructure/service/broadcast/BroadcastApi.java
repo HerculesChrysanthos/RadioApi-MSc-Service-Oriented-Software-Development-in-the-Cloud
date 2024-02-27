@@ -1,12 +1,13 @@
 package gr.aueb.radio.content.infrastructure.service.broadcast;
 
+import gr.aueb.radio.content.infrastructure.service.broadcast.representation.AdBroadcastBasicRepresentation;
+import gr.aueb.radio.content.infrastructure.service.broadcast.representation.SongBroadcastBasicRepresentation;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.HeaderParam;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+
+import java.util.List;
 
 @Path("/api")
 @ApplicationScoped
@@ -25,5 +26,19 @@ public interface BroadcastApi {
     Response deleteAdBroadcastsByAdId(
             @HeaderParam("Authorization") String basicAuthHeader,
             @QueryParam("adId") Integer adId
+    );
+
+    @GET
+    @Path("/song-broadcasts/{id}")
+    List<SongBroadcastBasicRepresentation> getSongBroadcastsBySongId(
+            @HeaderParam("Authorization") String basicAuthHeader,
+            @PathParam("id") Integer id
+    );
+
+    @GET
+    @Path("/song-broadcasts/{id}")
+    List<AdBroadcastBasicRepresentation> getAdBroadcastsByAdId(
+            @HeaderParam("Authorization") String basicAuthHeader,
+            @PathParam("id") Integer id
     );
 }

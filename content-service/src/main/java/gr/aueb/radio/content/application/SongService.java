@@ -6,6 +6,7 @@ import gr.aueb.radio.content.domain.genre.Genre;
 import gr.aueb.radio.content.domain.song.Song;
 import gr.aueb.radio.content.infrastructure.persistence.SongRepository;
 import gr.aueb.radio.content.infrastructure.rest.representation.*;
+import gr.aueb.radio.content.infrastructure.service.broadcast.representation.SongBroadcastBasicRepresentation;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -30,8 +31,8 @@ public class SongService {
     @Inject
     UserService userService;
 
-    //@Inject
-    //BroadcastService broadcastService;
+    @Inject
+    BroadcastService broadcastService;
 
     @Transactional
     public List<SongRepresentation> search(String artist, Integer genreId, String genreTitle, String title, List<Integer> songsIds, String auth){
@@ -51,9 +52,10 @@ public class SongService {
             throw new NotFoundException("Song not found");
         }
 
-//        if (song.getSongBroadcasts().size() != 0){
-//            throw new RadioException("Song is immutable, it has scheduled broadcasts");
-//        }
+        List<SongBroadcastBasicRepresentation> songBroadcasts = broadcastService.getSongBroadcastsBySongId(auth, id);
+        if (songBroadcasts.size() != 0){
+            throw new RadioException("Song is immutable, it has scheduled broadcasts");
+        }
 
 
         Genre genre = genreMapper.toModel(genreService.getGenreById(songInputDTO.genreId));
