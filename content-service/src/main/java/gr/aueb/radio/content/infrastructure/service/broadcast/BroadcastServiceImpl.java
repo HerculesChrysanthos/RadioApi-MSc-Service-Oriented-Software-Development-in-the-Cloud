@@ -41,6 +41,10 @@ public class BroadcastServiceImpl implements BroadcastService {
 
     @Override
     public List<AdBroadcastBasicRepresentation> getAdBroadcastsByAdId(String auth, Integer id) {
-        return null;
+        try {
+            return broadcastApi.getAdBroadcastsByAdId(auth, id);
+        }  catch (ProcessingException error) {
+            throw new RadioException("Problem on reaching content api.", 424);
+        }
     }
 }

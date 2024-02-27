@@ -1,6 +1,7 @@
 package gr.aueb.radio.broadcast.infrastructure.persistence;
 
 import gr.aueb.radio.broadcast.domain.songBroadcast.SongBroadcast;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -48,4 +49,23 @@ public class SongBroadcastRepository implements PanacheRepositoryBase<SongBroadc
 
         return find("select sb from SongBroadcast sb left join fetch sb.broadcast where sb.broadcastDate=:date and sb.id=:id", params).list();
     }
+
+    public List<SongBroadcast> findByFilters(LocalDate date, Integer songId) {
+        Map<String, Object> params = new HashMap<>();
+        StringBuilder queryBuilder = new StringBuilder("select sb from SongBroadcast sb left join fetch sb.broadcast where 1=1");
+
+        if (date != null) {
+            queryBuilder.append(" and sb.broadcastDate = :date");
+            params.put("date", date);
+        }
+
+        if (songId != null) {
+            queryBuilder.append(" and sb.songId = :songId");
+            params.put("songId", songId);
+        }
+
+        PanacheQuery<SongBroadcast> query = find(queryBuilder.toString(), params);
+        return query.list();
+    }
+
 }

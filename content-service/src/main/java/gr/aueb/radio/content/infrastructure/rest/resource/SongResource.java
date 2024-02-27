@@ -1,6 +1,8 @@
 package gr.aueb.radio.content.infrastructure.rest.resource;
 
 import gr.aueb.radio.content.application.SongService;
+import gr.aueb.radio.content.common.ErrorResponse;
+import gr.aueb.radio.content.common.ExternalServiceException;
 import gr.aueb.radio.content.common.RadioException;
 import gr.aueb.radio.content.domain.genre.Genre;
 import gr.aueb.radio.content.domain.song.Song;
@@ -99,11 +101,18 @@ public class SongResource {
     public Response delete(
             @PathParam("id") Integer id,
             @HeaderParam("Authorization") String auth) {
-        try{
+        try {
             songService.delete(id, auth);
             return Response.noContent().build();
-        }catch (NotFoundException e){
-            return Response.status(Response.Status.NOT_FOUND).build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
+        } catch (RadioException re){
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
         }
     }
 
@@ -115,13 +124,22 @@ public class SongResource {
             @Valid SongInputDTO songRepresentation,
             @HeaderParam("Authorization") String auth
     ) {
-        try{
+        try {
             songService.update(id, songRepresentation, auth);
             return Response.noContent().build();
-        }catch (NotFoundException e){
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }catch (RadioException e){
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(e.getMessage()).build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
+        } catch (RadioException re){
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new ErrorResponse(e.getMessage()))
+                    .build();
         }
     }
 }

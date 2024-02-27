@@ -29,16 +29,16 @@ public interface BroadcastApi {
     );
 
     @GET
-    @Path("/song-broadcasts/{id}")
+    @Path("/song-broadcasts")
     List<SongBroadcastBasicRepresentation> getSongBroadcastsBySongId(
             @HeaderParam("Authorization") String basicAuthHeader,
-            @PathParam("id") Integer id
+            @QueryParam("songId") Integer songId
     );
 
     @GET
-    @Path("/song-broadcasts/{id}")
+    @Path("/ad-broadcasts")
     List<AdBroadcastBasicRepresentation> getAdBroadcastsByAdId(
             @HeaderParam("Authorization") String basicAuthHeader,
-            @PathParam("id") Integer id
+            @QueryParam("adId") Integer adId
     );
 }

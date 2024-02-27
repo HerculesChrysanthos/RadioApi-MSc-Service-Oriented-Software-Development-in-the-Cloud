@@ -108,7 +108,7 @@ public class SongBroadcastService {
 
 
     @Transactional
-    public List<SongBroadcast> search(String date, String auth) {
+    public List<SongBroadcast> search(String date, Integer songId, String auth) {
         String userRole = userService.verifyAuth(auth).role;
 
         if(!userRole.equals("PRODUCER")){
@@ -117,11 +117,11 @@ public class SongBroadcastService {
 
         LocalDate dateToSearch;
         if (date == null){
-            dateToSearch = DateUtil.dateNow();
-        }else{
+            dateToSearch = null;
+        } else{
             dateToSearch = DateUtil.setDate(date);
         }
-        return songBroadcastRepository.findByDateDetails(dateToSearch);
+        return songBroadcastRepository.findByFilters(dateToSearch, songId);
     }
 
 
