@@ -223,7 +223,7 @@ public class BroadcastService {
             throw new NotFoundException("Broadcast not found");
         }
         // get songBroadcasts of the day of broadcast
-        List<SongBroadcast> songBroadcastsOfDay = songBroadcastRepository.findByDateDetails(broadcast.getStartingDate());
+        List<SongBroadcast> songBroadcastsOfDay = songBroadcastRepository.findBySongIdDate(song.id, broadcast.getStartingDate());
 
         SongBroadcast created = broadcast.createSongBroadcast(song, startingTime, songBroadcastsOfDay, broadcastSongs);
         if (created == null){
