@@ -22,7 +22,7 @@ public class JPAQueriesTest {
     @TestTransaction
     public void songListTest(){
         List<Song> songs = entityManager.createQuery("select song from Song song").getResultList();
-        assertEquals(3, songs.size());
+        assertEquals(5, songs.size());
 
     }
 
@@ -41,7 +41,7 @@ public class JPAQueriesTest {
     @TestTransaction
     public void addListTest(){
         List<Ad> ads = entityManager.createQuery("select ad from Ad ad").getResultList();
-        assertEquals(3, ads.size());
+        assertEquals(5, ads.size());
 
     }
 
@@ -50,7 +50,7 @@ public class JPAQueriesTest {
     public void testFindAllAds() {
         List<Ad> ads = entityManager.createQuery("SELECT a FROM Ad a", Ad.class).getResultList();
         assertNotNull(ads);
-        assertEquals(3, ads.size()); // Assuming there are 2 ads in the database
+        assertEquals(5, ads.size()); // Assuming there are 2 ads in the database
     }
 
     @Test
