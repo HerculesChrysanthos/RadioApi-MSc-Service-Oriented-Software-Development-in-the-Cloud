@@ -45,13 +45,13 @@ public class SongBroadcastService {
         // verify auth
         String userRole = userService.verifyAuth(auth).role;
 
-        if(!userRole.equals("PRODUCER")){
+        if (!userRole.equals("PRODUCER")) {
             throw new RadioException("Not Allowed to access this.", 403);
         }
 
         // call content api
         SongBasicRepresentation song = contentService.getSong(auth, dto.songId);
-        if (song == null){
+        if (song == null) {
             throw new NotFoundException("Song does not exist");
         }
 
@@ -60,16 +60,16 @@ public class SongBroadcastService {
 
         Broadcast broadcast = broadcastRepository.findById(dto.broadcastId);
         StringBuilder songsIds = new StringBuilder();
-        for(int i = 0; i < broadcast.getSongBroadcasts().size(); i++ ){
+        for (int i = 0; i < broadcast.getSongBroadcasts().size(); i++) {
             int songId = broadcast.getSongBroadcasts().get(i).getSongId();
 
             songsIds.append(songId);
-            if(i != broadcast.getSongBroadcasts().size() - 1) {
+            if (i != broadcast.getSongBroadcasts().size() - 1) {
                 songsIds.append(",");
             }
         }
 
-        List<SongBasicRepresentation> broadcastSongs = contentService.getSongsByFilters(auth, null,null, null, null, songsIds.toString());
+        List<SongBasicRepresentation> broadcastSongs = contentService.getSongsByFilters(auth, null, null, null, null, songsIds.toString());
 
         SongBroadcast songBroadcast = broadcastService.scheduleSong(dto.broadcastId, song, DateUtil.setTime(dto.startingTime), broadcastSongs);
         return songBroadcast;
@@ -79,12 +79,12 @@ public class SongBroadcastService {
     public SongBroadcast find(Integer id, String auth) {
         String userRole = userService.verifyAuth(auth).role;
 
-        if(!userRole.equals("PRODUCER")){
+        if (!userRole.equals("PRODUCER")) {
             throw new RadioException("Not Allowed to access this.", 403);
         }
 
         SongBroadcast songBroadcast = songBroadcastRepository.findByIdDetails(id);
-        if (songBroadcast == null){
+        if (songBroadcast == null) {
             throw new RadioException("Song Broadcast does not exist");
         }
         return songBroadcast;
@@ -95,12 +95,12 @@ public class SongBroadcastService {
         //verify auth
         String userRole = userService.verifyAuth(auth).role;
 
-        if(!userRole.equals("PRODUCER")){
+        if (!userRole.equals("PRODUCER")) {
             throw new RadioException("Not Allowed to access this.", 403);
         }
 
         SongBroadcast songBroadcast = songBroadcastRepository.findById(id);
-        if (songBroadcast == null){
+        if (songBroadcast == null) {
             throw new NotFoundException("Song Broadcast does not exist");
         }
         broadcastService.removeSongBroadcast(songBroadcast.getBroadcast().getId(), songBroadcast.getId());
@@ -111,19 +111,18 @@ public class SongBroadcastService {
     public List<SongBroadcast> search(String date, Integer songId, String auth) {
         String userRole = userService.verifyAuth(auth).role;
 
-        if(!userRole.equals("PRODUCER")){
+        if (!userRole.equals("PRODUCER")) {
             throw new RadioException("Not Allowed to access this.", 403);
         }
 
         LocalDate dateToSearch;
-        if (date == null){
+        if (date == null) {
             dateToSearch = null;
-        } else{
+        } else {
             dateToSearch = DateUtil.setDate(date);
         }
         return songBroadcastRepository.findByFilters(dateToSearch, songId);
     }
-
 
 
 //    @Transactional
@@ -140,10 +139,13 @@ public class SongBroadcastService {
     public void deleteByFilters(String auth, Integer songId) {
         String userRole = userService.verifyAuth(auth).role;
 
-        if(!userRole.equals("PRODUCER")){
+        if (!userRole.equals("PRODUCER")) {
             throw new RadioException("Not Allowed to access this.", 403);
         }
-
+        List<SongBroadcast> sb = songBroadcastRepository.searchBySongId(songId);
+        if (sb.size() == 0) {
+            throw new NotFoundException("Song Broadcast does not exist");
+        }
         songBroadcastRepository.deleteBySongId(songId);
     }
 

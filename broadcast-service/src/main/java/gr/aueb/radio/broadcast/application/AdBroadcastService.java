@@ -46,29 +46,28 @@ public class AdBroadcastService {
         // verify auth
         String userRole = userService.verifyAuth(auth).role;
 
-        if(!userRole.equals("PRODUCER")){
+        if (!userRole.equals("PRODUCER")) {
             throw new RadioException("Not Allowed to access this.", 403);
         }
         // call content
         AdBasicRepresentation ad = contentService.getAd(auth, dto.adId);
-        System.out.println ("adId " + ad.id);
-        System.out.println ("adId " + ad.timezone);
-        if (ad == null){
+        System.out.println("adId " + ad.id);
+        System.out.println("adId " + ad.timezone);
+        if (ad == null) {
             throw new NotFoundException("Ad does not exist");
         }
 
         Broadcast broadcast = broadcastRepository.findById(dto.broadcastId);
         StringBuilder adsIds = new StringBuilder();
-        for(int i = 0; i < broadcast.getAdBroadcasts().size(); i++ ){
+        for (int i = 0; i < broadcast.getAdBroadcasts().size(); i++) {
             int adId = broadcast.getAdBroadcasts().get(i).getAdId();
 
             adsIds.append(adId);
-            if(i != broadcast.getAdBroadcasts().size() - 1) {
+            if (i != broadcast.getAdBroadcasts().size() - 1) {
                 adsIds.append(",");
             }
         }
         List<AdBasicRepresentation> broadcastAds = contentService.getAdsByFilters(auth, null, adsIds.toString());
-
 
 
         return broadcastService.scheduleAd(dto.broadcastId, ad, DateUtil.setTime(dto.startingTime), broadcastAds);
@@ -78,12 +77,12 @@ public class AdBroadcastService {
     public AdBroadcast find(Integer id, String auth) {
         String userRole = userService.verifyAuth(auth).role;
 
-        if(!userRole.equals("PRODUCER")){
+        if (!userRole.equals("PRODUCER")) {
             throw new RadioException("Not Allowed to access this.", 403);
         }
 
         AdBroadcast adBroadcast = adBroadcastRepository.findByIdDetails(id);
-        if (adBroadcast == null){
+        if (adBroadcast == null) {
             throw new NotFoundRadioException("Ad Broadcast does not exist");
         }
         return adBroadcast;
@@ -94,12 +93,12 @@ public class AdBroadcastService {
         // verify auth
         String userRole = userService.verifyAuth(auth).role;
 
-        if(!userRole.equals("PRODUCER")){
+        if (!userRole.equals("PRODUCER")) {
             throw new RadioException("Not Allowed to access this.", 403);
         }
 
         AdBroadcast adBroadcast = adBroadcastRepository.findById(id);
-        if (adBroadcast == null){
+        if (adBroadcast == null) {
             throw new NotFoundException("Ad Broadcast does not exist");
         }
         broadcastService.removeAdBroadcast(adBroadcast.getBroadcast().getId(), adBroadcast.getId());
@@ -110,14 +109,14 @@ public class AdBroadcastService {
     public List<AdBroadcast> search(String date, Integer adId, String auth) {
         String userRole = userService.verifyAuth(auth).role;
 
-        if(!userRole.equals("PRODUCER")){
+        if (!userRole.equals("PRODUCER")) {
             throw new RadioException("Not Allowed to access this.", 403);
         }
 
         LocalDate dateToSearch;
-        if (date == null){
+        if (date == null) {
             dateToSearch = null;
-        } else{
+        } else {
             dateToSearch = DateUtil.setDate(date);
         }
         return adBroadcastRepository.findByFilters(dateToSearch, adId);
@@ -127,10 +126,14 @@ public class AdBroadcastService {
     public void deleteByFilters(String auth, Integer adId) {
         String userRole = userService.verifyAuth(auth).role;
 
-        if(!userRole.equals("PRODUCER")){
+        if (!userRole.equals("PRODUCER")) {
             throw new RadioException("Not Allowed to access this.", 403);
         }
 
+        List<AdBroadcast> ab = adBroadcastRepository.findByAdId(adId);
+        if (ab.size() == 0) {
+            throw new NotFoundException("Ad Broadcast does not exist");
+        }
         adBroadcastRepository.deleteByAdId(adId);
     }
 }

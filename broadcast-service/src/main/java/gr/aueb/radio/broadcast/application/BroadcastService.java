@@ -108,6 +108,7 @@ public class BroadcastService {
         LocalDate date = broadcastToCreate.getStartingDate();
         LocalTime startingTime = broadcastToCreate.getStartingTime();
         LocalTime endingTime = broadcastToCreate.getBroadcastEndingDateTime().toLocalTime();
+        System.out.println("br genre" + broadcastToCreate.getGenreId());
 
         if (checkForOverlapping(date, startingTime, endingTime, -1)){
             throw new RadioException("Overlapping found cannot create Broadcast");

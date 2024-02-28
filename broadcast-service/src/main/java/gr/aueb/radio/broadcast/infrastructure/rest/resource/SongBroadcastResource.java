@@ -39,7 +39,7 @@ public class SongBroadcastResource {
         try {
             List<SongBroadcast> found = songBroadcastService.search(date, songId, auth);
             return Response.ok().entity(songBroadcastMapper.toRepresentationList(found)).build();
-        }catch (RadioException re){
+        } catch (RadioException re) {
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
         }
     }
@@ -50,11 +50,11 @@ public class SongBroadcastResource {
     public Response find(
             @PathParam("id") Integer id,
             @HeaderParam("Authorization") String auth
-            ) {
+    ) {
         try {
             SongBroadcast songBroadcast = songBroadcastService.find(id, auth);
             return Response.ok().entity(songBroadcastMapper.toRepresentation(songBroadcast)).build();
-        }catch (RadioException e){
+        } catch (RadioException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode(), e.getMessage()).build();
         }
     }
@@ -65,11 +65,11 @@ public class SongBroadcastResource {
     public Response delete(
             @PathParam("id") Integer id,
             @HeaderParam("Authorization") String auth
-            ) {
+    ) {
         try {
             songBroadcastService.delete(id, auth);
             return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
-        }catch (NotFoundException e){
+        } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode(), e.getMessage()).build();
         }
     }
@@ -85,9 +85,9 @@ public class SongBroadcastResource {
             SongBroadcast songBroadcast = songBroadcastService.create(dto, auth);
             URI uri = UriBuilder.fromResource(SongBroadcastResource.class).path(String.valueOf(songBroadcast.getId())).build();
             return Response.created(uri).entity(songBroadcastMapper.toRepresentation(songBroadcast)).build();
-        } catch (RadioException re){
+        } catch (RadioException re) {
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
-        } catch (NotFoundException e){
+        } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
         }
     }
@@ -100,7 +100,7 @@ public class SongBroadcastResource {
         try {
             songBroadcastService.deleteByFilters(auth, songId);
             return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
-        } catch (RadioException re){
+        } catch (RadioException re) {
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
         }
     }
