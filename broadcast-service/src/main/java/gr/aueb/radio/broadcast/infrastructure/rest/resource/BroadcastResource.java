@@ -1,6 +1,7 @@
 package gr.aueb.radio.broadcast.infrastructure.rest.resource;
 
 import gr.aueb.radio.broadcast.application.BroadcastService;
+import gr.aueb.radio.broadcast.application.StatService;
 import gr.aueb.radio.broadcast.common.ErrorResponse;
 import gr.aueb.radio.broadcast.common.ExternalServiceException;
 import gr.aueb.radio.broadcast.common.RadioException;
@@ -9,6 +10,7 @@ import gr.aueb.radio.broadcast.domain.broadcast.BroadcastType;
 import gr.aueb.radio.broadcast.infrastructure.rest.ApiPath.Root;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.*;
 import io.quarkus.logging.Log;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -34,6 +36,9 @@ public class BroadcastResource {
 
     @Inject
     BroadcastMapper broadcastMapper;
+
+    @Inject
+    StatService statService;
 
     @Inject
     OutputBroadcastMapper outputBroadcastMapper;
@@ -184,6 +189,37 @@ public class BroadcastResource {
         } catch (NotFoundException e) {
             Log.error("Broadcast not found");
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
+        }
+    }
+
+    @Path("/stats")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @RequestScoped
+    public Response getDailySchedule(
+            @QueryParam("date") String date,
+            @HeaderParam("Authorization") String auth)
+    {
+        try {
+            List<BroadcastOutputRepresentation> broadcastsOfDay = statService.getDailySchedule(date, auth);
+            return Response.ok().entity(broadcastsOfDay).build();
+        }catch (RadioException re){
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+        }
+
+    }
+
+    @GET
+    @Path("/ads")
+    public Response getAdsStats(
+            @QueryParam("date") String date,
+            @HeaderParam("Authorization") String auth)
+    {
+        try {
+            AdStatsDTO dto = statService.extractAdStats(date, auth);
+            return Response.ok().entity(dto).build();
+        }catch (RadioException re){
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
         }
     }
 }
