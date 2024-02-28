@@ -2,7 +2,7 @@ package gr.aueb.radio.infrastructure.resources;
 
 import com.sun.security.auth.UserPrincipal;
 import gr.aueb.radio.Fixture;
-import gr.aueb.radio.IntegrationBase;
+import gr.aueb.radio.common.IntegrationBase;
 import gr.aueb.radio.user.application.UserService;
 import gr.aueb.radio.user.domain.user.User;
 import gr.aueb.radio.user.infrastructure.persistence.UserRepository;
@@ -19,6 +19,7 @@ import gr.aueb.radio.user.common.RadioException;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.SecurityContext;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -71,22 +72,42 @@ public class UserResourceTest extends IntegrationBase {
         mockitoCloseable.close();
     }
 
+//    @Test
+//    void testVerifyAuth() {
+//
+//        Mockito.when(mockSecurityContext.getUserPrincipal()).thenReturn(new UserPrincipal("name"));
+//        Mockito.when(mockUserService.findUserByUsername("username")).thenReturn(new UserBasicRepresentation());
+//
+//
+//        final Response result = userResourceUnderTest.verifyAuth();
+//
+//        Mockito.when(mockUserService.findUserByUsername("different_username")).thenThrow(new RadioException("Bad Request"));
+//
+//        // Verifying the response when an exception is thrown
+//        final Response exceptionResult = userResourceUnderTest.verifyAuth();
+//        assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), 400);
+//        assertEquals(null, exceptionResult.getEntity());
+//
+//    }
+
     @Test
-    void testVerifyAuth() {
+    @TestTransaction
+    public void testVerifyAuth() {
+        given()
+                .header("Authorization", "Basic cHJvZHVjZXI6cHJvZHVjZXI=")
+                .get(Fixture.API_ROOT + Fixture.USERS_PATH + "/verify-auth")
+                .then()
+                .statusCode(200);
+    }
 
-        Mockito.when(mockSecurityContext.getUserPrincipal()).thenReturn(new UserPrincipal("name"));
-        Mockito.when(mockUserService.findUserByUsername("username")).thenReturn(new UserBasicRepresentation());
-
-
-        final Response result = userResourceUnderTest.verifyAuth();
-
-        Mockito.when(mockUserService.findUserByUsername("different_username")).thenThrow(new RadioException("Bad Request"));
-
-        // Verifying the response when an exception is thrown
-        final Response exceptionResult = userResourceUnderTest.verifyAuth();
-        assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), 400);
-        assertEquals(null, exceptionResult.getEntity());
-
+    @Test
+    @TestTransaction
+    public void testVerifyAuthUnauthorized() {
+        given()
+                .header("Authorization", "Basic cHJvZHVjZXIxMjM6cHJvZHVjZXI=")
+                .get(Fixture.API_ROOT + Fixture.USERS_PATH + "/verify-auth")
+                .then()
+                .statusCode(401);
     }
 
 

@@ -1,6 +1,5 @@
 package gr.aueb.radio.user.application;
 
-import gr.aueb.radio.user.common.NotFoundException;
 import gr.aueb.radio.user.common.RadioException;
 import gr.aueb.radio.user.domain.user.Role;
 import gr.aueb.radio.user.domain.user.User;
@@ -11,6 +10,7 @@ import gr.aueb.radio.user.infrastructure.rest.representation.UserRepresentation;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 
 @RequestScoped
 public class UserService {

@@ -1,6 +1,6 @@
 package gr.aueb.radio.infrastructure.persistence;
 
-import gr.aueb.radio.IntegrationBase;
+import gr.aueb.radio.common.IntegrationBase;
 import gr.aueb.radio.user.domain.user.User;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;

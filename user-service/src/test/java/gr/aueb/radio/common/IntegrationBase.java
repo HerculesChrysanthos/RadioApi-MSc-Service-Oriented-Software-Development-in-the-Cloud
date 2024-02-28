@@ -1,15 +1,16 @@
 package gr.aueb.radio.common;
 
-import jakarta.inject.Inject;
+
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 
-public class JPATest {
+public class IntegrationBase {
     @Inject
     EntityManager em;
 

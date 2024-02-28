@@ -1,6 +1,6 @@
 package gr.aueb.radio.application;
 
-import gr.aueb.radio.IntegrationBase;
+import gr.aueb.radio.common.IntegrationBase;
 import gr.aueb.radio.user.application.UserService;
 import gr.aueb.radio.user.common.NotFoundException;
 import gr.aueb.radio.user.common.RadioException;

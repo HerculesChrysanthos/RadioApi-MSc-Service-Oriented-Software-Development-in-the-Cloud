@@ -1,6 +1,6 @@
 package gr.aueb.radio.infrastructure.persistence;
 
-import gr.aueb.radio.common.JPATest;
+import gr.aueb.radio.common.IntegrationBase;
 import gr.aueb.radio.user.domain.user.User;
 import gr.aueb.radio.user.infrastructure.persistence.UserRepository;
 import io.quarkus.test.junit.QuarkusTest;
@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
-public class UserRepositoryTest extends JPATest {
+public class UserRepositoryTest extends IntegrationBase {
 
     @Inject
     UserRepository userRepository;

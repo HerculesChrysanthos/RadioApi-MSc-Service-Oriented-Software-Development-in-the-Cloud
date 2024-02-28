@@ -67,12 +67,9 @@ public class UserResource {
     @Transactional
     @Path("/verify-auth")
     public Response verifyAuth(){
-        try {
-            String username = securityContext.getUserPrincipal().getName();
-            UserBasicRepresentation user = userService.findUserByUsername(username);
-            return Response.ok().entity(user).build();
-        } catch (RadioException re){
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
-        }
+        String username = securityContext.getUserPrincipal().getName();
+        UserBasicRepresentation user = userService.findUserByUsername(username);
+        return Response.ok().entity(user).build();
+
     }
 }
