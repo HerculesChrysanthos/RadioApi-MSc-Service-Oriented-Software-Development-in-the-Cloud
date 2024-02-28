@@ -13,6 +13,7 @@ import gr.aueb.radio.broadcast.infrastructure.persistence.SongBroadcastRepositor
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.*;
 import gr.aueb.radio.broadcast.common.DateUtil;
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdBasicRepresentation;
+import gr.aueb.radio.broadcast.infrastructure.service.content.representation.GenreBasicRepresentation;
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.SongBasicRepresentation;
 import gr.aueb.radio.broadcast.infrastructure.service.user.representation.UserVerifiedRepresentation;
 import jakarta.enterprise.context.RequestScoped;
@@ -35,7 +36,7 @@ public class BroadcastService {
 
     @Inject
     BroadcastMapper broadcastMapper;
-//
+    //
 //    @Inject
 //    SongMapper songMapper;
 //
@@ -51,7 +52,9 @@ public class BroadcastService {
 
     @Inject
     SongBroadcastRepository songBroadcastRepository;
-//
+    //
+    @Inject
+    ContentService contentService;
 
     @Inject
     UserService userService;
@@ -64,32 +67,32 @@ public class BroadcastService {
 
 
     @Transactional
-    public Broadcast findById(Integer id, String auth){
+    public Broadcast findById(Integer id, String auth) {
         userService.verifyAuth(auth);
 
         Broadcast broadcast = broadcastRepository.findById(id);
-        if (broadcast == null){
+        if (broadcast == null) {
             throw new NotFoundException("Broadcast not found");
         }
         return broadcast;
     }
 
     @Transactional
-    public boolean checkForOverlapping(LocalDate date, LocalTime startingTime, LocalTime endingTime, Integer idToExclude){
+    public boolean checkForOverlapping(LocalDate date, LocalTime startingTime, LocalTime endingTime, Integer idToExclude) {
         List<Broadcast> broadcastsOfDay;
-        if (idToExclude == -1){
+        if (idToExclude == -1) {
             broadcastsOfDay = broadcastRepository.findByDate(date);
-        }else {
+        } else {
             broadcastsOfDay = broadcastRepository.findByDateExcluding(date, idToExclude);
         }
         // starting datetime of broadcast to be updated
         LocalDateTime startingDateTime = LocalDateTime.of(date, startingTime);
         // starting datetime of broadcast to be updated
         LocalDateTime endingDateTime = LocalDateTime.of(date, endingTime);
-        for (Broadcast b: broadcastsOfDay){
+        for (Broadcast b : broadcastsOfDay) {
             LocalDateTime start = LocalDateTime.of(date, b.getStartingTime());
             LocalDateTime end = b.getBroadcastEndingDateTime();
-            if (DateUtil.between(start, startingDateTime, end) || DateUtil.between(start, endingDateTime, end)){
+            if (DateUtil.between(start, startingDateTime, end) || DateUtil.between(start, endingDateTime, end)) {
                 return true;
             }
         }
@@ -97,10 +100,10 @@ public class BroadcastService {
     }
 
     @Transactional
-    public Broadcast create(BroadcastRepresentation broadcastRepresentation, String auth){
+    public Broadcast create(BroadcastRepresentation broadcastRepresentation, String auth) {
         //verify auth user producer role
         UserVerifiedRepresentation user = userService.verifyAuth(auth);
-        if(!user.role.equals("PRODUCER")){
+        if (!user.role.equals("PRODUCER")) {
             throw new RadioException("Not Allowed to change this.", 403);
         }
 
@@ -110,10 +113,10 @@ public class BroadcastService {
         LocalTime endingTime = broadcastToCreate.getBroadcastEndingDateTime().toLocalTime();
         System.out.println("br genre" + broadcastToCreate.getGenreId());
 
-        if (checkForOverlapping(date, startingTime, endingTime, -1)){
+        if (checkForOverlapping(date, startingTime, endingTime, -1)) {
             throw new RadioException("Overlapping found cannot create Broadcast");
         }
-        if(broadcastToCreate.getType().equals(BroadcastType.PLAYLIST)){
+        if (broadcastToCreate.getType().equals(BroadcastType.PLAYLIST)) {
             playlistService.populateBroadcast(broadcastToCreate, auth);
         }
 
@@ -124,11 +127,11 @@ public class BroadcastService {
     }
 
     @Transactional
-    public Broadcast update(Integer id, BroadcastRepresentation broadcastRepresentation, String auth){
+    public Broadcast update(Integer id, BroadcastRepresentation broadcastRepresentation, String auth) {
         // try to find broadcast, if broadcast is not found, find func will throw NotFoundException
         String userRole = userService.verifyAuth(auth).role;
 
-        if(!userRole.equals("PRODUCER")){
+        if (!userRole.equals("PRODUCER")) {
             throw new RadioException("Not Allowed to change this.", 403);
         }
 
@@ -137,35 +140,35 @@ public class BroadcastService {
         int addBroadcastSize = broadcast.getAdBroadcasts().size();
         int songBroadcastSize = broadcast.getSongBroadcasts().size();
         // Broadcast is immutable because it has registered song/add broadcasts
-        if (addBroadcastSize != 0 || songBroadcastSize != 0){
+        if (addBroadcastSize != 0 || songBroadcastSize != 0) {
             throw new RadioException("Broadcast has songs/adds scheduled, cannot be updated");
         }
         LocalDate date = DateUtil.setDate(broadcastRepresentation.startingDate);
         LocalTime startingTime = DateUtil.setTime(broadcastRepresentation.startingTime);
         LocalTime endingTime = startingTime.plusMinutes(broadcastRepresentation.duration);
         // Cannot update broadcast because the updated values will overlap another broadcast
-        if(checkForOverlapping(date, startingTime, endingTime, broadcast.getId())){
+        if (checkForOverlapping(date, startingTime, endingTime, broadcast.getId())) {
             throw new RadioException("Overlapping found cannot update Broadcast");
         }
-        broadcast = updateValues(broadcast, broadcastRepresentation);
+        broadcast = updateValues(broadcast, broadcastRepresentation, auth);
         broadcastRepository.getEntityManager().merge(broadcast);
         return broadcast;
     }
 
     @Transactional
-    public void delete(Integer id, String auth){
+    public void delete(Integer id, String auth) {
         String userRole = userService.verifyAuth(auth).role;
 
-        if(!userRole.equals("PRODUCER")) {
+        if (!userRole.equals("PRODUCER")) {
             throw new RadioException("Not Allowed to change this.", 403);
         }
 
         Broadcast broadcast = findById(id, auth);
-        while (broadcast.getAdBroadcasts().size() != 0){
+        while (broadcast.getAdBroadcasts().size() != 0) {
             AdBroadcast ab = broadcast.getAdBroadcasts().get(0);
             this.removeAdBroadcast(broadcast.getId(), ab.getId());
         }
-        while (broadcast.getSongBroadcasts().size() != 0){
+        while (broadcast.getSongBroadcasts().size() != 0) {
             SongBroadcast sb = broadcast.getSongBroadcasts().get(0);
             this.removeSongBroadcast(broadcast.getId(), sb.getId());
         }
@@ -173,9 +176,9 @@ public class BroadcastService {
     }
 
     @Transactional
-    public List<BroadcastOutputRepresentation> search(BroadcastSearchDTO broadcastSearchDTO){
+    public List<BroadcastOutputRepresentation> search(BroadcastSearchDTO broadcastSearchDTO) {
         List<Broadcast> broadcasts;
-        if(broadcastSearchDTO.getDate() == null && broadcastSearchDTO.getType() == null){
+        if (broadcastSearchDTO.getDate() == null && broadcastSearchDTO.getType() == null) {
             broadcasts = broadcastRepository.findByTimeRange(broadcastSearchDTO.getFromTime(), broadcastSearchDTO.getToTime());
         } else if (broadcastSearchDTO.getDate() == null) {
             broadcasts = broadcastRepository.findByTimeRangeType(broadcastSearchDTO.getFromTime(), broadcastSearchDTO.getToTime(), broadcastSearchDTO.getType());
@@ -193,15 +196,15 @@ public class BroadcastService {
             AdBasicRepresentation ad,
             LocalTime startingTime,
             List<AdBasicRepresentation> broadcastAds
-    ){
+    ) {
         Broadcast broadcast = broadcastRepository.findByIdAdDetails(id);
-        if (broadcast == null){
+        if (broadcast == null) {
             throw new NotFoundException("Broadcast not found");
         }
         // to retrieve the adbroadcastrs of THIS broadcast ie. of the timezone
         int adBroadcastsInTimezone = adBroadcastRepository.findByTimezoneDate(broadcast.getTimezone(), broadcast.getStartingDate()).size();
         // check restriction of maximum 4 ads per timezone
-        if (adBroadcastsInTimezone >= 4){
+        if (adBroadcastsInTimezone >= 4) {
             throw new RadioException("Ad cannot be scheduled to broadcast");
         }
 //        System.out.println ("adId " + ad.id);
@@ -210,24 +213,25 @@ public class BroadcastService {
         List<AdBroadcast> adBroadcastsOfAd = adBroadcastRepository.findByAdId(ad.id);
 
         AdBroadcast created = broadcast.createAdBroadcast(ad, startingTime, adBroadcastsOfAd, broadcastAds);
-        if (created == null){
+        if (created == null) {
             throw new RadioException("Ad cannot be scheduled to broadcast");
         }
         adBroadcastRepository.persist(created);
         return created;
     }
-//
+
+    //
     @Transactional
-    public SongBroadcast scheduleSong(Integer id, SongBasicRepresentation song, LocalTime startingTime, List<SongBasicRepresentation> broadcastSongs){
+    public SongBroadcast scheduleSong(Integer id, SongBasicRepresentation song, LocalTime startingTime, List<SongBasicRepresentation> broadcastSongs) {
         Broadcast broadcast = broadcastRepository.findByIdSongDetails(id);
-        if (broadcast == null){
+        if (broadcast == null) {
             throw new NotFoundException("Broadcast not found");
         }
         // get songBroadcasts of the day of broadcast
         List<SongBroadcast> songBroadcastsOfDay = songBroadcastRepository.findBySongIdDate(song.id, broadcast.getStartingDate());
 
         SongBroadcast created = broadcast.createSongBroadcast(song, startingTime, songBroadcastsOfDay, broadcastSongs);
-        if (created == null){
+        if (created == null) {
             throw new RadioException("Song cannot be scheduled to broadcast");
         }
 
@@ -236,28 +240,29 @@ public class BroadcastService {
     }
 
     @Transactional
-    public void removeAdBroadcast(Integer id, Integer abId){
+    public void removeAdBroadcast(Integer id, Integer abId) {
         Broadcast broadcast = broadcastRepository.findByIdAdDetails(id);
-        if (broadcast == null){
+        if (broadcast == null) {
             throw new NotFoundException("Broadcast not found");
         }
         AdBroadcast adBroadcast = adBroadcastRepository.findById(abId);
         // maybe the below check should be removed - to check
-        if(adBroadcast == null){
+        if (adBroadcast == null) {
             throw new NotFoundException("Add Broadcast not found");
         }
         broadcast.removeAdBroadcast(adBroadcast);
         adBroadcastRepository.deleteById(abId);
     }
-//
+
+    //
     @Transactional
-    public void removeSongBroadcast(Integer id, Integer sbId){
+    public void removeSongBroadcast(Integer id, Integer sbId) {
         Broadcast broadcast = broadcastRepository.findByIdSongDetails(id);
-        if (broadcast == null){
+        if (broadcast == null) {
             throw new NotFoundException("Broadcast not found");
         }
         SongBroadcast songBroadcast = songBroadcastRepository.findById(sbId);
-        if(songBroadcast == null){
+        if (songBroadcast == null) {
             throw new NotFoundException("Song Broadcast not found");
         }
         broadcast.removeSongBroadcast(songBroadcast);
@@ -265,10 +270,10 @@ public class BroadcastService {
     }
 
     @Transactional
-    public SuggestionsDTO suggestions(Integer id, String auth){
+    public SuggestionsDTO suggestions(Integer id, String auth) {
         String userRole = userService.verifyAuth(auth).role;
 
-        if(!userRole.equals("PRODUCER")) {
+        if (!userRole.equals("PRODUCER")) {
             throw new RadioException("Not Allowed to change this.", 403);
         }
 
@@ -279,7 +284,7 @@ public class BroadcastService {
     }
 
     @Transactional
-    public BroadcastOutputRepresentation getNow(String auth){
+    public BroadcastOutputRepresentation getNow(String auth) {
         userService.verifyAuth(auth);
 
         LocalTime timeNow = DateUtil.timeNow();
@@ -289,12 +294,12 @@ public class BroadcastService {
         try {
             broadcastsOfDay = broadcastsOfDay.stream().filter(s -> DateUtil.between(s.getStartingDate().atTime(s.getStartingTime()), dateTimeNow, s.getBroadcastEndingDateTime())).collect(Collectors.toList());
             return outputBroadcastMapper.toRepresentation(broadcastsOfDay.get(0));
-        }catch (Exception e){
+        } catch (Exception e) {
             return new BroadcastOutputRepresentation();
         }
     }
 
-    private Broadcast updateValues(Broadcast broadcast, BroadcastRepresentation broadcastRepresentation){
+    private Broadcast updateValues(Broadcast broadcast, BroadcastRepresentation broadcastRepresentation, String auth) {
         broadcast.setType(broadcastRepresentation.type);
         LocalDate date = DateUtil.setDate(broadcastRepresentation.startingDate);
         LocalTime time = DateUtil.setTime(broadcastRepresentation.startingTime);
@@ -303,7 +308,12 @@ public class BroadcastService {
         broadcast.setDuration(broadcastRepresentation.duration);
 
         // TODO call on genre service to check if genre exists
-        broadcast.setGenreId(broadcastRepresentation.genreId);
+        GenreBasicRepresentation genre = contentService.getGenreById(broadcastRepresentation.genreId);
+        if (genre != null) {
+            broadcast.setGenreId(broadcastRepresentation.genreId);
+        } else {
+            throw new NotFoundException("Genre does not exist");
+        }
         return broadcast;
     }
 }

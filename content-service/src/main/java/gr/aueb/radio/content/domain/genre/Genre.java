@@ -45,7 +45,4 @@ public class Genre {
         this.title = title;
     }
 
-//    public void setSongs(List<Song> songs) {
-//        this.songs = songs;
-//    }
 }

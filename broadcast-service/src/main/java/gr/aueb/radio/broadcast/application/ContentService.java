@@ -1,6 +1,7 @@
 package gr.aueb.radio.broadcast.application;
 
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdBasicRepresentation;
+import gr.aueb.radio.broadcast.infrastructure.service.content.representation.GenreBasicRepresentation;
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.SongBasicRepresentation;
 
 import java.util.List;
@@ -14,4 +15,8 @@ public interface ContentService {
     SongBasicRepresentation getSong(String auth, Integer songId);
 
     List<SongBasicRepresentation> getSongsByFilters(String auth, String artist, Integer genreId, String genreTitle, String title, String songsIds);
+
+    GenreBasicRepresentation getGenreById(Integer genreId);
+
+    List<GenreBasicRepresentation> getAllGenres(String auth);
 }

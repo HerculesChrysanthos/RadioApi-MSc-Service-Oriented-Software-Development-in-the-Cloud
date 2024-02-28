@@ -1,10 +1,10 @@
 package gr.aueb.radio.broadcast.infrastructure.service.content;
 
-import gr.aueb.radio.broadcast.application.AdBroadcastService;
 import gr.aueb.radio.broadcast.application.ContentService;
 import gr.aueb.radio.broadcast.common.ExternalServiceException;
 import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdBasicRepresentation;
+import gr.aueb.radio.broadcast.infrastructure.service.content.representation.GenreBasicRepresentation;
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.SongBasicRepresentation;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -35,7 +35,7 @@ public class ContentServiceImpl implements ContentService {
 
         } catch (ProcessingException error) {
             throw new ExternalServiceException("Problem on reaching content api.");
-        } catch (WebApplicationException webApplicationException){
+        } catch (WebApplicationException webApplicationException) {
             throw new RadioException("Ad not found", webApplicationException.getResponse().getStatus());
         }
     }
@@ -66,6 +66,28 @@ public class ContentServiceImpl implements ContentService {
     public List<AdBasicRepresentation> getAdsByFilters(String auth, String timezone, String adsIds) {
         try {
             return contentApi.getAdsByFilters(auth, timezone, adsIds);
+        } catch (ProcessingException error) {
+            throw new RadioException("Problem on reaching content api.", 424);
+        } catch (NotFoundException error) {
+            throw new RadioException("not found", 404);
+        }
+    }
+
+    @Override
+    public GenreBasicRepresentation getGenreById(Integer genreId) {
+        try {
+            return contentApi.getGenreById(genreId);
+        } catch (ProcessingException error) {
+            throw new RadioException("Problem on reaching content api.", 424);
+        } catch (NotFoundException error) {
+            throw new RadioException("not found", 404);
+        }
+    }
+
+    @Override
+    public List<GenreBasicRepresentation> getAllGenres(String auth) {
+        try {
+            return contentApi.getAllGenres(auth);
         } catch (ProcessingException error) {
             throw new RadioException("Problem on reaching content api.", 424);
         } catch (NotFoundException error) {
