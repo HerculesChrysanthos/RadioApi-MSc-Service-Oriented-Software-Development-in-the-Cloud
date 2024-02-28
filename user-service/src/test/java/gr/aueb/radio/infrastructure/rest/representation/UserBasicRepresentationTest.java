@@ -1,4 +1,4 @@
-package gr.aueb.radio.rest.representation;
+package gr.aueb.radio.infrastructure.rest.representation;
 
 import gr.aueb.radio.user.infrastructure.rest.representation.UserBasicRepresentation;
 import org.junit.jupiter.api.Test;

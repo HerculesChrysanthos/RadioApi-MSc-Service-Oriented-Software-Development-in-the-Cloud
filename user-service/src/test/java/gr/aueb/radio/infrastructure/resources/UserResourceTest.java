@@ -1,4 +1,4 @@
-package gr.aueb.radio.resources;
+package gr.aueb.radio.infrastructure.resources;
 
 import com.sun.security.auth.UserPrincipal;
 import gr.aueb.radio.Fixture;

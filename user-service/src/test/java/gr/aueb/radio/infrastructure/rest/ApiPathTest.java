@@ -1,4 +1,4 @@
-package gr.aueb.radio.rest;
+package gr.aueb.radio.infrastructure.rest;
 
 import gr.aueb.radio.user.infrastructure.rest.ApiPath;
 import org.junit.jupiter.api.Test;

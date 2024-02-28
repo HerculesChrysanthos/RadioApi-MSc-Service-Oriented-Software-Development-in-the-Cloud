@@ -1,4 +1,4 @@
-package gr.aueb.radio.persistence;
+package gr.aueb.radio.infrastructure.persistence;
 
 import gr.aueb.radio.IntegrationBase;
 import gr.aueb.radio.user.domain.user.User;
