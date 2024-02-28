@@ -1,29 +1,30 @@
 package gr.aueb.radio.content.application;
 
 import gr.aueb.radio.content.common.IntegrationBase;
+import gr.aueb.radio.content.common.RadioException;
 import gr.aueb.radio.content.domain.genre.Genre;
 import gr.aueb.radio.content.domain.song.Song;
 import gr.aueb.radio.content.infrastructure.persistence.SongRepository;
 import gr.aueb.radio.content.infrastructure.rest.representation.*;
+import gr.aueb.radio.content.infrastructure.service.broadcast.representation.SongBroadcastBasicRepresentation;
 import gr.aueb.radio.content.infrastructure.service.user.representation.UserVerifiedRepresentation;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
 import jakarta.ws.rs.NotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
 
 @QuarkusTest
 class SongServiceTest extends IntegrationBase {
@@ -34,12 +35,17 @@ class SongServiceTest extends IntegrationBase {
     @InjectMock
     UserService userService;
 
+    @InjectMock
+    BroadcastService broadcastService;
+
     @BeforeEach
     public void setup(){
+        MockitoAnnotations.initMocks(this);
         UserVerifiedRepresentation user = new UserVerifiedRepresentation();
         user.id = 1;
         user.role = "USER";
         Mockito.when(userService.verifyAuth(anyString())).thenReturn(user);
+
     }
 
     @Test
@@ -90,6 +96,107 @@ class SongServiceTest extends IntegrationBase {
         assertEquals(2015, foundSong.year);
         assertThrows(NotFoundException.class, () -> songService.findSong(-1, "auth"));
     }
+
+    @Test
+    public void testUpdateSongNotFound() {
+        SongInputDTO songNotToBeFound = new SongInputDTO();
+        assertThrows(NotFoundException.class, () -> songService.update(-1, songNotToBeFound, "auth"));
+    }
+
+    @Test
+    public void testUpdateSongIsImmutable() {
+        SongInputDTO songInputDTO = new SongInputDTO();
+        GenreRepresentation genreRepresentation = new GenreRepresentation();
+        genreRepresentation.id = 2;
+        genreRepresentation.title = "genre-title";
+
+        songInputDTO.title = "Test Song";
+        songInputDTO.artist = "Test Artist";
+        songInputDTO.genreId = 1;
+        songInputDTO.year = 2022;
+        songInputDTO.duration = 18;
+
+        Song createdSong = songService.create(songInputDTO, "test");
+
+        List<SongBroadcastBasicRepresentation> listOfSb = new ArrayList<>();
+        SongBroadcastBasicRepresentation songBroadcast = new SongBroadcastBasicRepresentation();
+        songBroadcast.id = 2;
+        listOfSb.add(songBroadcast);
+
+        Mockito.when(broadcastService.getSongBroadcastsBySongId(anyString(),anyInt())).thenReturn(listOfSb);
+
+        SongInputDTO song = new SongInputDTO();
+        System.out.println(listOfSb.size());
+        assertThrows(RadioException.class, () -> songService.update(createdSong.getId(), song, "auth"));
+
+    }
+
+//    public void t () {
+//        // Create a test song
+//        SongInputDTO songInputDTO = new SongInputDTO();
+//        GenreRepresentation genreRepresentation = new GenreRepresentation();
+//        genreRepresentation.id = 1;
+//        genreRepresentation.title = "genre-title";
+//
+//        songInputDTO.title = "Test Song";
+//        songInputDTO.artist = "Test Artist";
+//        songInputDTO.genreId = 1;
+//        songInputDTO.year = 2022;
+//        songInputDTO.duration = 18;
+//
+//        Song createdSong = songService.create(songInputDTO, "test");
+//        /// assertThrows(RadioException.class, () -> songService.update(foundSong.getId(), songRepresentation));
+//
+//        SongInputDTO songToUpdate = new SongInputDTO();
+//        GenreRepresentation genreRepresentationToUpdate = new GenreRepresentation();
+//        genreRepresentation.id = 1;
+//        genreRepresentation.title = "genre-title";
+//
+//        songToUpdate.title = "Test";
+//        songToUpdate.artist = "Test Artist";
+//        songToUpdate.genreId = 1;
+//        songToUpdate.year = 2023;
+//        songToUpdate.duration = 18;
+//
+//
+//
+//
+//        List<SongBroadcastBasicRepresentation> listOfSb = new ArrayList<>();
+//        SongBroadcastBasicRepresentation songBroadcast = new SongBroadcastBasicRepresentation();
+//        songBroadcast.id = 1;
+//        listOfSb.add(songBroadcast);
+//
+//        Mockito.when(broadcastService.getSongBroadcastsBySongId("auth",1)).thenReturn(listOfSb);
+//        assertThrows(RadioException.class, () -> songService.update(-1, songToUpdate, "auth"));
+//
+//
+//        // Create a new song to update
+////        Song song = songService.create(songRepresentation);
+////
+////        // Update the song with new values
+////        SongRepresentation updatedRepresentation = createRepresentation();
+////        updatedRepresentation.title = "Updated Test Song";
+////        updatedRepresentation.year = 2022;
+////        Song updatedSong = songService.update(song.getId(), updatedRepresentation);
+////
+////        // Verify that the song was updated with the new values
+////        assertEquals(updatedRepresentation.title, updatedSong.getTitle());
+////        assertEquals(updatedRepresentation.artist, updatedSong.getArtist());
+////        assertEquals(updatedRepresentation.genre, updatedSong.getGenre());
+////        assertEquals(updatedRepresentation.duration, updatedSong.getDuration());
+////        assertEquals(updatedRepresentation.year, updatedSong.getYear());
+//
+//
+//    }
+
+
+
+
+
+
+
+
+
 
 
 
