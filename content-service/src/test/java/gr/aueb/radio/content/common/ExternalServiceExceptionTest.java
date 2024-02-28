@@ -1,4 +1,4 @@
-package gr.aueb.radio.common;
+package gr.aueb.radio.content.common;
 
 import gr.aueb.radio.content.common.ExternalServiceException;
 import org.junit.jupiter.api.Test;

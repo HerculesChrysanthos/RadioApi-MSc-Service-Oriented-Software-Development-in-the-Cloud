@@ -1,4 +1,4 @@
-package gr.aueb.radio.infrastructure;
+package gr.aueb.radio.content.common;
 
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;

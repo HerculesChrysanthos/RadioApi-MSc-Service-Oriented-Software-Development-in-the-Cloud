@@ -1,4 +1,4 @@
-package gr.aueb.radio.domain.ad;
+package gr.aueb.radio.content.domain.ad;
 
 import gr.aueb.radio.content.common.DateUtil;
 import gr.aueb.radio.content.domain.ad.Ad;

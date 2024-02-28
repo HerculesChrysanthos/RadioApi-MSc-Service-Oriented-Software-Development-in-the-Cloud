@@ -1,4 +1,4 @@
-package gr.aueb.radio.domain.song;
+package gr.aueb.radio.content.domain.song;
 
 import gr.aueb.radio.content.common.DateUtil;
 import gr.aueb.radio.content.domain.genre.Genre;

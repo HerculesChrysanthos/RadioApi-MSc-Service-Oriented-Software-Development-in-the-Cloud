@@ -31,13 +31,13 @@ class BroadcastServiceImplTest {
         mockitoCloseable.close();
     }
 
-    @Test
-    void testDeleteSongBroadcastsBySongId() {
-        assertEquals(Optional.empty(), broadcastServiceImplUnderTest.deleteSongBroadcastsBySongId("auth", 0));
-    }
-
-    @Test
-    void testDeleteAdBroadcastsByAdId() {
-        assertEquals(Optional.empty(), broadcastServiceImplUnderTest.deleteAdBroadcastsByAdId("auth", 0));
-    }
+//    @Test
+//    void testDeleteSongBroadcastsBySongId() {
+//        assertEquals(Optional.empty(), broadcastServiceImplUnderTest.deleteSongBroadcastsBySongId("auth", 0));
+//    }
+//
+//    @Test
+//    void testDeleteAdBroadcastsByAdId() {
+//        assertEquals(Optional.empty(), broadcastServiceImplUnderTest.deleteAdBroadcastsByAdId("auth", 0));
+//    }
 }

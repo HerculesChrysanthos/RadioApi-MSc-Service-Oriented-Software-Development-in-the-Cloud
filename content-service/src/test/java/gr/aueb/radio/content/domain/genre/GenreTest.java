@@ -1,4 +1,4 @@
-package gr.aueb.radio.domain.genre;
+package gr.aueb.radio.content.domain.genre;
 
 import gr.aueb.radio.content.domain.genre.Genre;
 import io.quarkus.test.junit.QuarkusTest;

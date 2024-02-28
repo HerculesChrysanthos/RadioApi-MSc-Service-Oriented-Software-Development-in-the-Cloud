@@ -1,4 +1,4 @@
-package gr.aueb.radio.infrastructure;
+package gr.aueb.radio.content;
 
 
 
