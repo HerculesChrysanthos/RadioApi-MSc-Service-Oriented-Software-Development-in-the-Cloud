@@ -2,7 +2,6 @@ package gr.aueb.radio.application;
 
 import gr.aueb.radio.common.IntegrationBase;
 import gr.aueb.radio.user.application.UserService;
-import gr.aueb.radio.user.common.NotFoundException;
 import gr.aueb.radio.user.common.RadioException;
 import gr.aueb.radio.user.domain.user.User;
 import gr.aueb.radio.user.infrastructure.persistence.UserRepository;
@@ -11,6 +10,7 @@ import gr.aueb.radio.user.infrastructure.rest.representation.UserRepresentation;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

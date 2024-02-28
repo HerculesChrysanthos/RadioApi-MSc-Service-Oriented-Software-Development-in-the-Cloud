@@ -1,4 +1,4 @@
-package gr.aueb.radio.infrastructure.resources;
+package gr.aueb.radio.infrastructure.rest.resources;
 
 import com.sun.security.auth.UserPrincipal;
 import gr.aueb.radio.Fixture;
@@ -46,31 +46,31 @@ public class UserResourceTest extends IntegrationBase {
     @Inject
     SecurityContext securityContext;
 
-    @Mock
-    private UserService mockUserService;
-    @Mock
-    private UserMapper mockUserMapper;
-    @Mock
-    private SecurityContext mockSecurityContext;
+//    @Mock
+//    private UserService mockUserService;
+//    @Mock
+//    private UserMapper mockUserMapper;
+//    @Mock
+//    private SecurityContext mockSecurityContext;
+//
+//    private UserResource userResourceUnderTest;
+//
+//
+//    private AutoCloseable mockitoCloseable;
+//
+//    @BeforeEach
+//    void setUp() {
+//        mockitoCloseable = openMocks(this);
+//        userResourceUnderTest = new UserResource();
+//        userResourceUnderTest.userService = mockUserService;
+//        userResourceUnderTest.userMapper = mockUserMapper;
+//        userResourceUnderTest.securityContext = mockSecurityContext;
+//    }
 
-    private UserResource userResourceUnderTest;
-
-
-    private AutoCloseable mockitoCloseable;
-
-    @BeforeEach
-    void setUp() {
-        mockitoCloseable = openMocks(this);
-        userResourceUnderTest = new UserResource();
-        userResourceUnderTest.userService = mockUserService;
-        userResourceUnderTest.userMapper = mockUserMapper;
-        userResourceUnderTest.securityContext = mockSecurityContext;
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        mockitoCloseable.close();
-    }
+//    @AfterEach
+//    void tearDown() throws Exception {
+//        mockitoCloseable.close();
+//    }
 
 //    @Test
 //    void testVerifyAuth() {
@@ -132,7 +132,7 @@ public class UserResourceTest extends IntegrationBase {
     public void notFoundUserTest(){
         String url = Fixture.API_ROOT + Fixture.USERS_PATH + "/" + 2023;
         //when().get(url).then().statusCode(Status.NOT_FOUND.getStatusCode());-->needs investigation
-        when().get(url).then().statusCode(Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        when().get(url).then().statusCode(Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
