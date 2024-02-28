@@ -192,7 +192,7 @@ public class BroadcastResource {
         }
     }
     @GET
-    @Path("/stats")
+    @Path("/stats-daily")
     public Response getDailySchedule(
             @QueryParam("date") String date,
             @HeaderParam("Authorization") String auth
@@ -207,7 +207,7 @@ public class BroadcastResource {
     }
 
     @GET
-    @Path("/ads")
+    @Path("/stats-ads")
     public Response getAdsStats(
             @QueryParam("date") String date,
             @HeaderParam("Authorization") String auth)

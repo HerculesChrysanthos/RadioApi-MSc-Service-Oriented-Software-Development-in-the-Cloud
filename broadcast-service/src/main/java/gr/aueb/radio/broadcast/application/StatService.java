@@ -4,6 +4,8 @@ import gr.aueb.radio.broadcast.common.DateUtil;
 import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.domain.adBroadcast.AdBroadcast;
 import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
+import gr.aueb.radio.broadcast.domain.broadcast.BroadcastType;
+import gr.aueb.radio.broadcast.domain.broadcast.Zone;
 import gr.aueb.radio.broadcast.infrastructure.persistence.AdBroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.persistence.BroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastOutputRepresentation;
@@ -13,6 +15,7 @@ import gr.aueb.radio.broadcast.infrastructure.rest.representation.AdStatsDTO;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+
 import java.time.LocalDate;
 import java.util.*;
 
@@ -36,11 +39,22 @@ public class StatService {
 
     private List<AdBasicRepresentation> extractFromAdBroadcast(List<AdBroadcast> adBroadcasts, String auth) {
         Set<Integer> adIds = new HashSet<>();
+
         for (AdBroadcast ab : adBroadcasts) {
             adIds.add(ab.getAdId());
         }
 
-        List<AdBasicRepresentation> broadcastAds = contentService.getAdsByFilters(auth, null, adIds.toString());
+        // Convert set to comma-separated string
+        StringBuilder sb = new StringBuilder();
+        for (Integer id : adIds) {
+            sb.append(id).append(",");
+        }
+
+        if (!adIds.isEmpty()) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
+
+        List<AdBasicRepresentation> broadcastAds = contentService.getAdsByFilters(auth, null, sb.toString());
         return broadcastAds;
     }
 
@@ -72,21 +86,27 @@ public class StatService {
             dateToSearch = DateUtil.setDate(date);
         }
         AdStatsDTO dto = new AdStatsDTO();
-//        List<ZoneEnum> timezones = Arrays.asList(ZoneEnum.values());
-//        for (ZoneEnum zone : timezones) {
-//            List<AdBroadcast> adBroadcasts = adBroadcastRepository.findByTimezoneDate(zone, dateToSearch);
-//            List<AdBasicRepresentation> ads = extractFromAdBroadcast(adBroadcasts);
-//            dto.adsPerTimeZone.put(zone, adMapper.toRepresentationList(ads));
-//        }
-//        List<BroadcastEnum> broadcastEnums = Arrays.asList(BroadcastEnum.values());
-//        for (BroadcastEnum type : broadcastEnums) {
-//            List<AdBroadcast> adBroadcasts = adBroadcastRepository.findByTypeDate(type, dateToSearch);
-//            List<Ad> ads = extractFromAdBroadcast(adBroadcasts);
-//            dto.adsPerBroadcastZone.put(type, adMapper.toRepresentationList(ads));
-//        }
-//        List<AdBroadcast> broadcastsOfDay = adBroadcastRepository.findByDate(dateToSearch);
-//        List<Ad> ads = extractFromAdBroadcast(broadcastsOfDay, auth);
-//        dto.totalDailyAds = ads.size();
+        List<Zone> timezones = Arrays.asList(Zone.values());
+        for (Zone zone : timezones) {
+            List<AdBroadcast> adBroadcasts = adBroadcastRepository.findByTimezoneDate(zone, dateToSearch);
+            if (adBroadcasts.size() != 0) {
+                List<AdBasicRepresentation> ads = extractFromAdBroadcast(adBroadcasts, auth);
+                dto.adsPerTimeZone.put(zone, ads);
+            }
+        }
+        List<BroadcastType> broadcastEnums = Arrays.asList(BroadcastType.values());
+        for (BroadcastType type : broadcastEnums) {
+            List<AdBroadcast> adBroadcasts = adBroadcastRepository.findByTypeDate(type, dateToSearch);
+            if (adBroadcasts.size() != 0) {
+                List<AdBasicRepresentation> ads = extractFromAdBroadcast(adBroadcasts, auth);
+                dto.adsPerBroadcastZone.put(type, ads);
+            }
+        }
+        List<AdBroadcast> broadcastsOfDay = adBroadcastRepository.findByDate(dateToSearch);
+        if (broadcastsOfDay.size() != 0) {
+            List<AdBasicRepresentation> ads = extractFromAdBroadcast(broadcastsOfDay, auth);
+            dto.totalDailyAds = ads.size();
+        }
         return dto;
     }
 
