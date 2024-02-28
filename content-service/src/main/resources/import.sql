@@ -4,7 +4,7 @@ delete from genres;
 
 insert into ads (id, duration, rep_per_zone, starting_date, ending_date, timezone) values (1001, 15, 1, PARSEDATETIME('01-01-2022','dd-MM-yyyy'), PARSEDATETIME('01-03-2022','dd-MM-yyyy'), 'LateNight');
 insert into ads (id, duration, rep_per_zone, starting_date, ending_date, timezone) values (1002, 30, 2, PARSEDATETIME('01-01-2022','dd-MM-yyyy'), PARSEDATETIME('01-04-2022','dd-MM-yyyy'), 'LateNight');
-insert into ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1102, 8, 3, PARSEDATETIME('07-02-2023', 'dd-MM-yyyy'), PARSEDATETIME('23-08-2024', 'dd-MM-yyyy'), 'EarlyMorning');
+insert into ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1302, 8, 3, PARSEDATETIME('07-02-2023', 'dd-MM-yyyy'), PARSEDATETIME('23-08-2024', 'dd-MM-yyyy'), 'EarlyMorning');
 insert into ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1103, 6, 3, PARSEDATETIME('07-02-2023', 'dd-MM-yyyy'), PARSEDATETIME('23-08-2024', 'dd-MM-yyyy'), 'Morning');
 insert into ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1104, 6, 3, PARSEDATETIME('07-02-2023', 'dd-MM-yyyy'), PARSEDATETIME('23-08-2024', 'dd-MM-yyyy'), 'Morning');
 INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1074, 1, 2, PARSEDATETIME('15-04-2022', 'dd-MM-yyyy'), PARSEDATETIME('21-10-2023', 'dd-MM-yyyy'), 'LateNight');
@@ -34,15 +34,15 @@ INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezo
 INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1098, 8, 5, PARSEDATETIME('19-03-2022', 'dd-MM-yyyy'), PARSEDATETIME('09-08-2023', 'dd-MM-yyyy'), 'Noon');
 INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1099, 5, 1, PARSEDATETIME('26-02-2022', 'dd-MM-yyyy'), PARSEDATETIME('05-06-2024', 'dd-MM-yyyy'), 'PrimeTime');
 INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1100, 8, 4, PARSEDATETIME('19-02-2022', 'dd-MM-yyyy'), PARSEDATETIME('25-07-2024', 'dd-MM-yyyy'), 'PrimeTime');
-INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1101, 4, 5, PARSEDATETIME('04-12-2022', 'dd-MM-yyyy'), PARSEDATETIME('24-10-2023', 'dd-MM-yyyy'), 'Afternoon');
-INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1102, 8, 3, PARSEDATETIME('07-02-2023', 'dd-MM-yyyy'), PARSEDATETIME('23-08-2024', 'dd-MM-yyyy'), 'Noon');
-INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1103, 8, 1, PARSEDATETIME('05-06-2022', 'dd-MM-yyyy'), PARSEDATETIME('18-05-2024', 'dd-MM-yyyy'), 'EarlyMorning');
-INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1104, 8, 3, PARSEDATETIME('05-05-2022', 'dd-MM-yyyy'), PARSEDATETIME('26-08-2024', 'dd-MM-yyyy'), 'EarlyMorning');
-INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1105, 8, 1, PARSEDATETIME('19-12-2022', 'dd-MM-yyyy'), PARSEDATETIME('05-08-2024', 'dd-MM-yyyy'), 'Noon');
-INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1106, 1, 1, PARSEDATETIME('31-12-2022', 'dd-MM-yyyy'), PARSEDATETIME('29-07-2023', 'dd-MM-yyyy'), 'LateNight');
-INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1107, 8, 1, PARSEDATETIME('05-03-2022', 'dd-MM-yyyy'), PARSEDATETIME('27-05-2024', 'dd-MM-yyyy'), 'EarlyMorning');
-INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1108, 5, 1, PARSEDATETIME('25-04-2022', 'dd-MM-yyyy'), PARSEDATETIME('14-01-2024', 'dd-MM-yyyy'), 'LateNight');
-INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1109, 7, 3, PARSEDATETIME('09-05-2022', 'dd-MM-yyyy'), PARSEDATETIME('01-09-2024', 'dd-MM-yyyy'), 'PrimeTime');
+INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1201, 4, 5, PARSEDATETIME('04-12-2022', 'dd-MM-yyyy'), PARSEDATETIME('24-10-2023', 'dd-MM-yyyy'), 'Afternoon');
+INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1202, 8, 3, PARSEDATETIME('07-02-2023', 'dd-MM-yyyy'), PARSEDATETIME('23-08-2024', 'dd-MM-yyyy'), 'Noon');
+INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1203, 8, 1, PARSEDATETIME('05-06-2022', 'dd-MM-yyyy'), PARSEDATETIME('18-05-2024', 'dd-MM-yyyy'), 'EarlyMorning');
+INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1204, 8, 3, PARSEDATETIME('05-05-2022', 'dd-MM-yyyy'), PARSEDATETIME('26-08-2024', 'dd-MM-yyyy'), 'EarlyMorning');
+INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1205, 8, 1, PARSEDATETIME('19-12-2022', 'dd-MM-yyyy'), PARSEDATETIME('05-08-2024', 'dd-MM-yyyy'), 'Noon');
+INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1206, 1, 1, PARSEDATETIME('31-12-2022', 'dd-MM-yyyy'), PARSEDATETIME('29-07-2023', 'dd-MM-yyyy'), 'LateNight');
+INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1207, 8, 1, PARSEDATETIME('05-03-2022', 'dd-MM-yyyy'), PARSEDATETIME('27-05-2024', 'dd-MM-yyyy'), 'EarlyMorning');
+INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1208, 5, 1, PARSEDATETIME('25-04-2022', 'dd-MM-yyyy'), PARSEDATETIME('14-01-2024', 'dd-MM-yyyy'), 'LateNight');
+INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1209, 7, 3, PARSEDATETIME('09-05-2022', 'dd-MM-yyyy'), PARSEDATETIME('01-09-2024', 'dd-MM-yyyy'), 'PrimeTime');
 
 
 
@@ -67,7 +67,7 @@ insert into songs (id, title, artist, release_year, duration, genre_id) values(7
 insert into songs (id, title, artist, release_year, duration, genre_id) values(7011, 'Canon in D', 'Johann Pachelbel', 1680, 5, 5);
 insert into songs (id, title, artist, release_year, duration, genre_id) values(7012, 'Symphony No. 9', 'Ludwig van Beethoven', 1824, 7, 5);
 insert into songs (id, title, artist, release_year, duration, genre_id) values(7013, 'Take Five', 'Dave Brubeck Quartet', 1959, 5, 6);
-insert into songs (id, title, artist, release_year, duration, genre_id) values(7014, 'So What', 'Miles Davis', 1959, 6)
+insert into songs (id, title, artist, release_year, duration, genre_id) values(7014, 'So What', 'Miles Davis', 1959, 6, 1);
 insert into songs (id, title, artist, release_year, duration, genre_id) values(7015, 'Lose Yourself', 'Eminem', 2002, 5, 1);
 insert into songs (id, title, artist, release_year, duration, genre_id) values(7016, 'Juicy', 'The Notorious B.I.G.', 1994, 4, 1);
 insert into songs (id, title, artist, release_year, duration, genre_id) values(7017, 'Smells Like Teen Spirit', 'Nirvana', 1991, 5, 2);
