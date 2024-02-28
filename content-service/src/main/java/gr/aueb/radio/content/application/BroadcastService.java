@@ -11,7 +11,7 @@ public interface BroadcastService {
 
     void deleteSongBroadcastsBySongId(String auth, Integer songId);
 
-    Optional deleteAdBroadcastsByAdId(String auth, Integer adId);
+    void deleteAdBroadcastsByAdId(String auth, Integer adId);
 
     List<SongBroadcastBasicRepresentation> getSongBroadcastsBySongId(String auth, Integer id);
 

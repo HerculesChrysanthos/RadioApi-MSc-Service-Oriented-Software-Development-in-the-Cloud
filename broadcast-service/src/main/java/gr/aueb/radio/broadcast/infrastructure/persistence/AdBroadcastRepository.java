@@ -88,5 +88,9 @@ public class AdBroadcastRepository implements PanacheRepositoryBase<AdBroadcast,
         return query.list();
     }
 
+    public void deleteByAdId(Integer adId) {
+        delete("adId", adId);
+    }
+
 }
 

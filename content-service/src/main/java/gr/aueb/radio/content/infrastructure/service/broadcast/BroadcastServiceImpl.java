@@ -31,8 +31,12 @@ public class BroadcastServiceImpl implements BroadcastService {
     }
 
     @Override
-    public Optional deleteAdBroadcastsByAdId(String auth, Integer adId) {
-        return Optional.empty();
+    public void deleteAdBroadcastsByAdId(String auth, Integer adId) {
+        try {
+            broadcastApi.deleteAdBroadcastsByAdId(auth, adId);
+        }  catch (ProcessingException error) {
+            throw new RadioException("Problem on reaching content api.", 424);
+        }
     }
 
     @Override

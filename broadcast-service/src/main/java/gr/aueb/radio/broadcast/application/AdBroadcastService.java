@@ -122,4 +122,15 @@ public class AdBroadcastService {
         }
         return adBroadcastRepository.findByFilters(dateToSearch, adId);
     }
+
+    @Transactional
+    public void deleteByFilters(String auth, Integer adId) {
+        String userRole = userService.verifyAuth(auth).role;
+
+        if(!userRole.equals("PRODUCER")){
+            throw new RadioException("Not Allowed to access this.", 403);
+        }
+
+        adBroadcastRepository.deleteByAdId(adId);
+    }
 }

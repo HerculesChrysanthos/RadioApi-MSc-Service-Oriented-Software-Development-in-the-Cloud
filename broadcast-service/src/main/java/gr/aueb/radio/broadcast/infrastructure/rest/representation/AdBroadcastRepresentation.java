@@ -8,6 +8,6 @@ public class AdBroadcastRepresentation {
     public Integer id;
     public String broadcastDate;
     public String broadcastTime;
-//    public AdRepresentation ad;
+    public Integer adId;
     public BroadcastRepresentation broadcast;
 }

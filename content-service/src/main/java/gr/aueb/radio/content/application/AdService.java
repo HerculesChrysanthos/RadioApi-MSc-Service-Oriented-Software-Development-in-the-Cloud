@@ -123,6 +123,8 @@ public class AdService {
         if (ad == null) {
             throw new NotFoundException("Ad not found");
         }
+
+        broadcastService.deleteAdBroadcastsByAdId(auth, id);
 //        List<AdBroadcast> adBroadcasts = ad.getBroadcastAds();
 //        while (ad.getBroadcastAds().size() != 0){
 //            AdBroadcast adBroadcast = ad.getBroadcastAds().get(0);
