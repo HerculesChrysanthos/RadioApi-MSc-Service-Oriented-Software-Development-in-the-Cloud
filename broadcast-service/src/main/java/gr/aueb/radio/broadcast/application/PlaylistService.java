@@ -39,7 +39,6 @@ public class PlaylistService {
         List<SongBasicRepresentation> possibleSongs = contentService.getSongsByFilters(auth, null, broadcast.getGenreId(), null, null, null);
         Collections.shuffle(possibleSongs);
         Iterator<SongBasicRepresentation> songsIterator = possibleSongs.iterator();
-
         List<SongBasicRepresentation> songsAdded = new ArrayList<>();
 
         List<AdBasicRepresentation> possibleAds = contentService.getAdsByFilters(auth, broadcast.getTimezone().toString(), null);
@@ -57,18 +56,6 @@ public class PlaylistService {
             // get song's songBroadcasts of the day of broadcast
             List<SongBroadcast> songBroadcastsOfDay = songBroadcastRepository.findBySongIdDate(song.id, broadcast.getStartingDate());
 
-//            List<Integer> broadcastSongIds = new ArrayList<>();
-//            for (SongBroadcast songBroadcast : songBroadcastsOfBr) {
-//                broadcastSongIds.add(songBroadcast.getSongId());
-//            }
-
-            //List<SongBasicRepresentation> existingBroadcastSongBroadcasts = new ArrayList<>();
-//            for (SongBasicRepresentation searchingSong: possibleSongs) {
-//                if (broadcastSongIds.contains(searchingSong.id)) {
-//                    existingBroadcastSongBroadcasts.add(searchingSong);
-//                }
-//            }
-
             SongBroadcast sb = broadcast.createSongBroadcast(song, trackedTime, songBroadcastsOfDay, songsAdded);
 
             if(sb != null){
@@ -77,6 +64,7 @@ public class PlaylistService {
                 songsIterator.remove();
                 possibleSongs.remove(song);
             }
+            // how much time can be allocated to ads during the broadcast
             if(broadcast.getAllocatedTime(possibleAds, possibleSongs) >= broadcast.getDuration() / 2 && !adScheduled){
                 // time to add an ad
                 while (!adScheduled && adsIterator.hasNext()){

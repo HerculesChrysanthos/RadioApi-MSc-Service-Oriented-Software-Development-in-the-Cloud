@@ -5,6 +5,9 @@ delete from genres;
 insert into ads (id, duration, rep_per_zone, starting_date, ending_date, timezone) values (1001, 15, 1, PARSEDATETIME('01-01-2022','dd-MM-yyyy'), PARSEDATETIME('01-03-2022','dd-MM-yyyy'), 'LateNight');
 insert into ads (id, duration, rep_per_zone, starting_date, ending_date, timezone) values (1002, 30, 2, PARSEDATETIME('01-01-2022','dd-MM-yyyy'), PARSEDATETIME('01-04-2022','dd-MM-yyyy'), 'LateNight');
 insert into ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1102, 8, 3, PARSEDATETIME('07-02-2023', 'dd-MM-yyyy'), PARSEDATETIME('23-08-2024', 'dd-MM-yyyy'), 'EarlyMorning');
+insert into ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1103, 6, 3, PARSEDATETIME('07-02-2023', 'dd-MM-yyyy'), PARSEDATETIME('23-08-2024', 'dd-MM-yyyy'), 'Morning');
+insert into ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1104, 6, 3, PARSEDATETIME('07-02-2023', 'dd-MM-yyyy'), PARSEDATETIME('23-08-2024', 'dd-MM-yyyy'), 'Morning');
+
 
 insert into genres (id, title) values (1, 'Hip hop');
 insert into genres (id, title) values (2, 'Rock');
@@ -12,4 +15,7 @@ insert into genres (id, title) values (2, 'Rock');
 insert into songs (id, title, artist, release_year, duration, genre_id) values(7001, 'Ride', 'Twenty One Pilots', 2015, 25, 1);
 insert into songs (id, title, artist, release_year, duration, genre_id) values(7002, 'Stressed Out', 'Twenty One Pilots', 2015, 5, 1);
 insert into songs (id, title, artist, release_year, duration, genre_id) values(7003, 'Stressed Out2', 'Twenty One Pilots2', 2015, 5, 1);
+insert into songs (id, title, artist, release_year, duration, genre_id) values(7004, 'Hotel California', 'Eagles', 1976, 6, 2);
+--insert into songs (id, title, artist, release_year, duration, genre_id) values(7005, 'Imagine', 'John Lennon', 1971, 3, 2);
+INSERT INTO songs (id, title, artist, release_year, duration, genre_id) values (7008, 'Smells Like Teen Spirit', 'Nirvana', 1991, 5, 2);
 
