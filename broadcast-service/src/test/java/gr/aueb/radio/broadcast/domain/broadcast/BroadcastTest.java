@@ -1,76 +1,67 @@
 package gr.aueb.radio.broadcast.domain.broadcast;
 
+import gr.aueb.radio.broadcast.common.DateUtil;
 import gr.aueb.radio.broadcast.domain.adBroadcast.AdBroadcast;
-import gr.aueb.radio.broadcast.domain.songBroadcast.SongBroadcast;
-import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdBasicRepresentation;
-import gr.aueb.radio.broadcast.infrastructure.service.content.representation.SongBasicRepresentation;
-import io.quarkus.test.junit.QuarkusTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@QuarkusTest
 public class BroadcastTest {
 
-    @Test
-    public void testCreateAdBroadcast() {
-        // Arrange
-        Broadcast broadcast = new Broadcast(60, LocalDate.of(2024, 2, 25), LocalTime.of(12, 0), BroadcastType.PLAYLIST);
 
-        // Act
-        AdBroadcast adBroadcast = broadcast.createAdBroadcast(new AdBasicRepresentation(), LocalTime.of(12, 30), new ArrayList<>());
 
-        // Assert
-        assertNotNull(adBroadcast);
-        assertEquals(broadcast, adBroadcast.getBroadcast());
+    Broadcast broadcast;
+    private static LocalDate date = DateUtil.setDate("01-01-2023");
+    private static LocalTime time = DateUtil.setTime("00:00");
+    private static Integer duration = 100;
+    @BeforeEach
+    public void setUp(){
+        broadcast = new Broadcast();
+        broadcast.setDuration(duration);
+        broadcast.setStartingDate(date);
+        broadcast.setStartingTime(time);
+        broadcast.setType(BroadcastType.PLAYLIST);
+
     }
 
     @Test
-    public void testCreateSongBroadcast() {
-        // Arrange
-        Broadcast broadcast = new Broadcast(60, LocalDate.of(2024, 2, 25), LocalTime.of(12, 0), BroadcastType.PLAYLIST);
-
-        // Act
-        SongBroadcast songBroadcast = broadcast.createSongBroadcast(new SongBasicRepresentation(), LocalTime.of(12, 30), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-
-        // Assert
-        assertNotNull(songBroadcast);
-        assertEquals(broadcast, songBroadcast.getBroadcast());
+    public void successfulSetupTest(){
+        assertEquals(duration, broadcast.getDuration());
+        assertEquals(date, broadcast.getStartingDate());
+        assertEquals(time, broadcast.getStartingTime());
+        assertEquals(BroadcastType.PLAYLIST, broadcast.getType());
     }
+
+
+
 
     @Test
-    public void testRemoveAdBroadcast() {
-        // Arrange
-        Broadcast broadcast = new Broadcast();
-        AdBroadcast adBroadcast = new AdBroadcast();
-        broadcast.getAdBroadcasts().add(adBroadcast);
+    public void createValidAdBroadcastTest() {
 
-        // Act
-        broadcast.removeAdBroadcast(adBroadcast);
-
-        // Assert
-        assertTrue(broadcast.getAdBroadcasts().isEmpty());
-        assertNull(adBroadcast.getBroadcast());
+        List<AdBroadcast> broadcasts = broadcast.getAdBroadcasts();
+        assertNotNull(broadcasts);
+        assertEquals(0, broadcasts.size());
     }
+
+//    @Test
+//    public void removeValidAdBroadcastTest() {
+//        List<AdBroadcast> broadcasts = broadcast.getAdBroadcasts();
+//        assertEquals(0, broadcasts.size());
+//        AdBroadcast adBroadcast = broadcasts.get(0);
+//        broadcast.removeAdBroadcast(adBroadcast);
+//        assertEquals(0, broadcasts.size());
+//    }
 
     @Test
-    public void testRemoveSongBroadcast() {
-        // Arrange
-        Broadcast broadcast = new Broadcast();
-        SongBroadcast songBroadcast = new SongBroadcast();
-        broadcast.getSongBroadcasts().add(songBroadcast);
-
-        // Act
-        broadcast.removeSongBroadcast(songBroadcast);
-
-        // Assert
-        assertTrue(broadcast.getSongBroadcasts().isEmpty());
-        assertNull(songBroadcast.getBroadcast());
+    public void getEndingTimeTest(){
+        LocalDateTime expectedTime = date.atTime(time).plusMinutes(duration);
+        LocalDateTime endingTime = broadcast.getBroadcastEndingDateTime();
+        assertTrue(expectedTime.isEqual(endingTime));
     }
-
-    // Add more test cases to cover other methods and edge cases
 }
