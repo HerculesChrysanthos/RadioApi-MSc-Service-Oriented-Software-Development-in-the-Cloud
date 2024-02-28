@@ -191,15 +191,12 @@ public class BroadcastResource {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
         }
     }
-
+    @GET
     @Path("/stats")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    @RequestScoped
     public Response getDailySchedule(
             @QueryParam("date") String date,
-            @HeaderParam("Authorization") String auth)
-    {
+            @HeaderParam("Authorization") String auth
+    ) {
         try {
             List<BroadcastOutputRepresentation> broadcastsOfDay = statService.getDailySchedule(date, auth);
             return Response.ok().entity(broadcastsOfDay).build();
