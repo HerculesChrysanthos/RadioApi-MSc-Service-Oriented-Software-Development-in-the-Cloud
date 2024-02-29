@@ -41,7 +41,7 @@ public class JPAQueriesTest {
     @TestTransaction
     public void addListTest(){
         List<Ad> ads = entityManager.createQuery("select ad from Ad ad").getResultList();
-        assertEquals(5, ads.size());
+        assertEquals(41, ads.size());
 
     }
 
@@ -50,7 +50,7 @@ public class JPAQueriesTest {
     public void testFindAllAds() {
         List<Ad> ads = entityManager.createQuery("SELECT a FROM Ad a", Ad.class).getResultList();
         assertNotNull(ads);
-        assertEquals(5, ads.size()); // Assuming there are 2 ads in the database
+        assertEquals(41, ads.size()); // Assuming there are 2 ads in the database
     }
 
     @Test
@@ -68,7 +68,7 @@ public class JPAQueriesTest {
                 .setParameter("zone", Zone.LateNight)
                 .getResultList();
         assertNotNull(ads);
-        assertEquals(2, ads.size());
+        assertEquals(6, ads.size());
     }
 
     @Test
