@@ -1,13 +1,16 @@
 package gr.aueb.radio.content.application;
 
-import gr.aueb.radio.content.common.NotFoundException;
+import gr.aueb.radio.content.common.IntegrationBase;
+import gr.aueb.radio.content.common.RadioException;
 import gr.aueb.radio.content.infrastructure.persistence.GenreRepository;
 import gr.aueb.radio.content.infrastructure.rest.representation.GenreMapper;
 import gr.aueb.radio.content.infrastructure.rest.representation.GenreRepresentation;
 import gr.aueb.radio.content.infrastructure.rest.representation.SongRepresentation;
 import gr.aueb.radio.content.infrastructure.service.user.representation.UserVerifiedRepresentation;
 import io.quarkus.test.InjectMock;
+import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.NotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +19,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -23,16 +29,10 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
-class GenreServiceTest {
+@QuarkusTest
+class GenreServiceTest extends IntegrationBase {
 
-    @Mock
-    private GenreRepository mockGenreRepository;
-    @Mock
-    private GenreMapper mockGenreMapper;
-
-    private GenreService genreServiceUnderTest;
-
-    private AutoCloseable mockitoCloseable;
+//    private AutoCloseable mockitoCloseable;
 
     @Inject
     GenreService genreService; // The service class that contains getGenreById method
@@ -40,25 +40,17 @@ class GenreServiceTest {
     @InjectMock
     UserService userService;
 
-    @Mock
-    GenreRepository genreRepository; // Mocking the repository dependency
-
-    @Mock
-    GenreMapper genreMapper;
+    @Inject
+    GenreRepository genreRepository;
 
     @BeforeEach
-    void setUp() {
-        mockitoCloseable = openMocks(this);
+    public void setup() {
+        MockitoAnnotations.initMocks(this);
         UserVerifiedRepresentation user = new UserVerifiedRepresentation();
         user.id = 1;
-        user.role = "USER";
+        user.role = "PRODUCER";
         Mockito.when(userService.verifyAuth(anyString())).thenReturn(user);
-    }
 
-
-    @AfterEach
-    void tearDown() throws Exception {
-        mockitoCloseable.close();
     }
 
     @Test
@@ -66,8 +58,28 @@ class GenreServiceTest {
         GenreRepresentation foundGenre = genreService.getGenreById(1, "auth");
         assertNotNull(foundGenre);
         assertEquals("Hip hop", foundGenre.title);
-        assertThrows(jakarta.ws.rs.NotFoundException.class, () -> genreService.getGenreById(-1, "auth"));
+        assertThrows(NotFoundException.class, () -> genreService.getGenreById(-1, "auth"));
     }
+
+    @Test
+    void testGetAllGenres() {
+        int initNumOfGenres = genreRepository.listAll().size();
+        List<GenreRepresentation> foundGenres = genreService.getAllGenres("auth");
+        assertNotNull(foundGenres);
+        assertTrue(foundGenres.size() > 0);
+        assertEquals(initNumOfGenres , foundGenres.size());
+        // Mock user verification to return a USER role to test the radio exception
+        UserVerifiedRepresentation user = new UserVerifiedRepresentation();
+        user.role = "USER";
+        when(userService.verifyAuth(anyString())).thenReturn(user);
+        assertThrows(RadioException.class, () -> genreService.getAllGenres(""));
+    }
+//
+//    @AfterEach
+//    void tearDown() throws Exception {
+//        mockitoCloseable.close();
+//    }
+
 
 //    @Test
 //    void testGetGenreById() {

@@ -1,6 +1,5 @@
 package gr.aueb.radio.content.application;
 
-import gr.aueb.radio.content.common.NotFoundException;
 import gr.aueb.radio.content.common.RadioException;
 import gr.aueb.radio.content.domain.ad.Ad;
 import gr.aueb.radio.content.domain.genre.Genre;
@@ -10,7 +9,7 @@ import gr.aueb.radio.content.infrastructure.rest.representation.GenreRepresentat
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-
+import jakarta.ws.rs.NotFoundException;
 import java.util.List;
 
 @RequestScoped
