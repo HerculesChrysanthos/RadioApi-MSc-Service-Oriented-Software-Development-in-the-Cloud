@@ -3,6 +3,7 @@ package gr.aueb.radio.content.application;
 
 import gr.aueb.radio.content.common.DateUtil;
 import gr.aueb.radio.content.common.IntegrationBase;
+import gr.aueb.radio.content.common.RadioException;
 import gr.aueb.radio.content.domain.ad.Ad;
 import gr.aueb.radio.content.domain.ad.Zone;
 import gr.aueb.radio.content.infrastructure.persistence.AdRepository;
@@ -25,6 +26,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 
 @QuarkusTest
@@ -57,6 +59,12 @@ public class AdServiceTest extends IntegrationBase {
         Integer adId = ads.get(0).getId();
         AdRepresentation ad = adService.findAd(adId,"PRODUCER");
         assertNotNull(ad);
+        assertThrows(NotFoundException.class, () -> adService.findAd(-1, "auth"));
+        UserVerifiedRepresentation user = new UserVerifiedRepresentation();
+        user.id = 1;
+        user.role = "USER";
+        Mockito.when(userService.verifyAuth(anyString())).thenReturn(user);
+        assertThrows(RadioException.class, () -> adService.findAd(-1, "auth"));
     }
 
 
@@ -79,32 +87,54 @@ public class AdServiceTest extends IntegrationBase {
         assertEquals(Zone.EarlyMorning, adCreated.getTimezone());
         LocalDate dateToCheck = DateUtil.setDate(adRepresentation.startingDate);
         assertTrue(dateToCheck.equals(adCreated.getStartingDate()));
+        // Mock user verification to return a USER role to test the radio exception
+        UserVerifiedRepresentation user = new UserVerifiedRepresentation();
+        user.role = "USER";
+        when(userService.verifyAuth(anyString())).thenReturn(user);
+        assertThrows(RadioException.class, () -> adService.create(adRepresentation,"USER"));
+    }
+
+    @Test
+    public void UpdateAdTest() {
+        AdRepresentation adRepresentation = new AdRepresentation();
+        adRepresentation.duration = 60;
+        adRepresentation.startingDate = "01-01-2022";
+        adRepresentation.endingDate = "01-03-2022";
+        adRepresentation.timezone = Zone.EarlyMorning;
+        adRepresentation.repPerZone = 2;
+
+
+        adRepresentation.startingDate = "01-02-2022";
+        Ad adCreated = adService.create(adRepresentation,"auth");
+        LocalDate dateToCheck = DateUtil.setDate(adRepresentation.startingDate);
+        int numOfAds = adRepository.listAll().size();
+        Ad adUpdated = adService.update(1001, adRepresentation,"auth");
+        //  check that num of ads not changed after update
+        assertEquals(numOfAds, adRepository.listAll().size());
+        // check for correct update
+        assertEquals(dateToCheck, adUpdated.getStartingDate());
+        // Ad is immutable, it has song/add scheduled
+        List<AdBroadcastBasicRepresentation> listOfAb = new ArrayList<>();
+        AdBroadcastBasicRepresentation ab = new AdBroadcastBasicRepresentation();
+        ab.id = 2;
+        listOfAb.add(ab);
+
+        Mockito.when(broadcastService.getAdBroadcastsByAdId(anyString(),anyInt())).thenReturn(listOfAb);
+
+        assertThrows(RadioException.class, () -> {
+            adService.update(adCreated.getId(), adRepresentation, "auth");
+        });
+        // not found
+        assertThrows(NotFoundException.class, () -> adService.update(-1, adRepresentation,"auth"));
+        // User unauthorised
+        UserVerifiedRepresentation user = new UserVerifiedRepresentation();
+        user.role = "USER";
+        when(userService.verifyAuth(anyString())).thenReturn(user);
+        assertThrows(RadioException.class, () -> adService.update(adCreated.getId(), adRepresentation,"auth"));
+
+
 
     }
-//
-//    @Test
-//    public void UpdateAdTest() {
-//        AdRepresentation adRepresentation = new AdRepresentation();
-//        adRepresentation.duration = 60;
-//        adRepresentation.startingDate = "01-01-2022";
-//        adRepresentation.endingDate = "01-03-2022";
-//        adRepresentation.timezone = Zone.EarlyMorning;
-//        adRepresentation.repPerZone = 2;
-//
-//
-//        adRepresentation.startingDate = "01-02-2022";
-//        Ad adCreated = adService.create(adRepresentation,"auth");
-//        LocalDate dateToCheck = DateUtil.setDate(adRepresentation.startingDate);
-//        int numOfAds = adRepository.listAll().size();
-//       // Ad adUpdated = adService.update(adCreated.getId(), adRepresentation,"auth");
-//        //  check that num of ads not changed after update
-//        assertEquals(numOfAds, adRepository.listAll().size());
-//        // check for correct update
-//      //  assertEquals(dateToCheck, adUpdated.getStartingDate());
-//
-//        // Ad is immutable, it has song/add scheduled
-//
-//    }
 //
 //    @Test
 //    public void DeleteAdTest() {
