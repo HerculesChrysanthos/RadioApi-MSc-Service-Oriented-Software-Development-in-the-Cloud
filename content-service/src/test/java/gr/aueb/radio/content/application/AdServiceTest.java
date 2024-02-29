@@ -135,28 +135,32 @@ public class AdServiceTest extends IntegrationBase {
 
 
     }
-//
-//    @Test
-//    public void DeleteAdTest() {
-//
-//        List<Ad> adsList = adRepository.listAll();
-//        Integer adId = adsList.get(0).getId();
-//        int numOfAds = adsList.size();
-//
-//
-//        List<AdBroadcastBasicRepresentation> listOfAd = new ArrayList<>();
-//        AdBroadcastBasicRepresentation adBroadcast = new AdBroadcastBasicRepresentation();
-//        adBroadcast.id = 1;
-//        listOfAd.add(adBroadcast);
-//
-//        Mockito.when(broadcastService.getAdBroadcastsByAdId(anyString(),anyInt())).thenReturn(listOfAd);
-//
-//
-//        adService.delete(adId,"auth");
-//        assertEquals(numOfAds, adRepository.listAll().size());
-//
-//    }
 
+    @Test
+    public void DeleteAdTest() {
+
+        List<Ad> adsList = adRepository.listAll();
+        Integer adId = adsList.get(0).getId();
+        int numOfAds = adsList.size();
+
+
+        List<AdBroadcastBasicRepresentation> listOfAd = new ArrayList<>();
+        AdBroadcastBasicRepresentation adBroadcast = new AdBroadcastBasicRepresentation();
+        adBroadcast.id = 1;
+        listOfAd.add(adBroadcast);
+
+        Mockito.when(broadcastService.getAdBroadcastsByAdId(anyString(),anyInt())).thenReturn(listOfAd);
+
+        adService.delete(adId,"auth");
+        assertEquals(numOfAds - 1, adRepository.listAll().size());
+        // not found
+        assertThrows(NotFoundException.class, () -> adService.delete(-1,"auth"));
+        // User unauthorised
+        UserVerifiedRepresentation user = new UserVerifiedRepresentation();
+        user.role = "USER";
+        when(userService.verifyAuth(anyString())).thenReturn(user);
+        assertThrows(RadioException.class, () -> adService.delete(adId,"auth"));
+    }
 
 }
 
