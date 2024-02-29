@@ -45,7 +45,7 @@ public class ContentServiceImpl implements ContentService {
         try {
             return contentApi.getSongId(auth, songId);
         } catch (ProcessingException error) {
-            throw new RadioException("Problem on reaching content api.", 424);
+            throw new ExternalServiceException("Problem on reaching content api.", 424);
         } catch (NotFoundException error) {
             throw new RadioException("not found", 404);
         }
