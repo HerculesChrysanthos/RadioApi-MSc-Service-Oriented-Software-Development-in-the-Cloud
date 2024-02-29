@@ -84,4 +84,8 @@ public class SongBroadcast {
         LocalDateTime startingDate = this.broadcastDate.atTime(this.broadcastTime);
         return startingDate.plusMinutes(duration);
     }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }
