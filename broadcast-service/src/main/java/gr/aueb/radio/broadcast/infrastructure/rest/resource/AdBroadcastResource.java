@@ -40,8 +40,11 @@ public class AdBroadcastResource {
         try {
             List<AdBroadcast> found = adBroadcastService.search(date, adId, auth);
             return Response.ok().entity(adBroadcastMapper.toRepresentationList(found)).build();
-        }catch (RadioException re){
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+        } catch (RadioException re){
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
         } catch (ExternalServiceException externalServiceException) {
             return Response.status(externalServiceException.getStatusCode())
                     .entity(new ErrorResponse(externalServiceException.getMessage()))
@@ -65,6 +68,11 @@ public class AdBroadcastResource {
             return Response.status(externalServiceException.getStatusCode())
                     .entity(new ErrorResponse(externalServiceException.getMessage()))
                     .build();
+        }  catch (RadioException re){
+        int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+        return Response.status(statusCode)
+                .entity(new ErrorResponse(re.getMessage()))
+                .build();
         }
     }
 
@@ -84,6 +92,11 @@ public class AdBroadcastResource {
             return Response.status(externalServiceException.getStatusCode())
                     .entity(new ErrorResponse(externalServiceException.getMessage()))
                     .build();
+        } catch (RadioException re){
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                .entity(new ErrorResponse(re.getMessage()))
+                .build();
         }
     }
 
@@ -123,7 +136,10 @@ public class AdBroadcastResource {
             adBroadcastService.deleteByFilters(auth, adId);
             return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
         } catch (RadioException re){
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
         } catch (ExternalServiceException externalServiceException) {
             return Response.status(externalServiceException.getStatusCode())
                     .entity(new ErrorResponse(externalServiceException.getMessage()))

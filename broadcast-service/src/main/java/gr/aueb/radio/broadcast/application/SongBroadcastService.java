@@ -85,7 +85,7 @@ public class SongBroadcastService {
 
         SongBroadcast songBroadcast = songBroadcastRepository.findByIdDetails(id);
         if (songBroadcast == null) {
-            throw new RadioException("Song Broadcast does not exist");
+            throw new NotFoundException("Song Broadcast does not exist");
         }
         return songBroadcast;
     }
