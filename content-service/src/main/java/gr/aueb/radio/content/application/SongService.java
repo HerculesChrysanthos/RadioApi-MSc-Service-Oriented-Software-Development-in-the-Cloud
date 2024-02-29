@@ -58,7 +58,7 @@ public class SongService {
         }
 
 
-        Genre genre = genreMapper.toModel(genreService.getGenreById(songInputDTO.genreId));
+        Genre genre = genreMapper.toModel(genreService.getGenreById( songInputDTO.genreId, auth));
         song.setGenre(genre);
         song.setDuration(songInputDTO.duration);
         song.setArtist(songInputDTO.artist);
@@ -99,7 +99,7 @@ public class SongService {
     public Song create(SongInputDTO songInputDTO, String auth) {
         userService.verifyAuth(auth);
 
-        GenreRepresentation genreRepresentation = genreService.getGenreById(songInputDTO.genreId);
+        GenreRepresentation genreRepresentation = genreService.getGenreById( songInputDTO.genreId, auth);
         SongRepresentation songRepresentation = songInputDTO.toRepresentation(genreRepresentation);
 
         Song song = songMapper.toModel(songRepresentation);
