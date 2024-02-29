@@ -131,6 +131,66 @@ class SongServiceTest extends IntegrationBase {
 
     }
 
+
+    @Test
+    public void testUpdateSong() {
+        // Create a test song
+        SongInputDTO songInputDTO = new SongInputDTO();
+        GenreRepresentation genreRepresentation = new GenreRepresentation();
+        genreRepresentation.id = 1;
+        genreRepresentation.title = "genre-title";
+
+        songInputDTO.title = "Test Song";
+        songInputDTO.artist = "Test Artist";
+        songInputDTO.genreId = 1;
+        songInputDTO.year = 2022;
+        songInputDTO.duration = 18;
+
+        Song createdSong = songService.create(songInputDTO, "test");
+
+        SongInputDTO updatedSongDTO = new SongInputDTO();
+        updatedSongDTO.title = "Updated Song Title";
+        updatedSongDTO.artist = "Updated Artist";
+        updatedSongDTO.genreId = 2; // Assuming another genre ID for update
+        updatedSongDTO.year = 2023;
+        updatedSongDTO.duration = 20;
+
+        Song updatedSong = songService.update(createdSong.getId(), updatedSongDTO, "auth");
+
+        assertEquals(updatedSongDTO.title, updatedSong.getTitle());
+        assertEquals(updatedSongDTO.artist, updatedSong.getArtist());
+        assertEquals(updatedSongDTO.year, updatedSong.getYear());
+        assertEquals(updatedSongDTO.duration, updatedSong.getDuration());
+        assertEquals(updatedSongDTO.genreId, updatedSong.getGenre().getId());
+    }
+
+    @Test
+    public void testDeleteSong() {
+        SongInputDTO songInputDTO = new SongInputDTO();
+        GenreRepresentation genreRepresentation = new GenreRepresentation();
+        genreRepresentation.id = 1;
+        genreRepresentation.title = "genre-title";
+
+        songInputDTO.title = "Test Song";
+        songInputDTO.artist = "Test Artist";
+        songInputDTO.genreId = 1;
+        songInputDTO.year = 2022;
+        songInputDTO.duration = 18;
+
+        Song createdSong = songService.create(songInputDTO, "test");
+
+        songService.delete(createdSong.getId(), "auth");
+
+        assertThrows(NotFoundException.class, () -> songService.findSong(createdSong.getId(), "auth"));
+    }
+
+    @Test
+    public void testDeleteSongNotFound() {
+        assertThrows(NotFoundException.class, () -> songService.delete(-1, "auth"));
+    }
+
+
+
 //    public void t () {
 //        // Create a test song
 //        SongInputDTO songInputDTO = new SongInputDTO();

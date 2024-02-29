@@ -50,6 +50,10 @@ public class SongResource {
             return Response.ok().entity(found).build();
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         }
     }
 
@@ -63,15 +67,21 @@ public class SongResource {
             @QueryParam("songsIds") String songsIds,
             @HeaderParam("Authorization") String auth
     ) {
-        List<Integer> convertedSongsId = new ArrayList<>();
-        if(songsIds != null) {
-            convertedSongsId = Arrays.stream(songsIds.split(","))
-                    .map(Integer::parseInt)
-                    .collect(Collectors.toList());
-        }
+        try {
+            List<Integer> convertedSongsId = new ArrayList<>();
+            if(songsIds != null) {
+                convertedSongsId = Arrays.stream(songsIds.split(","))
+                        .map(Integer::parseInt)
+                        .collect(Collectors.toList());
+            }
 
-        List<SongRepresentation> found = songService.search(artist, genreId, genreTitle, title, convertedSongsId, auth);
-        return Response.ok().entity(found).build();
+            List<SongRepresentation> found = songService.search(artist, genreId, genreTitle, title, convertedSongsId, auth);
+            return Response.ok().entity(found).build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
+        }
     }
 
     @POST
@@ -87,10 +97,10 @@ public class SongResource {
             URI uri = UriBuilder.fromResource(SongResource.class).path(String.valueOf(song.getId())).build();
             SongRepresentation createdSongRepresentation = songMapper.toRepresentation(song);
             return Response.created(uri).entity(createdSongRepresentation).build();
-        } catch (
-                RadioException re) {
-            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
-            return Response.status(statusCode).entity(re.getMessage()).build();
+        } catch (ExternalServiceException externalServiceException){
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         }
 
     }
@@ -108,11 +118,8 @@ public class SongResource {
             return Response.status(externalServiceException.getStatusCode())
                     .entity(new ErrorResponse(externalServiceException.getMessage()))
                     .build();
-        } catch (RadioException re){
-            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
-            return Response.status(statusCode)
-                    .entity(new ErrorResponse(re.getMessage()))
-                    .build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND.getStatusCode(), e.getMessage()).build();
         }
     }
 

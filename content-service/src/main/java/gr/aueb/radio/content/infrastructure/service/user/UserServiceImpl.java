@@ -1,6 +1,7 @@
 package gr.aueb.radio.content.infrastructure.service.user;
 
 import gr.aueb.radio.content.application.UserService;
+import gr.aueb.radio.content.common.ExternalServiceException;
 import gr.aueb.radio.content.common.RadioException;
 import gr.aueb.radio.content.infrastructure.service.user.representation.UserVerifiedRepresentation;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -31,11 +32,8 @@ public class UserServiceImpl implements UserService {
 
             return user;
         } catch(ProcessingException error) {
-            throw new RadioException("Problem on reaching user api.", 424);
+            throw new ExternalServiceException("Problem on reaching user api.");
         }
-//        catch (ResteasyWebApplicationException rwa){
-//            throw new RadioException("Fo", 403);
-//        }
 
     }
 }

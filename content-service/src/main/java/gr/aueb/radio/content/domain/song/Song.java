@@ -100,6 +100,9 @@ public class Song {
         this.year = year;
     }
 
+    public void setId(int i) {
+    }
+
 
 //    private boolean checkForPrevOccurrence(List<SongBroadcast> broadcasts, LocalDateTime dateTime){
 //        // 1 hour before starting time
