@@ -8,15 +8,11 @@ import gr.aueb.radio.broadcast.common.ExternalServiceException;
 import gr.aueb.radio.broadcast.common.IntegrationBase;
 import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.domain.adBroadcast.AdBroadcast;
-import gr.aueb.radio.broadcast.domain.songBroadcast.SongBroadcast;
 import gr.aueb.radio.broadcast.infrastructure.persistence.AdBroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.rest.ApiPath;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.AdBroadcastCreationDTO;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.AdBroadcastRepresentation;
-import gr.aueb.radio.broadcast.infrastructure.rest.representation.SongBroadcastCreationDTO;
-import gr.aueb.radio.broadcast.infrastructure.rest.representation.SongBroadcastRepresentation;
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdBasicRepresentation;
-import gr.aueb.radio.broadcast.infrastructure.service.content.representation.SongBasicRepresentation;
 import gr.aueb.radio.broadcast.infrastructure.service.user.representation.UserVerifiedRepresentation;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
@@ -123,7 +119,7 @@ public class AdBroadcastResourceTest extends IntegrationBase {
                 .contentType(ContentType.JSON)
                 .header("Authorization","auth")
                 .get(url)
-                .then().statusCode(Response.Status.BAD_REQUEST.getStatusCode());
+                .then().statusCode(403);
     }
 
     @Test
@@ -148,6 +144,19 @@ public class AdBroadcastResourceTest extends IntegrationBase {
                 .header("Authorization","auth")
                 .get(url)
                 .then().statusCode(424);
+    }
+
+    @Test
+    public void testABByIdRadioException() {
+        when(userService.verifyAuth("auth")).thenThrow(new RadioException("auth problem",403));
+        String url = ApiPath.Root.AD_BROADCASTS + "/10";
+
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .header("Authorization","auth")
+                .get(url)
+                .then().statusCode(403);
     }
 
     @Test
@@ -280,13 +289,25 @@ public class AdBroadcastResourceTest extends IntegrationBase {
     @Test
     public void testDeleteExternalException() {
         when(userService.verifyAuth("auth")).thenThrow(new ExternalServiceException("Problem on reaching user api."));
-        String url = ApiPath.Root.SONG_BROADCASTS + "/4001" ;
+        String url = ApiPath.Root.AD_BROADCASTS + "/4001" ;
         given()
                 .when()
                 .contentType(ContentType.JSON)
                 .header("Authorization","auth")
                 .delete(url)
                 .then().statusCode(424);
+    }
+
+    @Test
+    public void testDeleteRadioException() {
+        when(userService.verifyAuth("auth")).thenThrow(new RadioException("Problem on reaching user api."));
+        String url = ApiPath.Root.AD_BROADCASTS + "/4001" ;
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .header("Authorization","auth")
+                .delete(url)
+                .then().statusCode(400);
     }
 
     @Test
@@ -324,7 +345,7 @@ public class AdBroadcastResourceTest extends IntegrationBase {
                 .contentType(ContentType.JSON)
                 .header("Authorization","auth")
                 .delete(url)
-                .then().statusCode(400);
+                .then().statusCode(403);
     }
 
 }

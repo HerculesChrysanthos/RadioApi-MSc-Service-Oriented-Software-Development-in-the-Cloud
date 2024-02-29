@@ -125,7 +125,7 @@ public class SongBroadcastResourceTest extends IntegrationBase {
                 .contentType(ContentType.JSON)
                 .header("Authorization","auth")
                 .get(url)
-                .then().statusCode(Response.Status.BAD_REQUEST.getStatusCode());
+                .then().statusCode(403);
     }
 
     @Test
@@ -293,6 +293,18 @@ public class SongBroadcastResourceTest extends IntegrationBase {
                 .header("Authorization","auth")
                 .delete(url)
                 .then().statusCode(424);
+    }
+
+    @Test
+    public void testDeleteRadioException() {
+        when(userService.verifyAuth("auth")).thenThrow(new RadioException("Problem on reaching user api."));
+        String url = ApiPath.Root.SONG_BROADCASTS + "/4001" ;
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .header("Authorization","auth")
+                .delete(url)
+                .then().statusCode(400);
     }
 
     @Test
