@@ -83,7 +83,7 @@ public class AdBroadcastService {
 
         AdBroadcast adBroadcast = adBroadcastRepository.findByIdDetails(id);
         if (adBroadcast == null) {
-            throw new NotFoundRadioException("Ad Broadcast does not exist");
+            throw new NotFoundException("Ad Broadcast does not exist");
         }
         return adBroadcast;
     }

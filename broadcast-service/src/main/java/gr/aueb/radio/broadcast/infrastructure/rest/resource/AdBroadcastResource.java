@@ -42,6 +42,10 @@ public class AdBroadcastResource {
             return Response.ok().entity(adBroadcastMapper.toRepresentationList(found)).build();
         }catch (RadioException re){
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         }
     }
 
@@ -57,6 +61,10 @@ public class AdBroadcastResource {
             return Response.ok().entity(adBroadcastMapper.toRepresentation(adBroadcast)).build();
         }catch (NotFoundException e){
             return Response.status(Response.Status.NOT_FOUND.getStatusCode(), e.getMessage()).build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         }
     }
 
@@ -72,6 +80,10 @@ public class AdBroadcastResource {
             return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
         }catch (NotFoundException e){
             return Response.status(Response.Status.NOT_FOUND.getStatusCode(), e.getMessage()).build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         }
     }
 
@@ -112,6 +124,10 @@ public class AdBroadcastResource {
             return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
         } catch (RadioException re){
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         }
     }
 }

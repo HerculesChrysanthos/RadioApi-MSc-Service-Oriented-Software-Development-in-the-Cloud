@@ -51,8 +51,11 @@ public class AdBroadcastRepository implements PanacheRepositoryBase<AdBroadcast,
     public AdBroadcast findByIdDetails(Integer id){
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
-
-        return find("select ab from AdBroadcast ab left join fetch ab.broadcast where ab.id=:id", params).singleResult();
+        try {
+            return find("select ab from AdBroadcast ab left join fetch ab.broadcast where ab.id=:id", params).singleResult();
+        } catch (NoResultException e){
+            return null;
+        }
 
 //        List<AdBroadcast> broadcasts = find("select ab from AdBroadcast ab left join fetch ab.ad where ab.id=:id", params).list();
 //        try {
