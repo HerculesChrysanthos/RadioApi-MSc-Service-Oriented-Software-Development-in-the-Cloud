@@ -54,15 +54,14 @@ class GenreServiceTest extends IntegrationBase {
     }
 
     @Test
-    void testGetGenreById() {
+    public void testGetGenreById() {
         GenreRepresentation foundGenre = genreService.getGenreById(1, "auth");
         assertNotNull(foundGenre);
         assertEquals("Hip hop", foundGenre.title);
         assertThrows(NotFoundException.class, () -> genreService.getGenreById(-1, "auth"));
     }
-
     @Test
-    void testGetAllGenres() {
+    public void testGetAllGenres() {
         int initNumOfGenres = genreRepository.listAll().size();
         List<GenreRepresentation> foundGenres = genreService.getAllGenres("auth");
         assertNotNull(foundGenres);
