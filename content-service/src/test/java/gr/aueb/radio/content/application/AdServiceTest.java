@@ -12,6 +12,7 @@ import gr.aueb.radio.content.infrastructure.service.broadcast.representation.AdB
 import gr.aueb.radio.content.infrastructure.service.broadcast.representation.SongBroadcastBasicRepresentation;
 import gr.aueb.radio.content.infrastructure.service.user.representation.UserVerifiedRepresentation;
 import io.quarkus.test.InjectMock;
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,6 +68,19 @@ public class AdServiceTest extends IntegrationBase {
         assertThrows(RadioException.class, () -> adService.findAd(-1, "auth"));
     }
 
+    @Test
+    public void Search(){
+        // check retrieval of all ads by timezone
+        List<AdRepresentation> adsLateNight  = adService.search( Zone.LateNight, null, "auth");
+        for(AdRepresentation ad : adsLateNight) {
+            assertEquals(ad.timezone, Zone.LateNight);
+        }
+        // Mock user verification to return a USER role to test the radio exception
+        UserVerifiedRepresentation user = new UserVerifiedRepresentation();
+        user.role = "USER";
+        when(userService.verifyAuth(anyString())).thenReturn(user);
+        assertThrows(RadioException.class, () -> adService.search(Zone.LateNight, null,""));
+    }
 
     @Test
     public void CreateAdTest() {
