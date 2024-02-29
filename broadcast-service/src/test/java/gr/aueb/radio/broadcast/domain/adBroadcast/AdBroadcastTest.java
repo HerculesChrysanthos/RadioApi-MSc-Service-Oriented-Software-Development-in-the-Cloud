@@ -2,6 +2,7 @@ package gr.aueb.radio.broadcast.domain.adBroadcast;
 
 import gr.aueb.radio.broadcast.common.DateUtil;
 import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
+import gr.aueb.radio.broadcast.infrastructure.rest.representation.AdBroadcastRepresentation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,6 +11,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class AdBroadcastTest {
 
@@ -118,6 +121,53 @@ public class AdBroadcastTest {
 
         // Assert
         assertNull(actualBroadcast);
+    }
+
+    @Test
+    public void testGetAd() {
+        // Create an instance of AdBroadcast
+        AdBroadcast adBroadcast = new AdBroadcast();
+
+        // Set adId
+        Integer expectedAdId = 123;
+        adBroadcast.setAd(expectedAdId);
+
+        // Call the method we are testing
+        Integer actualAdId = adBroadcast.getAd();
+
+        // Verify that the method returned the expected value
+        assertEquals(expectedAdId, actualAdId);
+    }
+    @Test
+    public void testGetAdId() {
+        // Create an instance of AdBroadcast
+        AdBroadcast adBroadcast = new AdBroadcast();
+
+        // Set adId
+        Integer expectedAdId = 321;
+        adBroadcast.setAd(expectedAdId);
+
+        // Call the method we are testing
+        Integer actualAdId = adBroadcast.getAdId();
+
+        // Verify that the method returned the expected value
+        assertEquals(expectedAdId, actualAdId);
+    }
+
+    @Test
+    public void testSetId() {
+        // Create an instance of AdBroadcast
+        AdBroadcast adBroadcast = new AdBroadcast();
+
+        // Set ID
+        int expectedId = 1;
+        adBroadcast.setId(expectedId);
+
+        // Call the method we are testing
+        int actualId = adBroadcast.getId();
+
+        // Verify that the method set the ID correctly
+        assertEquals(expectedId, actualId);
     }
 
 }
