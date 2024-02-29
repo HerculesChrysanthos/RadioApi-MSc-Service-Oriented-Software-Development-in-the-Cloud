@@ -1,7 +1,8 @@
 package gr.aueb.radio.broadcast.infrastructure.rest.resource;
 
+import gr.aueb.radio.broadcast.common.ErrorResponse;
+import gr.aueb.radio.broadcast.common.ExternalServiceException;
 import gr.aueb.radio.broadcast.common.RadioException;
-import gr.aueb.radio.broadcast.common.NotFoundRadioException;
 import gr.aueb.radio.broadcast.application.SongBroadcastService;
 import gr.aueb.radio.broadcast.domain.songBroadcast.SongBroadcast;
 import gr.aueb.radio.broadcast.infrastructure.rest.ApiPath.Root;
@@ -41,6 +42,10 @@ public class SongBroadcastResource {
             return Response.ok().entity(songBroadcastMapper.toRepresentationList(found)).build();
         } catch (RadioException re) {
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         }
     }
 
@@ -56,6 +61,10 @@ public class SongBroadcastResource {
             return Response.ok().entity(songBroadcastMapper.toRepresentation(songBroadcast)).build();
         } catch (RadioException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode(), e.getMessage()).build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         }
     }
 
@@ -71,7 +80,12 @@ public class SongBroadcastResource {
             return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode(), e.getMessage()).build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         }
+
     }
 
 
@@ -89,6 +103,10 @@ public class SongBroadcastResource {
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         }
     }
 
@@ -102,6 +120,10 @@ public class SongBroadcastResource {
             return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
         } catch (RadioException re) {
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         }
     }
 }
