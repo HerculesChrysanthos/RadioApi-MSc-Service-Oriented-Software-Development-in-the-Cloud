@@ -53,14 +53,14 @@ public class AdBroadcast {
     public void setBroadcastDate(LocalDate broadcastDate) {
         this.broadcastDate = broadcastDate;
     }
-//    public Ad getAd() {
-//        return this.ad;
-//    }
+    public Integer getAd() {
+        return this.adId;
+    }
 
 
-//    public void setAd(Ad ad) {
-//        this.ad = ad;
-//    }
+    public void setAd(Integer id) {
+        this.adId = id;
+    }
     public Integer getAdId(){
         return adId;
     }
@@ -76,5 +76,9 @@ public class AdBroadcast {
         LocalDateTime startingLocalDateTime = this.broadcastDate.atTime(this.broadcastTime);
 //        return startingLocalDateTime.plusMinutes(this.ad.getDuration());
         return startingLocalDateTime.plusMinutes(abDuration);
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
