@@ -149,6 +149,7 @@ public class Broadcast {
         }
         AdBroadcast adBroadcast = new AdBroadcast(this.startingDate, time);
         adBroadcast.setBroadcast(this);
+        adBroadcast.setAd(ad.id);
         // edo theloyme na mpainei i metadosi pano sti diafimisi? mas xreiazetai?
         //ad.addBroadcastAd(adBroadcast);
         this.adBroadcasts.add(adBroadcast);
@@ -171,6 +172,7 @@ public class Broadcast {
         SongBroadcast songBroadcast = new SongBroadcast(this.startingDate, time, song.id);
         songBroadcast.setBroadcast(this);
 //        song.addSongBroadcast(songBroadcast);
+        songBroadcast.setSong(song.id);
         this.songBroadcasts.add(songBroadcast);
         return songBroadcast;
     }
