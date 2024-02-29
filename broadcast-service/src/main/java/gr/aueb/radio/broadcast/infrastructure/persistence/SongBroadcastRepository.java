@@ -33,7 +33,11 @@ public class SongBroadcastRepository implements PanacheRepositoryBase<SongBroadc
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
 
-        return find("select sb from SongBroadcast sb left join fetch sb.broadcast where sb.id=:id",params).singleResult();
+        try {
+            return find("select sb from SongBroadcast sb left join fetch sb.broadcast where sb.id=:id",params).singleResult();
+        } catch (NoResultException e){
+            return null;
+        }
 //        List<SongBroadcast> broadcasts = find("select sb from SongBroadcast sb left join fetch sb.song where sb.id=:id", params).list();
 //        try {
 //            return find("select sb from SongBroadcast sb left join fetch sb.broadcast where sb in :song_broadcasts", Parameters.with("song_broadcasts", broadcasts).map()).singleResult();
