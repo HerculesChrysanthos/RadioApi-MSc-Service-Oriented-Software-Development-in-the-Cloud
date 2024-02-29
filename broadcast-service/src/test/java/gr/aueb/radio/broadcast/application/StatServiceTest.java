@@ -2,7 +2,10 @@ package gr.aueb.radio.broadcast.application;
 
 import gr.aueb.radio.broadcast.common.DateUtil;
 import gr.aueb.radio.broadcast.common.RadioException;
-import gr.aueb.radio.broadcast.infrastructure.persistence.AdBroadcastRepository;
+import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
+import gr.aueb.radio.broadcast.domain.broadcast.BroadcastType;
+import gr.aueb.radio.broadcast.domain.broadcast.Zone;
+import gr.aueb.radio.broadcast.common.DateUtil;
 import gr.aueb.radio.broadcast.infrastructure.persistence.BroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.AdStatsDTO;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastOutputRepresentation;
@@ -12,18 +15,23 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import static io.smallrye.common.constraint.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.mockito.MockedStatic;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mockStatic;
+
+
 @QuarkusTest
 public class StatServiceTest {
 
@@ -66,10 +74,41 @@ public class StatServiceTest {
     }
     @Test
     public void testExtractAdStats() {
-        String date = "2024-02-29";
+        String date = "02-02-2022";
         AdStatsDTO adStatsDTO = statService.extractAdStats(date, "auth");
         assertNotNull(adStatsDTO);
 
+    }
+
+
+
+    @Test
+    public void getAdStatsTest(){
+        Broadcast b = broadcastRepository.listAll().get(0);
+        LocalDate validDate = b.getStartingDate();
+        String validDateString = DateUtil.setDateToString(validDate);
+        try(MockedStatic dateUtil = mockStatic(DateUtil.class)){
+            dateUtil.when(DateUtil::dateNow).thenReturn(validDate);
+            AdStatsDTO dto = statService.extractAdStats(null, "auth");
+            assertNotNull(dto);
+            dateUtil.verify(DateUtil::dateNow);
+        }
+
+        AdStatsDTO dto = statService.extractAdStats(validDateString, "auth");
+        assertNotNull(dto);
+
+        int adBroadcastsSize = b.getAdBroadcasts().size();
+        assertEquals(adBroadcastsSize, dto.adsPerBroadcastZone.get(b.getType()).size());
+        Zone broadcastTimezone = b.getTimezone();
+        assertEquals(adBroadcastsSize, dto.adsPerTimeZone.get(broadcastTimezone).size());
+        List<Zone> timezones = Arrays.asList(Zone.values());
+        List<BroadcastType> types = Arrays.asList(BroadcastType.values());
+        for(Zone zone : timezones){
+            assertNotNull(dto.adsPerTimeZone.get(zone));
+        }
+        for(BroadcastType type : types){
+            assertNotNull(dto.adsPerBroadcastZone.get(type));
+        }
     }
 
 }
