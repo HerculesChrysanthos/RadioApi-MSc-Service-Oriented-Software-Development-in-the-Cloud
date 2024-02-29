@@ -18,7 +18,6 @@ import java.util.List;
 public abstract class AdMapper {
     @Mapping(target = "startingDate", source = "startingDate", qualifiedByName = "stringDateFormatter")
     @Mapping(target = "endingDate", source = "endingDate", qualifiedByName = "stringDateFormatter")
-
     public abstract Ad toModel(AdRepresentation representation);
 
     //

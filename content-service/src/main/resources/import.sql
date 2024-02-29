@@ -7,7 +7,7 @@ insert into ads (id, duration, rep_per_zone, starting_date, ending_date, timezon
 insert into ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1302, 8, 3, PARSEDATETIME('07-02-2023', 'dd-MM-yyyy'), PARSEDATETIME('23-08-2024', 'dd-MM-yyyy'), 'EarlyMorning');
 insert into ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1103, 6, 3, PARSEDATETIME('07-02-2023', 'dd-MM-yyyy'), PARSEDATETIME('23-08-2024', 'dd-MM-yyyy'), 'Morning');
 insert into ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1104, 6, 3, PARSEDATETIME('07-02-2023', 'dd-MM-yyyy'), PARSEDATETIME('23-08-2024', 'dd-MM-yyyy'), 'Morning');
-INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1074, 1, 2, PARSEDATETIME('15-04-2022', 'dd-MM-yyyy'), PARSEDATETIME('21-10-2023', 'dd-MM-yyyy'), 'LateNight');
+INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1074, 1, 2, PARSEDATETIME('01-01-2021', 'dd-MM-yyyy'), PARSEDATETIME('21-10-2023', 'dd-MM-yyyy'), 'LateNight');
 INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1075, 6, 4, PARSEDATETIME('05-08-2022', 'dd-MM-yyyy'), PARSEDATETIME('03-07-2024', 'dd-MM-yyyy'), 'LateNight');
 INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1076, 5, 5, PARSEDATETIME('06-11-2022', 'dd-MM-yyyy'), PARSEDATETIME('29-11-2024', 'dd-MM-yyyy'), 'Afternoon');
 INSERT INTO ads ( id, duration, rep_per_zone, starting_date, ending_date, timezone) VALUES ( 1077, 5, 5, PARSEDATETIME('05-07-2022', 'dd-MM-yyyy'), PARSEDATETIME('19-01-2024', 'dd-MM-yyyy'), 'Afternoon');
