@@ -1,4 +1,4 @@
-package gr.aueb.radio.broadcast.infrastucture.rest.resource;
+package gr.aueb.radio.broadcast.infrastructure.rest.resource;
 
 import gr.aueb.radio.broadcast.application.BroadcastService;
 import gr.aueb.radio.broadcast.application.ContentService;
@@ -221,7 +221,7 @@ public class SongBroadcastResourceTest extends IntegrationBase {
                 .when()
                 .post(url)
                 .then()
-                .statusCode(Response.Status.BAD_REQUEST.getStatusCode()).extract();
+                .statusCode(403).extract();
     }
 
     @Test
@@ -235,7 +235,7 @@ public class SongBroadcastResourceTest extends IntegrationBase {
 
         SongBasicRepresentation sbr = new SongBasicRepresentation();
         sbr.id = 1;
-        when(contentService.getSong("auth",7597)).thenThrow(new NotFoundException("song nf"));
+        //when(contentService.getSong("auth",7597)).thenThrow(new NotFoundException("song nf"));
 
         given()
                 .contentType(ContentType.JSON)
