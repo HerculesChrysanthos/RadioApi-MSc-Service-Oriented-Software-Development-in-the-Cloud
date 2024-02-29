@@ -4,14 +4,22 @@ import gr.aueb.radio.content.common.NotFoundException;
 import gr.aueb.radio.content.infrastructure.persistence.GenreRepository;
 import gr.aueb.radio.content.infrastructure.rest.representation.GenreMapper;
 import gr.aueb.radio.content.infrastructure.rest.representation.GenreRepresentation;
+import gr.aueb.radio.content.infrastructure.rest.representation.SongRepresentation;
+import gr.aueb.radio.content.infrastructure.service.user.representation.UserVerifiedRepresentation;
+import io.quarkus.test.InjectMock;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
@@ -26,8 +34,11 @@ class GenreServiceTest {
 
     private AutoCloseable mockitoCloseable;
 
-    @InjectMocks
+    @Inject
     GenreService genreService; // The service class that contains getGenreById method
+
+    @InjectMock
+    UserService userService;
 
     @Mock
     GenreRepository genreRepository; // Mocking the repository dependency
@@ -38,14 +49,24 @@ class GenreServiceTest {
     @BeforeEach
     void setUp() {
         mockitoCloseable = openMocks(this);
-        genreServiceUnderTest = new GenreService();
-        genreServiceUnderTest.genreRepository = mockGenreRepository;
-        genreServiceUnderTest.genreMapper = mockGenreMapper;
+        UserVerifiedRepresentation user = new UserVerifiedRepresentation();
+        user.id = 1;
+        user.role = "USER";
+        Mockito.when(userService.verifyAuth(anyString())).thenReturn(user);
     }
+
 
     @AfterEach
     void tearDown() throws Exception {
         mockitoCloseable.close();
+    }
+
+    @Test
+    void testGetGenreById() {
+        GenreRepresentation foundGenre = genreService.getGenreById(1, "auth");
+        assertNotNull(foundGenre);
+        assertEquals("Hip hop", foundGenre.title);
+        assertThrows(jakarta.ws.rs.NotFoundException.class, () -> genreService.getGenreById(-1, "auth"));
     }
 
 //    @Test
@@ -84,13 +105,14 @@ class GenreServiceTest {
 //        //assertEquals(expectedRepresentation.getId(), actualRepresentation.getId());
 //    }
 
-    @Test
-    void testGetGenreById() {
-        when(genreMapper.toRepresentation(any())).thenReturn(new GenreRepresentation());
+//    @Test
+//    void testGetGenreById() {
+//        when(genreMapper.toRepresentation(any())).thenReturn(new GenreRepresentation());
+//
+//     //   GenreRepresentation result = genreService.getGenreById(Integer.valueOf(1));
+//        assertThrows(NotFoundException.class, () -> genreService.getGenreById((Integer.valueOf(1))), "test" );
+//    }
 
-     //   GenreRepresentation result = genreService.getGenreById(Integer.valueOf(1));
-        assertThrows(NotFoundException.class, () -> genreService.getGenreById(Integer.valueOf(1)));
-    }
 
 //    @Test
 //    public void testGetGenreByIdNotFound() {

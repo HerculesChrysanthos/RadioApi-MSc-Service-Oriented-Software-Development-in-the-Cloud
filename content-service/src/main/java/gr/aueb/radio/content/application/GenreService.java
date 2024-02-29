@@ -28,7 +28,7 @@ public class GenreService {
     UserService userService;
 
     @Transactional
-    public GenreRepresentation getGenreById(Integer genreId){
+    public GenreRepresentation getGenreById(Integer genreId, String auth){
         Genre foundGenre = genreRepository.findById(genreId);
 
         if(foundGenre ==null){
