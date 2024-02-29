@@ -7,6 +7,7 @@ import gr.aueb.radio.broadcast.application.UserService;
 import gr.aueb.radio.broadcast.common.DateUtil;
 import gr.aueb.radio.broadcast.common.ExternalServiceException;
 import gr.aueb.radio.broadcast.common.IntegrationBase;
+import gr.aueb.radio.broadcast.common.RadioException;
 import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
 import gr.aueb.radio.broadcast.domain.songBroadcast.SongBroadcast;
 import gr.aueb.radio.broadcast.infrastructure.persistence.SongBroadcastRepository;
@@ -304,5 +305,31 @@ public class SongBroadcastResourceTest extends IntegrationBase {
                 .header("Authorization","auth")
                 .delete(url)
                 .then().statusCode(424);
+    }
+
+    @Test
+    public void testDeleteSongBroadcastWithFilters() {
+        String url = ApiPath.Root.SONG_BROADCASTS;
+
+        given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "auth")
+                .queryParam("songId", 7001)
+                .when()
+                .delete(url)
+                .then()
+                .statusCode(Response.Status.NO_CONTENT.getStatusCode()).extract();
+    }
+
+    @Test
+    public void testDeleteWithFiltersRadioException() {
+        when(userService.verifyAuth("auth")).thenThrow(new RadioException("auth problem"));
+        String url = ApiPath.Root.SONG_BROADCASTS ;
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .header("Authorization","auth")
+                .delete(url)
+                .then().statusCode(400);
     }
 }
