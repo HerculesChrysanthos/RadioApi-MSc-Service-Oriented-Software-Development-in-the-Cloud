@@ -56,7 +56,7 @@ class SongResourceTest extends IntegrationBase {
         MockitoAnnotations.initMocks(this);
         UserVerifiedRepresentation user = new UserVerifiedRepresentation();
         user.id = 1;
-        user.role = "USER";
+        user.role = "PRODUCER";
         Mockito.when(userService.verifyAuth(anyString())).thenReturn(user);
 
     }
@@ -90,25 +90,26 @@ class SongResourceTest extends IntegrationBase {
 
     @Test
     public void tesGetSongExternalServiceException() {
-
         when(userService.verifyAuth("auth")).thenThrow(new ExternalServiceException("Problem on reaching user api."));
-        SongInputDTO songInputDTO = new SongInputDTO();
-        GenreRepresentation genreRepresentation = new GenreRepresentation();
-        genreRepresentation.id = 1;
-        genreRepresentation.title = "genre-title";
-        songInputDTO.title ="Test Song";
-        songInputDTO.artist = "Test Artist";
-        songInputDTO.genreId = 1;
-        songInputDTO.duration = 180;
-        songInputDTO.year = 2021;
 
         String url = "/api/songs/1";
         given()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "auth")
-                .body(songInputDTO)
                 .when().get(url)
                 .then().statusCode(424);
+    }
+
+    @Test
+    public void tesGetSongRadioException() {
+        when(userService.verifyAuth("auth")).thenThrow(new RadioException("auth error", 403));
+
+        String url = "/api/songs/1";
+        given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "auth")
+                .when().get(url)
+                .then().statusCode(403);
     }
 
     @Test
@@ -161,6 +162,18 @@ class SongResourceTest extends IntegrationBase {
     }
 
     @Test
+    public void tesCreateRadioException() {
+        when(userService.verifyAuth("auth")).thenThrow(new RadioException("auth error", 403));
+
+        String url = "/api/songs";
+        given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "auth")
+                .when().post(url)
+                .then().statusCode(403);
+    }
+
+    @Test
     public void testCreateExternalServiceException() {
 
         when(userService.verifyAuth("auth")).thenThrow(new ExternalServiceException("Problem on reaching user api."));
@@ -195,6 +208,44 @@ class SongResourceTest extends IntegrationBase {
                 .extract().as(new TypeRef<>() {
                 });
         assertEquals(songRepository.listAll().size(), songsFound.size());
+    }
+
+    @Test
+    public void testSearchSongsWithFilters() {
+        String url = Fixture.API_ROOT + Fixture.SONGS + "/";
+
+        given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "auth")
+                .queryParam("songsIds", "7001")
+                .when()
+                .get(url)
+                .then()
+                .statusCode(Response.Status.OK.getStatusCode()).extract();
+    }
+
+    @Test
+    public void tesSearchWithFiltersRadioException() {
+        when(userService.verifyAuth("auth")).thenThrow(new RadioException("auth error", 403));
+
+        String url = Fixture.API_ROOT + Fixture.SONGS + "/";
+        given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "auth")
+                .when().get(url)
+                .then().statusCode(403);
+    }
+
+    @Test
+    public void tesSearchWithFiltersExternalException() {
+        when(userService.verifyAuth("auth")).thenThrow(new ExternalServiceException("Problem on reaching user api."));
+
+        String url = Fixture.API_ROOT + Fixture.SONGS + "/";
+        given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "auth")
+                .when().get(url)
+                .then().statusCode(424);
     }
 
 
