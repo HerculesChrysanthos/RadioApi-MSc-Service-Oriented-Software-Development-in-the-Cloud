@@ -114,8 +114,52 @@ public class SuggestionsServiceTest {
         }
 
         suggestionsService.suggestSongs(3001, "auth");
-//        suggestionsService.suggestSongs(-1, "auth");
-//        assertThrows(NotFoundException.class, () -> suggestionsService.suggestSongs(-1, "auth"));
+    }
+
+    @Test
+    public void suggestAdsTest() {
+        Broadcast broadcast = broadcastRepository.findByIdSongDetails(3001);
+        Zone timezone = broadcast.getTimezone();
+
+        assertNotNull(broadcast);
+//        assertThrows(NotFoundException.class, () -> broadcastRepository.findByIdSongDetails(100));
+
+        int[] ids = {1001, 1002};
+        StringBuilder adsIds = new StringBuilder();
+        for (int i = 0; ids.length > i; i++) {
+            int songId = ids[i];
+
+            adsIds.append(songId);
+            if (i != ids.length - 1) {
+                adsIds.append(",");
+            }
+        }
+        List<AdBasicRepresentation> mockSuggestedAds = new ArrayList<>();
+        AdBasicRepresentation ad1 = new AdBasicRepresentation();
+        ad1.id = 7001;
+        ad1.duration = 12;
+        ad1.timezone = "LateNight";
+
+        AdBasicRepresentation ad2 = new AdBasicRepresentation();
+        ad2.id = 7002;
+        ad2.duration = 1;
+        ad2.timezone = "LateNight";
+        // Add the AdBasicRepresentation objects to the list
+        mockSuggestedAds.add(ad1);
+        mockSuggestedAds.add(ad2);
+        Mockito.when(contentService.getAdsByFilters("PRODUCER",  null, adsIds.toString())).thenReturn(mockSuggestedAds);
+
+        assertTrue(mockSuggestedAds.size() <= 15);
+        // check if limitation to 15 exists
+        assertTrue(mockSuggestedAds.size() > 0);
+
+//        Integer genre = mockSuggestedSongs.get(0).genreId;
+        for (AdBasicRepresentation a : mockSuggestedAds) {
+            assertEquals
+                    (a.timezone, timezone.toString());
+        }
+
+        suggestionsService.suggestAds(3001, "auth");
     }
 
 
