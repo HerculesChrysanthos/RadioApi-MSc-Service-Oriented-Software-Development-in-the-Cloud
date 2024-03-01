@@ -53,7 +53,7 @@ public class BroadcastResourceTest extends IntegrationBase {
     ContentService contentService;
 
     @BeforeEach
-    public void setup(){
+    public void setup() {
         MockitoAnnotations.initMocks(this);
         UserVerifiedRepresentation user = new UserVerifiedRepresentation();
         //RestAssured.defaultParser = Parser.JSON;
@@ -65,14 +65,14 @@ public class BroadcastResourceTest extends IntegrationBase {
     @Test
     public void getBroadcastTest() {
         Broadcast broadcast = broadcastRepository.listAll().get(0);
-        String url =  ApiPath.Root.BROADCASTS + "/" + broadcast.getId();
+        String url = ApiPath.Root.BROADCASTS + "/" + broadcast.getId();
 
         BroadcastOutputRepresentation bor = given()
-                .header("Authorization","auth")
+                .header("Authorization", "auth")
                 .when()
                 .get(url)
                 .then().statusCode(Response.Status.OK.getStatusCode())
-                        .extract().as(BroadcastOutputRepresentation.class);
+                .extract().as(BroadcastOutputRepresentation.class);
 
         assertEquals(broadcast.getGenreId(), bor.genreId);
     }
@@ -83,7 +83,7 @@ public class BroadcastResourceTest extends IntegrationBase {
         given()
                 .when()
                 .contentType(ContentType.JSON)
-                .header("Authorization","auth")
+                .header("Authorization", "auth")
                 .get(url)
                 .then().statusCode(Response.Status.NOT_FOUND.getStatusCode());
     }
@@ -107,13 +107,14 @@ public class BroadcastResourceTest extends IntegrationBase {
         String url = ApiPath.Root.BROADCASTS;
         List<BroadcastOutputRepresentation> found = given()
                 .when()
-                .header("Authorization","auth")
+                .header("Authorization", "auth")
                 .queryParam("date", DateUtil.setDateToString(broadcast.getStartingDate()))
                 .get(url)
                 .then().statusCode(Response.Status.OK.getStatusCode())
-                .extract().as(new TypeRef<>(){});
+                .extract().as(new TypeRef<>() {
+                });
 
-        for (BroadcastOutputRepresentation s: found) {
+        for (BroadcastOutputRepresentation s : found) {
             assertEquals(s.id, broadcast.getId());
         }
     }
@@ -125,14 +126,15 @@ public class BroadcastResourceTest extends IntegrationBase {
         String url = ApiPath.Root.BROADCASTS;
         List<BroadcastOutputRepresentation> found = given()
                 .when()
-                .header("Authorization","auth")
+                .header("Authorization", "auth")
                 .queryParam("typeParam", broadcast.getType())
                 .get(url)
                 .then().statusCode(Response.Status.OK.getStatusCode())
-                .extract().as(new TypeRef<>(){});
+                .extract().as(new TypeRef<>() {
+                });
 
         //for (BroadcastOutputRepresentation s: found) {
-            assertEquals(found.size(),2);
+        assertEquals(found.size(), 2);
         //}
     }
 
@@ -141,7 +143,7 @@ public class BroadcastResourceTest extends IntegrationBase {
         String url = ApiPath.Root.BROADCASTS;
         given()
                 .when()
-                .header("Authorization","auth")
+                .header("Authorization", "auth")
                 .queryParam("type", "some type")
                 .get(url)
                 .then().statusCode(422);
@@ -152,7 +154,7 @@ public class BroadcastResourceTest extends IntegrationBase {
         String url = ApiPath.Root.BROADCASTS + "/now";
         given()
                 .when()
-                .header("Authorization","auth")
+                .header("Authorization", "auth")
                 .get(url)
                 .then().statusCode(200);
     }
@@ -176,7 +178,7 @@ public class BroadcastResourceTest extends IntegrationBase {
         given()
                 .when()
                 .contentType(ContentType.JSON)
-                .header("Authorization","auth")
+                .header("Authorization", "auth")
                 .get(url)
                 .then().statusCode(401);
     }
@@ -227,7 +229,7 @@ public class BroadcastResourceTest extends IntegrationBase {
         given()
                 .when()
                 .contentType(ContentType.JSON)
-                .header("Authorization","auth")
+                .header("Authorization", "auth")
                 .post(url)
                 .then().statusCode(401);
     }
@@ -242,7 +244,7 @@ public class BroadcastResourceTest extends IntegrationBase {
         br.type = broadcast.getType();
         br.startingTime = String.valueOf(broadcast.getStartingTime());
         br.startingDate = "01-01-2022";
-        String url = ApiPath.Root.BROADCASTS + "/" +broadcast.getId();
+        String url = ApiPath.Root.BROADCASTS + "/" + broadcast.getId();
 
 
         BroadcastService mockBrService = Mockito.mock(BroadcastService.class);
@@ -252,9 +254,9 @@ public class BroadcastResourceTest extends IntegrationBase {
                 .thenReturn(false);
 
         GenreBasicRepresentation gbr = new GenreBasicRepresentation();
-        gbr.id= 2;
+        gbr.id = 2;
         when(contentService.getGenreById(2)).thenReturn(gbr);
-       given()
+        given()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "auth")
                 .body(br)
@@ -270,7 +272,7 @@ public class BroadcastResourceTest extends IntegrationBase {
 
         Broadcast broadcast = broadcastRepository.listAll().get(0);
 
-        String url = ApiPath.Root.BROADCASTS + "/" +broadcast.getId();
+        String url = ApiPath.Root.BROADCASTS + "/" + broadcast.getId();
 
         given()
                 .when()
@@ -285,11 +287,11 @@ public class BroadcastResourceTest extends IntegrationBase {
         Mockito.when(userService.verifyAuth(anyString())).thenThrow(new RadioException("auth err", 401));
         Broadcast broadcast = broadcastRepository.listAll().get(0);
 
-        String url = ApiPath.Root.BROADCASTS + "/" +broadcast.getId();
+        String url = ApiPath.Root.BROADCASTS + "/" + broadcast.getId();
         given()
                 .when()
                 .contentType(ContentType.JSON)
-                .header("Authorization","auth")
+                .header("Authorization", "auth")
                 .put(url)
                 .then().statusCode(401);
     }
@@ -304,7 +306,7 @@ public class BroadcastResourceTest extends IntegrationBase {
         br.type = broadcast.getType();
         br.startingTime = String.valueOf(broadcast.getStartingTime());
         br.startingDate = "01-01-2022";
-        String url = ApiPath.Root.BROADCASTS + "/" +101010;
+        String url = ApiPath.Root.BROADCASTS + "/" + 101010;
 
         given()
                 .contentType(ContentType.JSON)
@@ -320,7 +322,7 @@ public class BroadcastResourceTest extends IntegrationBase {
     public void testDelete() {
         Broadcast broadcast = broadcastRepository.listAll().get(1);
 
-        String url = ApiPath.Root.BROADCASTS + "/" +broadcast.getId();
+        String url = ApiPath.Root.BROADCASTS + "/" + broadcast.getId();
 
         given()
                 .contentType(ContentType.JSON)
@@ -333,7 +335,7 @@ public class BroadcastResourceTest extends IntegrationBase {
 
     @Test
     public void testDeleteNotFound() {
-        String url = ApiPath.Root.BROADCASTS + "/" +101010;
+        String url = ApiPath.Root.BROADCASTS + "/" + 101010;
 
         given()
                 .contentType(ContentType.JSON)
@@ -350,7 +352,7 @@ public class BroadcastResourceTest extends IntegrationBase {
 
         Broadcast broadcast = broadcastRepository.listAll().get(0);
 
-        String url = ApiPath.Root.BROADCASTS + "/" +broadcast.getId();
+        String url = ApiPath.Root.BROADCASTS + "/" + broadcast.getId();
 
         given()
                 .when()
@@ -365,14 +367,57 @@ public class BroadcastResourceTest extends IntegrationBase {
         Mockito.when(userService.verifyAuth(anyString())).thenThrow(new RadioException("auth err", 401));
         Broadcast broadcast = broadcastRepository.listAll().get(0);
 
-        String url = ApiPath.Root.BROADCASTS + "/" +broadcast.getId();
+        String url = ApiPath.Root.BROADCASTS + "/" + broadcast.getId();
         given()
                 .when()
                 .contentType(ContentType.JSON)
-                .header("Authorization","auth")
+                .header("Authorization", "auth")
                 .delete(url)
                 .then().statusCode(401);
     }
+
+    @Test
+    public void testGetSuggestions() {
+        Broadcast broadcast = broadcastRepository.listAll().get(1);
+
+        String url = ApiPath.Root.BROADCASTS + "/" + broadcast.getId() + "/suggestions";
+        given()
+                .when()
+                .header("Authorization", "auth")
+                .get(url)
+                .then().statusCode(200);
+        //broadcast not found
+        String url1 = ApiPath.Root.BROADCASTS + "/" + 111010 + "/suggestions";
+        given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "auth")
+                .when()
+                .get(url1)
+                .then()
+                .statusCode(Response.Status.NOT_FOUND.getStatusCode());
+        // test external exception
+        when(userService.verifyAuth("auth")).thenThrow(new ExternalServiceException("Problem on reaching user api."));
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "auth")
+                .get(url)
+                .then().statusCode(424);
+
+
+        //test for invalid user
+        Mockito.when(userService.verifyAuth(anyString())).thenThrow(new RadioException("auth err", 401));
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "auth")
+                .get(url)
+                .then().statusCode(401);
+
+
+
+    }
+
 
 
 }
