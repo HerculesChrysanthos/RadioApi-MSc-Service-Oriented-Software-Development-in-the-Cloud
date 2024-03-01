@@ -30,9 +30,6 @@ public class DateUtil {
         }
     }
 
-    public static String setTimeToString(LocalTime time){
-        return time.format(timeFormatter);
-    }
 
     public static String setDateToString(LocalDate date){
         return date.format(dateFormatter);
