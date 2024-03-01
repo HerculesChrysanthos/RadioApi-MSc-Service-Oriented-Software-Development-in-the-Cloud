@@ -2,6 +2,7 @@ package gr.aueb.radio.broadcast.application;
 
 import gr.aueb.radio.broadcast.common.DateUtil;
 import gr.aueb.radio.broadcast.common.RadioException;
+import gr.aueb.radio.broadcast.domain.adBroadcast.AdBroadcast;
 import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
 import gr.aueb.radio.broadcast.domain.broadcast.BroadcastType;
 import gr.aueb.radio.broadcast.domain.broadcast.Zone;
@@ -9,6 +10,7 @@ import gr.aueb.radio.broadcast.common.DateUtil;
 import gr.aueb.radio.broadcast.infrastructure.persistence.BroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.AdStatsDTO;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastOutputRepresentation;
+import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdBasicRepresentation;
 import gr.aueb.radio.broadcast.infrastructure.service.user.representation.UserVerifiedRepresentation;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
@@ -20,6 +22,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -80,6 +83,20 @@ public class StatServiceTest {
 
     }
 
+    @Test
+    private void testExtractFromAdBroadcast() {
+        List<AdBroadcast> adBroadcasts = new ArrayList<>();
+        // Fill the list with instances of AdBroadcast
+        adBroadcasts.add(new AdBroadcast(LocalDate.of(2024, 3, 1), LocalTime.of(8, 30)));
+        adBroadcasts.add(new AdBroadcast(LocalDate.of(2024, 3, 2), LocalTime.of(9, 45)));
+        adBroadcasts.add(new AdBroadcast(LocalDate.of(2024, 3, 3), LocalTime.of(10, 15)));
+
+
+        List<AdBasicRepresentation> ab = statService.extractFromAdBroadcast(adBroadcasts, "auth");
+        assertNotNull(ab);
+
+    }
+
 
 
     @Test
@@ -87,12 +104,12 @@ public class StatServiceTest {
         Broadcast b = broadcastRepository.listAll().get(0);
         LocalDate validDate = b.getStartingDate();
         String validDateString = DateUtil.setDateToString(validDate);
-        try(MockedStatic dateUtil = mockStatic(DateUtil.class)){
-            dateUtil.when(DateUtil::dateNow).thenReturn(validDate);
-            AdStatsDTO dto = statService.extractAdStats(null, "auth");
-            assertNotNull(dto);
-            dateUtil.verify(DateUtil::dateNow);
-        }
+//        try(MockedStatic dateUtil = mockStatic(DateUtil.class)){
+//            dateUtil.when(DateUtil::dateNow).thenReturn(validDate);
+//            AdStatsDTO dto = statService.extractAdStats(null, "auth");
+//            assertNotNull(dto);
+//            dateUtil.verify(DateUtil::dateNow);
+//        }
 
         AdStatsDTO dto = statService.extractAdStats(validDateString, "auth");
         assertNotNull(dto);

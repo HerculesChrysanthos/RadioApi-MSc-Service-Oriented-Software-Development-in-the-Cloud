@@ -37,7 +37,7 @@ public class StatService {
     @Inject
     UserService userService;
 
-    private List<AdBasicRepresentation> extractFromAdBroadcast(List<AdBroadcast> adBroadcasts, String auth) {
+    List<AdBasicRepresentation> extractFromAdBroadcast(List<AdBroadcast> adBroadcasts, String auth) {
         Set<Integer> adIds = new HashSet<>();
 
         for (AdBroadcast ab : adBroadcasts) {
