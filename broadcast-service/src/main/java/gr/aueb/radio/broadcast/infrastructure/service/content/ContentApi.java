@@ -56,6 +56,7 @@ public interface ContentApi {
     @GET
     @Path("/genres/{id}")
     GenreBasicRepresentation getGenreById(
-            @PathParam("id") Integer id
+            @PathParam("id") Integer id,
+            @HeaderParam("Authorization") String basicAuthHeader
     );
 }

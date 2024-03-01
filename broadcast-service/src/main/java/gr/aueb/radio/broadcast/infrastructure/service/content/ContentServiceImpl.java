@@ -74,9 +74,9 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public GenreBasicRepresentation getGenreById(Integer genreId) {
+    public GenreBasicRepresentation getGenreById(Integer genreId, String auth) {
         try {
-            return contentApi.getGenreById(genreId);
+            return contentApi.getGenreById(genreId, auth);
         } catch (ProcessingException error) {
             throw new RadioException("Problem on reaching content api.", 424);
         } catch (NotFoundException error) {

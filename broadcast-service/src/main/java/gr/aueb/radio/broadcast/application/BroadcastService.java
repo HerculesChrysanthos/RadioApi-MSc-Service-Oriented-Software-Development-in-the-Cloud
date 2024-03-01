@@ -308,7 +308,7 @@ public class BroadcastService {
         broadcast.setDuration(broadcastRepresentation.duration);
 
         // TODO call on genre service to check if genre exists
-        GenreBasicRepresentation genre = contentService.getGenreById(broadcastRepresentation.genreId);
+        GenreBasicRepresentation genre = contentService.getGenreById(broadcastRepresentation.genreId, auth);
         if (genre != null) {
             broadcast.setGenreId(broadcastRepresentation.genreId);
         } else {

@@ -255,7 +255,7 @@ public class BroadcastResourceTest extends IntegrationBase {
 
         GenreBasicRepresentation gbr = new GenreBasicRepresentation();
         gbr.id = 2;
-        when(contentService.getGenreById(2)).thenReturn(gbr);
+        when(contentService.getGenreById(2, "auth")).thenReturn(gbr);
         given()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "auth")
