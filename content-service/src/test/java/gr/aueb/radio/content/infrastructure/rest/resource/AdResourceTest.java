@@ -60,6 +60,7 @@ class AdResourceTest extends IntegrationBase {
         String url = Fixture.API_ROOT + Fixture.ADS + "/" + ad.getId();
         AdRepresentation foundAd = given()
                 .contentType(ContentType.JSON)
+                .header("Authorization", "auth")
                 .when().get(url)
                 .then().statusCode(Response.Status.OK.getStatusCode())
                 .extract().as(AdRepresentation.class);
@@ -72,6 +73,7 @@ class AdResourceTest extends IntegrationBase {
         url = Fixture.API_ROOT + Fixture.ADS + "/-1";
         given()
                 .contentType(ContentType.JSON)
+                .header("Authorization", "auth")
                 .when().get(url)
                 .then().statusCode(Response.Status.NOT_FOUND.getStatusCode());
 
