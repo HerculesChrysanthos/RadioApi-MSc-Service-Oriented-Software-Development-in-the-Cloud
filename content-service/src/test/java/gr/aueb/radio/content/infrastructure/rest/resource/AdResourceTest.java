@@ -155,6 +155,8 @@ class AdResourceTest extends IntegrationBase {
         ad2.timezone = Zone.EarlyMorning;
         ad2.repPerZone = 1;
         ad2.duration = 3;
+        ad2.startingDate = "01-02-2022";
+        ad2.endingDate =  "01-05-2022";
         when(userService.verifyAuth("auth")).thenThrow(new ExternalServiceException("Problem on reaching user api."));
         given()
                 .contentType(ContentType.JSON)
