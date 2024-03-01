@@ -3,6 +3,7 @@ package gr.aueb.radio.content.infrastructure.rest.resource;
 import gr.aueb.radio.content.application.GenreService;
 import gr.aueb.radio.content.common.ErrorResponse;
 import gr.aueb.radio.content.common.ExternalServiceException;
+import gr.aueb.radio.content.common.RadioException;
 import gr.aueb.radio.content.infrastructure.rest.ApiPath;
 import gr.aueb.radio.content.infrastructure.rest.representation.GenreMapper;
 import gr.aueb.radio.content.infrastructure.rest.representation.GenreRepresentation;
@@ -41,9 +42,14 @@ public class GenreResource {
             return Response.ok().entity(found).build();
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
-        } catch (ExternalServiceException externalServiceException) {
+        }  catch (ExternalServiceException externalServiceException) {
             return Response.status(externalServiceException.getStatusCode())
                     .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
+        } catch (RadioException re){
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
                     .build();
         }
     }
@@ -56,9 +62,14 @@ public class GenreResource {
             return Response.ok().entity(genres).build();
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
-        } catch (ExternalServiceException externalServiceException) {
+        }  catch (ExternalServiceException externalServiceException) {
             return Response.status(externalServiceException.getStatusCode())
                     .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
+        } catch (RadioException re){
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
                     .build();
         }
     }

@@ -28,6 +28,11 @@ public class GenreService {
 
     @Transactional
     public GenreRepresentation getGenreById(Integer genreId, String auth){
+        String userRole = userService.verifyAuth(auth).role;
+
+        if (!userRole.equals("PRODUCER")) {
+            throw new RadioException("Not Allowed to change this.", 403);
+        }
         Genre foundGenre = genreRepository.findById(genreId);
 
         if(foundGenre ==null){

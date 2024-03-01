@@ -1,6 +1,7 @@
 package gr.aueb.radio.content.infrastructure.rest.resource;
 
 import gr.aueb.radio.content.common.ErrorResponse;
+import gr.aueb.radio.content.common.ExternalServiceException;
 import gr.aueb.radio.content.infrastructure.rest.ApiPath;
 import jakarta.inject.Inject;
 import gr.aueb.radio.content.application.AdService;
@@ -47,6 +48,15 @@ public class AdResource {
             return Response.ok().entity(adRepresentation).build();
         } catch (NotFoundException nfe) {
             return Response.status(Response.Status.NOT_FOUND).build();
+        } catch (RadioException re){
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         }
     }
 
@@ -57,15 +67,25 @@ public class AdResource {
             @QueryParam("adsIds") String adsIds,
             @HeaderParam("Authorization") String auth
     ) {
-        List<Integer> convertedAdsId = new ArrayList<>();
-        if(adsIds != null) {
-            convertedAdsId = Arrays.stream(adsIds.split(","))
-                    .map(Integer::parseInt)
-                    .collect(Collectors.toList());
+        try {
+            List<Integer> convertedAdsId = new ArrayList<>();
+            if(adsIds != null) {
+                convertedAdsId = Arrays.stream(adsIds.split(","))
+                        .map(Integer::parseInt)
+                        .collect(Collectors.toList());
+            }
+            List<AdRepresentation> adsFound = adService.search(timezone, convertedAdsId, auth);
+            return Response.ok().entity(adsFound).build();
+        } catch (RadioException re){
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         }
-
-        List<AdRepresentation> adsFound = adService.search(timezone, convertedAdsId, auth);
-        return Response.ok().entity(adsFound).build();
     }
 
     @POST
@@ -80,7 +100,13 @@ public class AdResource {
             return Response.created(uri).entity(adMapper.toRepresentation(ad)).build();
         } catch (RadioException re){
             int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
-            return Response.status(statusCode).entity(re.getMessage()).build();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         }
     }
 
@@ -99,7 +125,13 @@ public class AdResource {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
         } catch (RadioException re){
             int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
-            return Response.status(statusCode).entity(new ErrorResponse(re.getMessage())).build();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         }
     }
 
@@ -115,6 +147,15 @@ public class AdResource {
             return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
         }catch (NotFoundException re){
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
+        } catch (RadioException re){
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         }
     }
 }

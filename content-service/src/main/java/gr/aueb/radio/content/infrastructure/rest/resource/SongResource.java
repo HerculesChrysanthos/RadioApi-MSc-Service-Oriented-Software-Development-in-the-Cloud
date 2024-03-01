@@ -50,6 +50,11 @@ public class SongResource {
             return Response.ok().entity(found).build();
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
+        } catch (RadioException re){
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
         } catch (ExternalServiceException externalServiceException) {
             return Response.status(externalServiceException.getStatusCode())
                     .entity(new ErrorResponse(externalServiceException.getMessage()))
@@ -77,6 +82,11 @@ public class SongResource {
 
             List<SongRepresentation> found = songService.search(artist, genreId, genreTitle, title, convertedSongsId, auth);
             return Response.ok().entity(found).build();
+        } catch (RadioException re){
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
         } catch (ExternalServiceException externalServiceException) {
             return Response.status(externalServiceException.getStatusCode())
                     .entity(new ErrorResponse(externalServiceException.getMessage()))
@@ -97,7 +107,12 @@ public class SongResource {
             URI uri = UriBuilder.fromResource(SongResource.class).path(String.valueOf(song.getId())).build();
             SongRepresentation createdSongRepresentation = songMapper.toRepresentation(song);
             return Response.created(uri).entity(createdSongRepresentation).build();
-        } catch (ExternalServiceException externalServiceException){
+        } catch (RadioException re){
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
+        } catch (ExternalServiceException externalServiceException) {
             return Response.status(externalServiceException.getStatusCode())
                     .entity(new ErrorResponse(externalServiceException.getMessage()))
                     .build();
@@ -114,6 +129,11 @@ public class SongResource {
         try {
             songService.delete(id, auth);
             return Response.noContent().build();
+        } catch (RadioException re){
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
         } catch (ExternalServiceException externalServiceException) {
             return Response.status(externalServiceException.getStatusCode())
                     .entity(new ErrorResponse(externalServiceException.getMessage()))
