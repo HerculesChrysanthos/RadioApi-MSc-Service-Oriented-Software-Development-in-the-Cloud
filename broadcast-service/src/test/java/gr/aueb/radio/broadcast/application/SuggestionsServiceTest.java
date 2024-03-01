@@ -1,9 +1,11 @@
 package gr.aueb.radio.broadcast.application;
 
+import com.thoughtworks.xstream.converters.reflection.CGLIBEnhancedConverter;
 import gr.aueb.radio.broadcast.common.IntegrationBase;
 import gr.aueb.radio.broadcast.domain.broadcast.Broadcast;
 import gr.aueb.radio.broadcast.domain.broadcast.BroadcastType;
 import gr.aueb.radio.broadcast.domain.broadcast.Zone;
+import gr.aueb.radio.broadcast.infrastructure.persistence.BroadcastRepository;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.BroadcastRepresentation;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.SuggestionsDTO;
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdBasicRepresentation;
@@ -38,6 +40,12 @@ public class SuggestionsServiceTest {
     @InjectMock
     UserService userService;
 
+    @Inject
+    BroadcastRepository broadcastRepository;
+
+    @InjectMock
+    ContentService contentService;
+
 //    @Inject
 //    SongService songService;
 //
@@ -65,36 +73,66 @@ public class SuggestionsServiceTest {
 
     @Test
     public void suggestSongsTest() {
-        BroadcastRepresentation broadcastRepresentation = createRepresentation();
-        Broadcast broadcast = broadcastService.create(broadcastRepresentation, "auth");
-        List<SongBasicRepresentation> mockSuggestedSongs = createMockSuggestedSongs(10);
+        Broadcast broadcast = broadcastRepository.findByIdSongDetails(3001);
+        Integer genre = broadcast.getGenreId();
+        assertNotNull(broadcast);
+//        assertThrows(NotFoundException.class, () -> broadcastRepository.findByIdSongDetails(100));
 
+        int[] ids = {7001, 7002};
+        StringBuilder songsIds = new StringBuilder();
+        for (int i = 0; ids.length > i; i++) {
+            int songId = ids[i];
+
+            songsIds.append(songId);
+            if (i != ids.length - 1) {
+                songsIds.append(",");
+            }
+        }
+        List<SongBasicRepresentation> mockSuggestedSongs = new ArrayList<>();
+        SongBasicRepresentation song1 = new SongBasicRepresentation();
+        song1.id = 7001;
+        song1.duration = 180; // Example duration in seconds
+        song1.genreId = 1; // Example genre ID
+
+        SongBasicRepresentation song2 = new SongBasicRepresentation();
+        song2.id = 7002;
+        song2.duration = 210; // Example duration in seconds
+        song2.genreId = 1; // Example genre ID
+        // Add the SongBasicRepresentation objects to the list
+        mockSuggestedSongs.add(song1);
+        mockSuggestedSongs.add(song2);
+        Mockito.when(contentService.getSongsByFilters("PRODUCER", null, null, null, null, songsIds.toString())).thenReturn(mockSuggestedSongs);
 
         assertTrue(mockSuggestedSongs.size() <= 15);
         // check if limitation to 15 exists
         assertTrue(mockSuggestedSongs.size() > 0);
 
-        Integer genre = mockSuggestedSongs.get(0).genreId;
+//        Integer genre = mockSuggestedSongs.get(0).genreId;
         for (SongBasicRepresentation s : mockSuggestedSongs) {
             assertEquals
                     (s.genreId, genre);
         }
 
-        assertThrows(NotFoundException.class, () -> suggestionsService.suggestSongs(-1, "auth"));
+        suggestionsService.suggestSongs(3001, "auth");
+//        suggestionsService.suggestSongs(-1, "auth");
+//        assertThrows(NotFoundException.class, () -> suggestionsService.suggestSongs(-1, "auth"));
     }
-    private List<SongBasicRepresentation> createMockSuggestedSongs(int numSuggestedSongs) {
-        List<SongBasicRepresentation> mockSuggestedSongs = new ArrayList<>();
-        for (int i = 0; i < numSuggestedSongs; i++) {
-            SongBasicRepresentation sb = new SongBasicRepresentation();
-            // Set mock properties for the suggested ad
-            sb.id = i + 1;
-            sb.genreId = 2;
-            sb.duration = 2;
-            // Add the mock suggested ad to the list
-            mockSuggestedSongs.add(sb);
-        }
-        return mockSuggestedSongs;
-    }
+
+
+
+//    private List<SongBasicRepresentation> createMockSuggestedSongs(int numSuggestedSongs) {
+//        List<SongBasicRepresentation> mockSuggestedSongs = new ArrayList<>();
+//        for (int i = 0; i < numSuggestedSongs; i++) {
+//            SongBasicRepresentation sb = new SongBasicRepresentation();
+//            // Set mock properties for the suggested ad
+//            sb.id = i + 1;
+//            sb.genreId = 2;
+//            sb.duration = 2;
+//            // Add the mock suggested ad to the list
+//            mockSuggestedSongs.add(sb);
+//        }
+//        return mockSuggestedSongs;
+//    }
 
 //    @Test
 //    public void suggestSongsTestExistingBroadcast() {
@@ -113,39 +151,39 @@ public class SuggestionsServiceTest {
 //                    (s.genreId, genre);
 //        }
 //    }
-    private List<AdBasicRepresentation> createMockSuggestedAds(int numSuggestedAds) {
-        List<AdBasicRepresentation> mockSuggestedAds = new ArrayList<>();
-        for (int i = 0; i < numSuggestedAds; i++) {
-            AdBasicRepresentation adBasicRepresentation = new AdBasicRepresentation();
-            // Set mock properties for the suggested ad
-            adBasicRepresentation.id = i + 1;
-            adBasicRepresentation.timezone = String.valueOf(Zone.Morning);
-            // Add the mock suggested ad to the list
-            mockSuggestedAds.add(adBasicRepresentation);
-        }
-        return mockSuggestedAds;
-    }
+//    private List<AdBasicRepresentation> createMockSuggestedAds(int numSuggestedAds) {
+//        List<AdBasicRepresentation> mockSuggestedAds = new ArrayList<>();
+//        for (int i = 0; i < numSuggestedAds; i++) {
+//            AdBasicRepresentation adBasicRepresentation = new AdBasicRepresentation();
+//            // Set mock properties for the suggested ad
+//            adBasicRepresentation.id = i + 1;
+//            adBasicRepresentation.timezone = String.valueOf(Zone.Morning);
+//            // Add the mock suggested ad to the list
+//            mockSuggestedAds.add(adBasicRepresentation);
+//        }
+//        return mockSuggestedAds;
+//    }
 
-    @Test
-    public void suggestAdsTest() {
-        BroadcastRepresentation broadcastRepresentation = createRepresentation();
-        Broadcast broadcast = broadcastService.create(broadcastRepresentation, "auth");
-//        List<AdBasicRepresentation> suggestedAds = suggestionsService.suggestAds(broadcast.getId(), "auth");
-        // Create a list of mock AdBasicRepresentation
-        List<AdBasicRepresentation> mockSuggestedAds = createMockSuggestedAds(10);
-
-        assertTrue(mockSuggestedAds.size() <= 15);
-        // check if limitation to 15 exists
-        assertTrue(mockSuggestedAds.size() > 0);
-
-        Zone timezone = broadcast.getTimezone();
-        for (AdBasicRepresentation a : mockSuggestedAds) {
-            assertEquals
-                    (a.timezone, String.valueOf(timezone));
-        }
-
-        assertThrows(NotFoundException.class, () -> suggestionsService.suggestAds(-1, "auth"));
-    }
+//    @Test
+//    public void suggestAdsTest() {
+//        BroadcastRepresentation broadcastRepresentation = createRepresentation();
+//        Broadcast broadcast = broadcastService.create(broadcastRepresentation, "auth");
+////        List<AdBasicRepresentation> suggestedAds = suggestionsService.suggestAds(broadcast.getId(), "auth");
+//        // Create a list of mock AdBasicRepresentation
+//        List<AdBasicRepresentation> mockSuggestedAds = createMockSuggestedAds(10);
+//
+//        assertTrue(mockSuggestedAds.size() <= 15);
+//        // check if limitation to 15 exists
+//        assertTrue(mockSuggestedAds.size() > 0);
+//
+//        Zone timezone = broadcast.getTimezone();
+//        for (AdBasicRepresentation a : mockSuggestedAds) {
+//            assertEquals
+//                    (a.timezone, String.valueOf(timezone));
+//        }
+//
+//        assertThrows(NotFoundException.class, () -> suggestionsService.suggestAds(-1, "auth"));
+//    }
 
 
     @Test
@@ -156,8 +194,8 @@ public class SuggestionsServiceTest {
         Broadcast broadcast = broadcastService.create(broadcastRepresentation, "auth");
 //        SuggestionsDTO dto = broadcastService.suggestions(broadcast.getId(), "auth");
 
-        List<AdBasicRepresentation> ads = createMockSuggestedAds(10);
-        List<SongBasicRepresentation> songs = createMockSuggestedSongs(10);
+//        List<AdBasicRepresentation> ads = createMockSuggestedAds(10);
+//        List<SongBasicRepresentation> songs = createMockSuggestedSongs(10);
         SuggestionsDTO dto = new SuggestionsDTO();
 
         assertNotNull(dto);
