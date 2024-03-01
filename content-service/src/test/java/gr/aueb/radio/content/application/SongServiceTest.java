@@ -43,7 +43,7 @@ class SongServiceTest extends IntegrationBase {
         MockitoAnnotations.initMocks(this);
         UserVerifiedRepresentation user = new UserVerifiedRepresentation();
         user.id = 1;
-        user.role = "USER";
+        user.role = "PRODUCER";
         Mockito.when(userService.verifyAuth(anyString())).thenReturn(user);
 
     }
@@ -116,7 +116,7 @@ class SongServiceTest extends IntegrationBase {
         songInputDTO.year = 2022;
         songInputDTO.duration = 18;
 
-        Song createdSong = songService.create(songInputDTO, "test");
+        Song createdSong = songService.create(songInputDTO, "auth");
 
         List<SongBroadcastBasicRepresentation> listOfSb = new ArrayList<>();
         SongBroadcastBasicRepresentation songBroadcast = new SongBroadcastBasicRepresentation();
