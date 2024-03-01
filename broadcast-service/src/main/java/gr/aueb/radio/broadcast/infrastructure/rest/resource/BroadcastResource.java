@@ -60,10 +60,6 @@ public class BroadcastResource {
             return Response.status(externalServiceException.getStatusCode())
                     .entity(new ErrorResponse(externalServiceException.getMessage()))
                     .build();
-        } catch (RadioException radioException){
-            return Response.status(radioException.getStatusCode())
-                    .entity(new ErrorResponse(radioException.getMessage()))
-                    .build();
         } catch (NotFoundException e){
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(new ErrorResponse(e.getMessage()))
@@ -77,29 +73,26 @@ public class BroadcastResource {
                                      @QueryParam("to") String to,
                                      @QueryParam("date") String date,
                                      @QueryParam("type") String typeParam){
-        try {
-            BroadcastType type = null;
-            if (typeParam != null && !typeParam.isEmpty()) {
-                try {
-                    type = BroadcastType.valueOf(typeParam.toUpperCase());
-                } catch (IllegalArgumentException e) {
-                    String[] acceptedValues = Arrays.stream(BroadcastType.values())
-                            .map(Enum::name)
-                            .toArray(String[]::new);
 
-                    return Response.status(422)
-                            .entity(new ErrorResponse("Invalid value for 'type' parameter.", acceptedValues))
-                            .build();
-                }
+        BroadcastType type = null;
+        if (typeParam != null && !typeParam.isEmpty()) {
+            try {
+                type = BroadcastType.valueOf(typeParam.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                String[] acceptedValues = Arrays.stream(BroadcastType.values())
+                        .map(Enum::name)
+                        .toArray(String[]::new);
+
+                return Response.status(422)
+                        .entity(new ErrorResponse("Invalid value for 'type' parameter.", acceptedValues))
+                        .build();
             }
-
-
-            BroadcastSearchDTO searchDTO = new BroadcastSearchDTO(from, to, date, type);
-            List<BroadcastOutputRepresentation> broadcastsFound = broadcastService.search(searchDTO);
-            return Response.ok().entity(broadcastsFound).build();
-        }catch (RadioException re){
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
         }
+
+        BroadcastSearchDTO searchDTO = new BroadcastSearchDTO(from, to, date, type);
+        List<BroadcastOutputRepresentation> broadcastsFound = broadcastService.search(searchDTO);
+        return Response.ok().entity(broadcastsFound).build();
+
     }
 
     @GET
@@ -132,9 +125,15 @@ public class BroadcastResource {
             Broadcast broadcast = broadcastService.create(broadcastRepresentation, auth);
             URI uri = UriBuilder.fromResource(BroadcastResource.class).path(String.valueOf(broadcast.getId())).build();
             return Response.created(uri).entity(outputBroadcastMapper.toRepresentation(broadcast)).build();
-        }catch (RadioException re){
-           // log.error("Broadcast overlapping restriction triggered");
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+        } catch (RadioException re){
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         }
     }
 //
@@ -151,9 +150,14 @@ public class BroadcastResource {
             broadcastService.update(id, broadcastRepresentation, auth);
             return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
         } catch (RadioException re){
-           // log.error("Broadcast cannot be updated");
-            //log.error(re.getMessage());
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         } catch (NotFoundException e){
             //log.error("Broadcast not found");
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
@@ -173,6 +177,15 @@ public class BroadcastResource {
         } catch (NotFoundException e){
             Log.error("Broadcast not found");
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
+        } catch (RadioException re){
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         }
     }
 
@@ -189,6 +202,15 @@ public class BroadcastResource {
         } catch (NotFoundException e) {
             Log.error("Broadcast not found");
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
+        } catch (RadioException re){
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         }
     }
     @GET
@@ -200,8 +222,15 @@ public class BroadcastResource {
         try {
             List<BroadcastOutputRepresentation> broadcastsOfDay = statService.getDailySchedule(date, auth);
             return Response.ok().entity(broadcastsOfDay).build();
-        }catch (RadioException re){
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+        } catch (RadioException re){
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         }
 
     }
@@ -215,8 +244,15 @@ public class BroadcastResource {
         try {
             AdStatsDTO dto = statService.extractAdStats(date, auth);
             return Response.ok().entity(dto).build();
-        }catch (RadioException re){
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).entity(re.getMessage()).build();
+        } catch (RadioException re){
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
+        } catch (ExternalServiceException externalServiceException) {
+            return Response.status(externalServiceException.getStatusCode())
+                    .entity(new ErrorResponse(externalServiceException.getMessage()))
+                    .build();
         }
     }
 }

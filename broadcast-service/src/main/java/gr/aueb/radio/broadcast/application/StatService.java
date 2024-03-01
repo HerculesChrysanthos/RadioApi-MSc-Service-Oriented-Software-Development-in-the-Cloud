@@ -79,6 +79,11 @@ public class StatService {
 
     @Transactional
     public AdStatsDTO extractAdStats(String date, String auth) {
+        String userRole = userService.verifyAuth(auth).role;
+
+        if (!userRole.equals("PRODUCER")) {
+            throw new RadioException("Not Allowed to change this.", 403);
+        }
         LocalDate dateToSearch;
         if (date == null) {
             dateToSearch = DateUtil.dateNow();
