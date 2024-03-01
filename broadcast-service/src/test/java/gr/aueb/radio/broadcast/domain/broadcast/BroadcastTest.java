@@ -105,11 +105,40 @@ public class BroadcastTest {
         assertFalse(result);
     }
 
-//    @Test
-//    public void createAdBroadcast()
-//    {
-//
-//    }
+    @Test
+    public void createAdBroadcast()
+    {
+        String dateString = "01-02-2022";
+        String dateString_2 = "02-02-2022";
+
+        // Define the pattern
+        String pattern = "dd-MM-yyyy";
+
+        // Create a DateTimeFormatter with the specified pattern
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+
+        // Parse the date string into a LocalDate object
+        LocalDate date_1 = LocalDate.parse(dateString, formatter);
+        LocalDate date_2 = LocalDate.parse(dateString_2, formatter);
+
+        AdBasicRepresentation adBasicRepresentation=new AdBasicRepresentation();
+        adBasicRepresentation.id=1;
+        adBasicRepresentation.timezone= Zone.EarlyMorning.name();
+        adBasicRepresentation.startingDate=date_1;
+        adBasicRepresentation.endingDate=date_2;
+        adBasicRepresentation.duration=200;
+        List<AdBroadcast> broadcasts = broadcast.getAdBroadcasts();
+        List<AdBasicRepresentation> adBasicRepresentationlist = new ArrayList<>();
+        adBasicRepresentationlist.add(adBasicRepresentation);
+
+        Broadcast broadcast=new Broadcast();
+        broadcast.setStartingTime(time);
+
+        AdBroadcast result=broadcast.createAdBroadcast(adBasicRepresentation,time,broadcasts,adBasicRepresentationlist);
+
+        assertNull(result);
+
+    }
 
     @Test
     public void adCanBeAdded()
@@ -138,9 +167,10 @@ public class BroadcastTest {
         adBasicRepresentationlist.add(adBasicRepresentation);
 
         Broadcast broadcast=new Broadcast();
+        broadcast.setStartingTime(time);
 
-     //   boolean result=broadcast.adCanBeAdded(adBasicRepresentation,time,broadcasts,adBasicRepresentationlist);
-      //  assertFalse(result);
+        boolean result=broadcast.adCanBeAdded(adBasicRepresentation,time,broadcasts,adBasicRepresentationlist);
+        assertFalse(result);
     }
 
     @Test
