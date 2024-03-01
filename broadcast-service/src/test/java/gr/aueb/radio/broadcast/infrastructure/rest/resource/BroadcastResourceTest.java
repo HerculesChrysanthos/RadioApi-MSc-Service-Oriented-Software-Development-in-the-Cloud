@@ -413,8 +413,64 @@ public class BroadcastResourceTest extends IntegrationBase {
                 .header("Authorization", "auth")
                 .get(url)
                 .then().statusCode(401);
+    }
+
+    @Test
+    public void testGetStatsDaily() {
+        String url = ApiPath.Root.BROADCASTS +  "/stats-daily";
+        given()
+                .when()
+                .header("Authorization", "auth")
+                .get(url)
+                .then().statusCode(200);
+
+        // test external exception
+        when(userService.verifyAuth("auth")).thenThrow(new ExternalServiceException("Problem on reaching user api."));
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "auth")
+                .get(url)
+                .then().statusCode(424);
 
 
+        //test for invalid user
+        Mockito.when(userService.verifyAuth(anyString())).thenThrow(new RadioException("auth err", 401));
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "auth")
+                .get(url)
+                .then().statusCode(401);
+
+    }
+    @Test
+    public void testGetStatsAd() {
+        String url = ApiPath.Root.BROADCASTS +  "/stats-ads";
+        given()
+                .when()
+                .header("Authorization", "auth")
+                .get(url)
+                .then().statusCode(200);
+
+        // test external exception
+        when(userService.verifyAuth("auth")).thenThrow(new ExternalServiceException("Problem on reaching user api."));
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "auth")
+                .get(url)
+                .then().statusCode(424);
+
+
+        //test for invalid user
+        Mockito.when(userService.verifyAuth(anyString())).thenThrow(new RadioException("auth err", 401));
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "auth")
+                .get(url)
+                .then().statusCode(401);
 
     }
 
