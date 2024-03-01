@@ -108,13 +108,14 @@ public class BroadcastResource {
             return Response.status(externalServiceException.getStatusCode())
                     .entity(new ErrorResponse(externalServiceException.getMessage()))
                     .build();
-        } catch (RadioException radioException) {
-            return Response.status(radioException.getStatusCode())
-                    .entity(new ErrorResponse(radioException.getMessage()))
+        } catch (RadioException re) {
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
                     .build();
         }
     }
-//
+
     @POST
 //    @RolesAllowed("PRODUCER")
     public Response create(
