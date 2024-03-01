@@ -102,10 +102,8 @@ public class StatService {
         List<BroadcastType> broadcastEnums = Arrays.asList(BroadcastType.values());
         for (BroadcastType type : broadcastEnums) {
             List<AdBroadcast> adBroadcasts = adBroadcastRepository.findByTypeDate(type, dateToSearch);
-            if (adBroadcasts.size() != 0) {
-                List<AdBasicRepresentation> ads = extractFromAdBroadcast(adBroadcasts, auth);
-                dto.adsPerBroadcastZone.put(type, ads);
-            }
+            List<AdBasicRepresentation> ads = extractFromAdBroadcast(adBroadcasts, auth);
+            dto.adsPerBroadcastZone.put(type, ads);
         }
         List<AdBroadcast> broadcastsOfDay = adBroadcastRepository.findByDate(dateToSearch);
         if (broadcastsOfDay.size() != 0) {

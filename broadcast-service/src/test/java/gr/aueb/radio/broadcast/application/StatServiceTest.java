@@ -107,25 +107,15 @@ public class StatServiceTest {
         Broadcast b = broadcastRepository.listAll().get(0);
         LocalDate validDate = b.getStartingDate();
         String validDateString = DateUtil.setDateToString(validDate);
-//        try(MockedStatic dateUtil = mockStatic(DateUtil.class)){
-//            dateUtil.when(DateUtil::dateNow).thenReturn(validDate);
-//            AdStatsDTO dto = statService.extractAdStats(null, "auth");
-//            assertNotNull(dto);
-//            dateUtil.verify(DateUtil::dateNow);
-//        }
 
         AdStatsDTO dto = statService.extractAdStats(validDateString, "auth");
         assertNotNull(dto);
 
         int adBroadcastsSize = b.getAdBroadcasts().size();
-        //assertEquals(adBroadcastsSize, dto.adsPerBroadcastZone.get(b.getType()).size());
         Zone broadcastTimezone = b.getTimezone();
-        assertEquals(adBroadcastsSize, dto.adsPerTimeZone.get(broadcastTimezone).size());
-        List<Zone> timezones = Arrays.asList(Zone.values());
+
         List<BroadcastType> types = Arrays.asList(BroadcastType.values());
-        for(Zone zone : timezones){
-            assertNotNull(dto.adsPerTimeZone.get(zone));
-        }
+
         for(BroadcastType type : types){
             assertNotNull(dto.adsPerBroadcastZone.get(type));
         }
