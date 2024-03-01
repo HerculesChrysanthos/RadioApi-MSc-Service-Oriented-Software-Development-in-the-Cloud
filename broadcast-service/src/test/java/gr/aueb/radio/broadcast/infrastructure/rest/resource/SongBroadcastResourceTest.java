@@ -96,6 +96,18 @@ public class SongBroadcastResourceTest extends IntegrationBase {
     }
 
     @Test
+    public void testFindRadioException() {
+        when(userService.verifyAuth("auth")).thenThrow(new RadioException("Problem on reaching user api."));
+        String url = ApiPath.Root.SONG_BROADCASTS + "/4001" ;
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .header("Authorization","auth")
+                .get(url)
+                .then().statusCode(400);
+    }
+
+    @Test
     public void testSearch() {
         SongBroadcast validSb = songBroadcastRepository.listAll().get(0);
         String url = ApiPath.Root.SONG_BROADCASTS + "/";
