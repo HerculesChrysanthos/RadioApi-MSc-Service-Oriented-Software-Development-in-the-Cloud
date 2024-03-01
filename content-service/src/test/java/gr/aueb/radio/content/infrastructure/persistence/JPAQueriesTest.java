@@ -22,7 +22,7 @@ public class JPAQueriesTest {
     @TestTransaction
     public void songListTest(){
         List<Song> songs = entityManager.createQuery("select song from Song song").getResultList();
-        assertEquals(5, songs.size());
+        assertEquals(45, songs.size());
 
     }
 
