@@ -222,6 +222,10 @@ public class Broadcast {
         return false;
     }
 
+    public boolean callCheckForOccurrence(LocalTime startingTime,Integer duration) {
+        return checkForOccurrence(startingTime, duration);
+    }
+
 //    private boolean validSongGenre(String genre){
 //        if(this.songBroadcasts.size() == 0){
 //            return true;
@@ -250,6 +254,10 @@ public class Broadcast {
             return true;
         }
         return false;
+    }
+
+    public boolean callexceedsLimits(LocalTime startingTime,Integer duration) {
+        return exceedsLimits(startingTime, duration);
     }
 
     public LocalDateTime getBroadcastEndingDateTime() {
