@@ -3,6 +3,7 @@ package gr.aueb.radio.broadcast.domain.broadcast;
 import gr.aueb.radio.broadcast.application.AdBroadcastService;
 import gr.aueb.radio.broadcast.common.DateUtil;
 import gr.aueb.radio.broadcast.domain.adBroadcast.AdBroadcast;
+import gr.aueb.radio.broadcast.domain.songBroadcast.SongBroadcast;
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.AdBasicRepresentation;
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.SongBasicRepresentation;
 import org.junit.jupiter.api.BeforeEach;
@@ -146,6 +147,21 @@ public class BroadcastTest {
     }
 
     @Test
+    public void songCanBeAddedTest ()
+    {
+        SongBasicRepresentation songBasicRepresentation=new SongBasicRepresentation();
+        songBasicRepresentation.id=1;
+        songBasicRepresentation.genreId=1;
+        songBasicRepresentation.duration=200;
+        List<SongBroadcast> songBroadcastsOfDay =broadcast.getSongBroadcasts();
+        List<SongBasicRepresentation> songBasicRepresentationlist = new ArrayList<>();
+        songBasicRepresentationlist.add(songBasicRepresentation);
+        SongBroadcast result= broadcast.createSongBroadcast(songBasicRepresentation,time,songBroadcastsOfDay,songBasicRepresentationlist);
+        assertNull(result);
+
+    }
+
+    @Test
     public void adCanBeAdded()
     {
 
@@ -219,6 +235,8 @@ public class BroadcastTest {
         Integer result=broadcast.getAllocatedTime(adBasicRepresentationlist,songBasicRepresentationlist);
 
     }
+
+
 
 
 }
