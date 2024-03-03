@@ -1,58 +1,46 @@
 # Microservices
 
 1. [User](#User)
-2. [Song](#Song)
-3. [Ad](#Ad)
-4. [Broadcast](#Broadcast)
-5. [MultimediaBroadcast](#MultimediaBroadcast)
+2. [Content](#Content)
+3. [Broadcast](#Broadcast)
 
 
 ## User
-- Δε θα πραγματοποιεί κλήση προς άλλα microservices. Τα άλλα microservices θα επικοινωνούν μαζί με αυτό.
+- Δε θα πραγματοποιεί κλήση προς άλλα microservices. Τα άλλα microservices θα επικοινωνούν μαζί με αυτό για authorisation / authentication σκοπούς.
 
-## Song
+## Content
 #### Delete process
-- Αφαιρεί το SongBroadcast απο το **Broadcast** `DELETE /broadcasts/songsBroadcasts/{songBroadcastId}`
+- `DELETE /song-broadcasts?songId={songId}` Αφαιρεί το SongBroadcast απο το **Broadcast** 
+- `DELETE /ad-broadcasts?adId={adId}` Αφαιρεί το SongBroadcast απο το **Broadcast**
+#### Update process 
+- `GET /song-broadcasts?songId={songId}` Λαμβάνει τις μεταδόσεις ενός τραγουδιού απο το **Broadcast**
+- `GET /ad-broadcasts?adId={adId}` Λαμβάνει τις μεταδόσεις μιας διαφήμισης απο το **Broadcast**
+#### Authorisation
+- `GET/users/verify-auth` **User**
 
-## Ad
-#### Delete process
-- Αφαιρεί το SongBroadcast απο το **Broadcast** `DELETE /broadcasts/adsBroadcasts/{adBroadcastId}`
 
 ## Broadcast
 #### Create process
-- Καλεί το song για να βρει τραγούδια απο το genre `GET /songs?genre={genre}`
-- Καλεί το ad για να βρει διαφημίσεις απο το time zone `GET /ads?timezone={timezone}`
-- Καλεί το MultimediaBroadcast και δημιουργεί SongBroadcast `POST /multimediaBroadcasts/songsBroadcasts`
-- Καλεί το MultimediaBroadcast και δημιουργεί AdBroadcast `POST /multimediaBroadcasts/adsBroadcasts`
+- `GET /songs?artist={artist}&genreId={genreId}&genreTitle={genreTitle}&title={title}&songsIds={songsIds}` Καλεί το content για να βρει τραγούδια βάσει φίλτρων (πχ. genre) 
+- `GET /ads?timezone={timezone}&adsIds={adsIds}` Καλεί το content για να βρει διαφημίσεις απο το time zone ή για να λάβει τις διαφημίσεις για συγκεκριμένα ids 
 
-#### Delete process
-- Αφαιρεί τις adBroadcast αυτού του broadcast `DELETE /multimediaBroadcasts/adsBroadcasts/{id}`
-- Αφαιρεί τις songBroadcast αυτού του broadcast `DELETE /multimediaBroadcasts/songsBroadcasts/{id}`
-
+#### Update process
+- `GET /genre/{id}` Καλεί το **Content** για να ελέγξει πως το είδος υπάρχει.
 
 #### Suggestions process
-- Καλεί το **Ad** για να πάρει διαφημίσεις για το timezone του broadcast που δόθηκε αρχικά `GET /ads?timezone={timezone}`
-- Καλεί το **Song** για να πάρει τραγούδια για το genre του broadcast που δόθηκε αρχικά `GET /songs?genre={genre}`
+- `GET /ads?timezone={timezone}&adsIds={adsIds}` Καλεί το **Content** για να πάρει διαφημίσεις για το timezone του broadcast που δόθηκε αρχικά 
+- `GET /songs?artist={artist}&genreId={genreId}&genreTitle={genreTitle}&title={title}&songsIds={songsIds}` Καλεί το **Content** για να πάρει τραγούδια για το genre του broadcast που δόθηκε αρχικά. 
 
+#### Statistics process
+- `GET /ads?timezone={timezone}&adsIds={adsIds}` Καλεί το content για να βρει διαφημίσεις απο το time zone ή για να λάβει τις διαφημίσεις για συγκεκριμένα ids κατά την εξαγωγή στατιστικών.
 
-## MultimediaBroadcast
+#### Create AdBroadcast process
+- `GET /ads/{id}` Καλεί το **Content** για να βρει αντίστοιχο ad κατά τη δημιουργία μετάδοσης.
+- `GET /ads?timezone={timezone}&adsIds={adsIds}` Καλεί το **content** για να λάβει τις διαφημίσεις για τα συγκεκριμένα adIds που ήδη έχουν μεταδοθεί στην εκπομπή. 
 
-### Ad Broadcast
-#### Create process
-- Καλεί το **Ad** για να βρει αντίστοιχο ad `GET /ads/{id}`
-- Βρίσκει με βάση το broadcastId το αντίστοιχο **Broadcast** στο οποίο πρόκειται να προστεθεί το adBroadcast `GET /broadcasts/{id}`
-- Στέλνει στο **Broadcast** ενημέρωση για το νέο adBroadcastId `PUT /broadcasts/{id}` και το request στο body περιέχει το adBroadcastToAdd πεδίο το οποίο θα ενημερώσει αντίστοιχα το array
-
-#### Delete process
-- Αφαιρεί το AdBroadcast από το broadcast `DELETE /broadcasts/{broadcastId}/adBroadcasts/{adBroadcastId}`
-- Στο **Ad** στέλνει για διαγραφή του adBroadcast από τη λιστα με τα adBroadcasts `DELETE /ads/{adId}/adBroadcasts/{adBroadcastId}`
-
-### Song Broadcast
-#### Create process
-- Καλεί το **Song** για να βρει αντίστοιχο song `GET /songs/{id}`
-- Βρίσκει με βάση το broadcastId το αντίστοιχο **Broadcast** στο οποίο πρόκειται να προστεθεί το songBroadcast `GET /broadcasts/{id}`
-- Στέλνει στο **Broadcast** ενημέρωση για το νέο songBroadcastId `PUT /broadcasts/{id}` και το request στο body περιέχει το songBroadcastToAdd πεδίο το οποίο θα ενημερώσει αντίστοιχα το array
-
-#### Delete process
-- Αφαιρεί το SongBroadcast από το broadcast `DELETE /broadcasts/{broadcastId}/songBroadcasts/{songBroadcastId}`
-- Στο **Song** στέλνει για διαγραφή του songBroadcast από τη λίστα με τα songBroadcasts `DELETE /songs/{songId}/songBroadcasts/{songBroadcastId}`
+#### Create SongBroadcast process
+- `GET /songs/{id}` Καλεί το **Content** για να βρει αντίστοιχο song κατά τη δημιουργία μετάδοσης.
+- `GET /songs?artist={artist}&genreId={genreId}&genreTitle={genreTitle}&title={title}&songsIds={songsIds}` Καλεί το **content** για να λάβει τα τραγούδια για τα συγκεκριμένα songIds που ήδη έχουν μεταδοθεί στην εκπομπή. 
+  
+#### Authorisation
+- `GET/users/verify-auth` **User**
