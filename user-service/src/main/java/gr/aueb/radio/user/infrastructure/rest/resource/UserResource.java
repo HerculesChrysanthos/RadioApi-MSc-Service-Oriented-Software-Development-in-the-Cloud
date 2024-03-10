@@ -18,11 +18,15 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.UriBuilder;
+import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
+import org.eclipse.microprofile.faulttolerance.Retry;
+import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 
 import java.net.URI;
+import java.time.temporal.ChronoUnit;
 
 @RequestScoped
 @Path(Root.USERS)
@@ -42,6 +46,10 @@ public class UserResource {
     public
     SecurityContext securityContext;
 
+    @Timeout(20000)
+    @Retry(maxRetries = 3, delay = 4,
+            delayUnit = ChronoUnit.SECONDS)
+    @CircuitBreaker(requestVolumeThreshold = 4, failureRatio = 0.5, delay = 3000, successThreshold = 2)
     @GET
     @Path("/{id}")
     public Response getUser(@PathParam("id") Integer id){
@@ -52,6 +60,10 @@ public class UserResource {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
+
+
+
+    @Timeout(7000)
     @POST
     public Response register(@Valid UserInputDTO userRepresentation){
         try {
@@ -63,6 +75,7 @@ public class UserResource {
         }
     }
 
+    @Timeout(10000)
     @GET
     @RolesAllowed({"USER", "PRODUCER"})
     @Produces(MediaType.APPLICATION_JSON)
