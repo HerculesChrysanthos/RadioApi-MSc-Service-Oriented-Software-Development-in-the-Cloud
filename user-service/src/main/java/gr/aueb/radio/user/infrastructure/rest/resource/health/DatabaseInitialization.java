@@ -5,6 +5,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
+import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
 import org.eclipse.microprofile.health.Startup;
 
 @ApplicationScoped
@@ -16,10 +17,14 @@ public class DatabaseInitialization implements HealthCheck {
 
     @Override
     public HealthCheckResponse call() {
+        HealthCheckResponseBuilder responseBuilder = HealthCheckResponse.named("Startup check");
+
         if(userRepository.findByUsername("test") == null){
-            return HealthCheckResponse.up("Startup logic executed successfully");
+            return responseBuilder.up().withData("status", "UP").build();
+
+            //return HealthCheckResponse.up("Startup logic executed successfully").withData("status", "UP");
         }
 
-        return HealthCheckResponse.up("Startup had some problems");
+        return responseBuilder.up().withData("status", "DOWN").build();
     }
 }

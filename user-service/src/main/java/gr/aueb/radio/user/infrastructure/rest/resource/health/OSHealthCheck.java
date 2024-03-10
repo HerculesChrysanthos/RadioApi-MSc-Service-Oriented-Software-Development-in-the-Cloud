@@ -64,7 +64,7 @@ public class OSHealthCheck implements HealthCheck {
         HealthCheckResponseBuilder responseBuilder = HealthCheckResponse.named("MemoryHealthCheck Liveness check");
         long freeMemory = Runtime.getRuntime().freeMemory();
         if (freeMemory >= threshold) {
-            responseBuilder.up();
+            responseBuilder.up().withData("status", "UP");
         } else {
             responseBuilder.down().withData("error",
                     "Not enough free memory! Available " + freeMemory + "Please restart application");
