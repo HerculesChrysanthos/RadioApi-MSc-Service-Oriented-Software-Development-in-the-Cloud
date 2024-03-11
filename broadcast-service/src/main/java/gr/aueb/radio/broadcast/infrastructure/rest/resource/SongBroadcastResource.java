@@ -56,8 +56,6 @@ public class SongBroadcastResource {
     }
 
     @GET
-    @Timeout(10000)
-    @Retry(maxRetries = 3, delay = 2, delayUnit = ChronoUnit.SECONDS)
     @Path("/{id}")
     //@RolesAllowed("PRODUCER")
     public Response find(

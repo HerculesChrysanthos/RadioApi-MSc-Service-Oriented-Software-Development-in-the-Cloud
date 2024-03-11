@@ -55,8 +55,7 @@ public class AdBroadcastResource {
         }
     }
 
-    @Timeout(10000)
-    @Retry(maxRetries = 3, delay = 2, delayUnit = ChronoUnit.SECONDS)
+
     @GET
     @Path("/{id}")
     //@RolesAllowed("PRODUCER")

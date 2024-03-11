@@ -47,8 +47,6 @@ public class BroadcastResource {
     OutputBroadcastMapper outputBroadcastMapper;
 
     @GET
-    @Timeout(10000)
-    @Retry(maxRetries = 3, delay = 2, delayUnit = ChronoUnit.SECONDS)
     @Path("/{id}")
     //@PermitAll
     @Transactional
@@ -196,8 +194,6 @@ public class BroadcastResource {
     }
 
     @Path("/{id}/suggestions")
-    @Timeout(10000)
-    @Retry(maxRetries = 3, delay = 2, delayUnit = ChronoUnit.SECONDS)
     @GET
     //@RolesAllowed("PRODUCER")
     public Response suggest(
@@ -222,8 +218,6 @@ public class BroadcastResource {
         }
     }
     @GET
-    @Timeout(10000)
-    @Retry(maxRetries = 3, delay = 2, delayUnit = ChronoUnit.SECONDS)
     @Path("/stats-daily")
     public Response getDailySchedule(
             @QueryParam("date") String date,

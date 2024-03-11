@@ -6,7 +6,10 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.Retry;
+import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+
+import java.time.temporal.ChronoUnit;
 
 @Path("/api/users")
 @ApplicationScoped
@@ -14,8 +17,9 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface UserApi {
 
     @GET
+    @Timeout(20000)
+    @Retry(maxRetries = 3, delay = 2, delayUnit = ChronoUnit.SECONDS)
     @CircuitBreaker(requestVolumeThreshold = 3, delay = 10000, successThreshold = 2)
-    @Retry(maxRetries = 5)
     @Path("/verify-auth")
     UserVerifiedRepresentation verifyAuth(
             @HeaderParam("Authorization") String basicAuthHeader
