@@ -95,9 +95,10 @@ public class SongBroadcastService {
         return songBroadcast;
     }
 
-    public  void  findFallback ()
+    public  SongBroadcast findFallback (Integer id, String auth)
     {
-        throw new NotFoundException("Song Broadcast does not exist");
+        SongBroadcast songBroadcast = songBroadcastRepository.findByIdDetails(0);
+        return songBroadcast;
     }
 
     @Transactional
@@ -135,11 +136,11 @@ public class SongBroadcastService {
         return songBroadcastRepository.findByFilters(dateToSearch, songId);
     }
 
-    public SongBroadcast searchFallback() {
+    public List<SongBroadcast> searchFallback(String date, Integer songId, String auth) {
 
         LOG.error("Fallback method triggered for search operation for search method");
 
-        return songBroadcastRepository.findByIdDetails(0);
+        return songBroadcastRepository.findByFilters(null, 0);
     }
 
 
