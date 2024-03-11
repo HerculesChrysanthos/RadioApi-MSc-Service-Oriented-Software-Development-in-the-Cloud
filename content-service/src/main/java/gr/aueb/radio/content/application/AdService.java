@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.*;
+import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 
 
 import java.util.List;
@@ -60,6 +61,21 @@ public class AdService {
         List<Ad> ads = adRepository.findByFilters(adsIds, timezone);
         return adMapper.toRepresentationList(ads);
     }
+
+    @Transactional
+    public List<AdRepresentation> searchAdFallback(String auth) {
+
+        // verify user role - producer
+        String userRole = userService.verifyAuth(auth).role;
+
+        if (!userRole.equals("PRODUCER")) {
+            throw new RadioException("Not Allowed to change this.", 403);
+        }
+
+        List<Ad> ads = adRepository.findFirst10Ads();
+        return adMapper.toRepresentationList(ads);
+    }
+
 
     @Transactional
     public Ad create(AdRepresentation adRepresentation, String auth) {
@@ -133,5 +149,21 @@ public class AdService {
 
         adRepository.deleteById(id);
     }
+
+//    @CircuitBreaker(requestVolumeThreshold = 4)
+//    public Integer getAvailability(Coffee coffee) {
+//        maybeFail();
+//        return availability.get(coffee.id);
+//    }
+//
+//    private void maybeFail() {
+//        // introduce some artificial failures
+//        final Long invocationNumber = counter.getAndIncrement();
+//        if (invocationNumber % 4 > 1) { // alternate 2 successful and 2 failing invocations
+//            LOGGER.errorf("Invocation #%d failing", invocationNumber);
+//            throw new RuntimeException("Service failed.");
+//        }
+//        LOGGER.infof("Invocation #%d OK", invocationNumber);
+//    }
 
 }
