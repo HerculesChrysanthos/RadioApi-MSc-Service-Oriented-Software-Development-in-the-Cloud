@@ -15,10 +15,14 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
+import org.eclipse.microprofile.faulttolerance.Fallback;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
+
+import static io.quarkus.arc.ComponentsProvider.LOG;
 
 @RequestScoped
 public class SongBroadcastService {
@@ -76,6 +80,7 @@ public class SongBroadcastService {
     }
 
     @Transactional
+    @Fallback(fallbackMethod = "findFallback")
     public SongBroadcast find(Integer id, String auth) {
         String userRole = userService.verifyAuth(auth).role;
 
@@ -88,6 +93,11 @@ public class SongBroadcastService {
             throw new NotFoundException("Song Broadcast does not exist");
         }
         return songBroadcast;
+    }
+
+    public  void  findFallback ()
+    {
+        throw new NotFoundException("Song Broadcast does not exist");
     }
 
     @Transactional
@@ -108,6 +118,7 @@ public class SongBroadcastService {
 
 
     @Transactional
+    @Fallback(fallbackMethod = "searchFallback")
     public List<SongBroadcast> search(String date, Integer songId, String auth) {
         String userRole = userService.verifyAuth(auth).role;
 
@@ -122,6 +133,13 @@ public class SongBroadcastService {
             dateToSearch = DateUtil.setDate(date);
         }
         return songBroadcastRepository.findByFilters(dateToSearch, songId);
+    }
+
+    public SongBroadcast searchFallback() {
+
+        LOG.error("Fallback method triggered for search operation for search method");
+
+        return songBroadcastRepository.findByIdDetails(0);
     }
 
 

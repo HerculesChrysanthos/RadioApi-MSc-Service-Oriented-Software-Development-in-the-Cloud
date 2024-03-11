@@ -12,8 +12,11 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
+import org.eclipse.microprofile.faulttolerance.Retry;
+import org.eclipse.microprofile.faulttolerance.Timeout;
 
 import java.net.URI;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Path(Root.AD_BROADCASTS)
@@ -52,6 +55,8 @@ public class AdBroadcastResource {
         }
     }
 
+    @Timeout(10000)
+    @Retry(maxRetries = 3, delay = 2, delayUnit = ChronoUnit.SECONDS)
     @GET
     @Path("/{id}")
     //@RolesAllowed("PRODUCER")

@@ -20,8 +20,11 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.faulttolerance.Retry;
+import org.eclipse.microprofile.faulttolerance.Timeout;
 
 import java.net.URI;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,6 +47,8 @@ public class BroadcastResource {
     OutputBroadcastMapper outputBroadcastMapper;
 
     @GET
+    @Timeout(10000)
+    @Retry(maxRetries = 3, delay = 2, delayUnit = ChronoUnit.SECONDS)
     @Path("/{id}")
     //@PermitAll
     @Transactional
@@ -191,6 +196,8 @@ public class BroadcastResource {
     }
 
     @Path("/{id}/suggestions")
+    @Timeout(10000)
+    @Retry(maxRetries = 3, delay = 2, delayUnit = ChronoUnit.SECONDS)
     @GET
     //@RolesAllowed("PRODUCER")
     public Response suggest(
@@ -215,6 +222,8 @@ public class BroadcastResource {
         }
     }
     @GET
+    @Timeout(10000)
+    @Retry(maxRetries = 3, delay = 2, delayUnit = ChronoUnit.SECONDS)
     @Path("/stats-daily")
     public Response getDailySchedule(
             @QueryParam("date") String date,
