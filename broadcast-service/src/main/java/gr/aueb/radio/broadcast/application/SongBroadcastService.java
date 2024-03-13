@@ -22,6 +22,7 @@ import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 
+import static com.arjuna.ats.jbossatx.logging.jbossatxLogger.logger;
 import static io.quarkus.arc.ComponentsProvider.LOG;
 
 @RequestScoped
@@ -97,7 +98,11 @@ public class SongBroadcastService {
 
     public  SongBroadcast findFallback (Integer id, String auth)
     {
-        SongBroadcast songBroadcast = songBroadcastRepository.findByIdDetails(0);
+        LOG.error("An error occurred while executing find method with ID {}: {}");
+        SongBroadcast songBroadcast = songBroadcastRepository.findByIdDetails(id);
+        if (songBroadcast == null) {
+            throw new NotFoundException("Song Broadcast does not exist");
+        }
         return songBroadcast;
     }
 

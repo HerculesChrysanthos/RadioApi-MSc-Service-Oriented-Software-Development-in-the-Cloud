@@ -34,6 +34,7 @@ public class SongBroadcastResource {
     UriInfo uriInfo;
 
     @GET
+    @Timeout(value = 10, unit = ChronoUnit.SECONDS)
     //@RolesAllowed("PRODUCER")
     public Response search(
             @QueryParam("date") String date,
@@ -56,6 +57,7 @@ public class SongBroadcastResource {
     }
 
     @GET
+    @Timeout(value = 10, unit = ChronoUnit.SECONDS)
     @Path("/{id}")
     //@RolesAllowed("PRODUCER")
     public Response find(
@@ -78,6 +80,7 @@ public class SongBroadcastResource {
     }
 
     @DELETE
+    @Timeout(value = 10, unit = ChronoUnit.SECONDS)
     @Path("/{id}")
     //@RolesAllowed("PRODUCER")
     public Response delete(

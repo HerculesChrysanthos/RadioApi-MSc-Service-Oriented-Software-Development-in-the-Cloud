@@ -47,6 +47,7 @@ public class BroadcastResource {
     OutputBroadcastMapper outputBroadcastMapper;
 
     @GET
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     @Path("/{id}")
     //@PermitAll
     @Transactional
@@ -71,6 +72,7 @@ public class BroadcastResource {
     }
 
     @GET
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     //@PermitAll
     public Response searchBroadcasts(@QueryParam("from") String from,
                                      @QueryParam("to") String to,
@@ -99,6 +101,7 @@ public class BroadcastResource {
     }
 
     @GET
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     @Path("now")
     //@PermitAll
     public Response getNow(
@@ -120,6 +123,7 @@ public class BroadcastResource {
     }
 
     @POST
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
 //    @RolesAllowed("PRODUCER")
     public Response create(
             @Valid BroadcastRepresentation broadcastRepresentation,
@@ -143,6 +147,7 @@ public class BroadcastResource {
 //
 //
     @PUT
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     @Path("/{id}")
     //@RolesAllowed("PRODUCER")
     public Response update(
@@ -169,6 +174,7 @@ public class BroadcastResource {
     }
 
     @Path("/{id}")
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     @DELETE
     //@RolesAllowed("PRODUCER")
     public Response delete(
@@ -194,6 +200,7 @@ public class BroadcastResource {
     }
 
     @Path("/{id}/suggestions")
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     @GET
     //@RolesAllowed("PRODUCER")
     public Response suggest(
@@ -218,6 +225,7 @@ public class BroadcastResource {
         }
     }
     @GET
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     @Path("/stats-daily")
     public Response getDailySchedule(
             @QueryParam("date") String date,
@@ -240,6 +248,7 @@ public class BroadcastResource {
     }
 
     @GET
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     @Path("/stats-ads")
     public Response getAdsStats(
             @QueryParam("date") String date,

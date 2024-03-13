@@ -17,7 +17,6 @@ import java.time.temporal.ChronoUnit;
 public interface UserApi {
 
     @GET
-    @Timeout(20000)
     @Retry(maxRetries = 3, delay = 2, delayUnit = ChronoUnit.SECONDS)
     @CircuitBreaker(requestVolumeThreshold = 3, delay = 10000, successThreshold = 2)
     @Path("/verify-auth")

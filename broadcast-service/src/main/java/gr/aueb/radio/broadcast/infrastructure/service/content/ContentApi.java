@@ -6,9 +6,11 @@ import gr.aueb.radio.broadcast.infrastructure.service.content.representation.Son
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.*;
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
+import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Path("/api")
@@ -17,7 +19,7 @@ import java.util.List;
 public interface ContentApi {
 
     @GET
-    @Timeout(10000)
+    @Retry(maxRetries = 4, delay = 1000, maxDuration = 5000, delayUnit = ChronoUnit.MILLIS)
     @CircuitBreaker(requestVolumeThreshold = 3, delay = 10000, successThreshold = 2)
     @Path("/ads/{id}")
     AdBasicRepresentation getAd(
@@ -26,7 +28,7 @@ public interface ContentApi {
     );
 
     @GET
-    @Timeout(10000)
+    @Retry(maxRetries = 4, delay = 1000, maxDuration = 5000, delayUnit = ChronoUnit.MILLIS)
     @CircuitBreaker(requestVolumeThreshold = 3, delay = 10000, successThreshold = 2)
     @Path("/songs/{id}")
     SongBasicRepresentation getSongId(
@@ -35,7 +37,6 @@ public interface ContentApi {
     );
 
     @GET
-    @Timeout(10000)
     @CircuitBreaker(requestVolumeThreshold = 3, delay = 10000, successThreshold = 2)
     @Path("/songs")
     List<SongBasicRepresentation> getSongsByFilters(
@@ -48,7 +49,7 @@ public interface ContentApi {
     );
 
     @GET
-    @Timeout(10000)
+    @Retry(maxRetries = 4, delay = 1000, maxDuration = 5000, delayUnit = ChronoUnit.MILLIS)
     @CircuitBreaker(requestVolumeThreshold = 3, delay = 10000, successThreshold = 2)
     @Path("/ads")
     List<AdBasicRepresentation> getAdsByFilters(
@@ -58,7 +59,7 @@ public interface ContentApi {
     );
 
     @GET
-    @Timeout(10000)
+    @Retry(maxRetries = 4, delay = 1000, maxDuration = 5000, delayUnit = ChronoUnit.MILLIS)
     @CircuitBreaker(requestVolumeThreshold = 3, delay = 10000, successThreshold = 2)
     @Path("/genres")
     List<GenreBasicRepresentation> getAllGenres(
@@ -66,7 +67,7 @@ public interface ContentApi {
     );
 
     @GET
-    @Timeout(10000)
+    @Retry(maxRetries = 4, delay = 1000, maxDuration = 5000, delayUnit = ChronoUnit.MILLIS)
     @CircuitBreaker(requestVolumeThreshold = 3, delay = 10000, successThreshold = 2)
     @Path("/genres/{id}")
     GenreBasicRepresentation getGenreById(

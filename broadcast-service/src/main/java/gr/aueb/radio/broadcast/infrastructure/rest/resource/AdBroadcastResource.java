@@ -34,6 +34,7 @@ public class AdBroadcastResource {
     UriInfo uriInfo;
 
     @GET
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     //@RolesAllowed("PRODUCER")
     public Response search(
             @QueryParam("date") String date,
@@ -57,6 +58,7 @@ public class AdBroadcastResource {
 
 
     @GET
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     @Path("/{id}")
     //@RolesAllowed("PRODUCER")
     public Response find(
@@ -81,6 +83,7 @@ public class AdBroadcastResource {
     }
 
     @DELETE
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     @Path("/{id}")
     //@RolesAllowed("PRODUCER")
     public Response delete(
@@ -106,6 +109,7 @@ public class AdBroadcastResource {
 
 
     @POST
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     //@RolesAllowed("PRODUCER")
     public Response createAdBroadcast(
             AdBroadcastCreationDTO dto,
@@ -132,6 +136,7 @@ public class AdBroadcastResource {
     }
 
     @DELETE
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     public Response deleteByFilters(
             @HeaderParam("Authorization") String auth,
             @QueryParam("adId") Integer adId
