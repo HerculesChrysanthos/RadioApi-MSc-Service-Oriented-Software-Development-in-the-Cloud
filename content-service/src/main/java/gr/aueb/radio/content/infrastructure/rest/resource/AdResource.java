@@ -17,6 +17,8 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 import org.eclipse.microprofile.faulttolerance.Bulkhead;
+
+import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.jboss.logging.Logger;
@@ -73,6 +75,7 @@ public class AdResource {
 
     @GET
     @Fallback(fallbackMethod = "fallbackAdRecommendations")
+    @Timeout(100)
     public Response search(
             @QueryParam("timezone") Zone timezone,
             @QueryParam("adsIds") String adsIds,
@@ -88,15 +91,24 @@ public class AdResource {
                         .map(Integer::parseInt)
                         .collect(Collectors.toList());
             }
+            try {
+                // Simulate timeout by sleeping for longer than the timeout duration
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                // Handle interruption
+                Thread.currentThread().interrupt();
+            }
             LOGGER.infof("AdResource.search() invocation #%d returning successfully", invocationNumber);
             List<AdRepresentation> adsFound = adService.search(timezone, convertedAdsId, auth);
             return Response.ok().entity(adsFound).build();
         } catch (RadioException re) {
             int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            LOGGER.infof("AdResource.search() statusCode");
             return Response.status(statusCode)
                     .entity(new ErrorResponse(re.getMessage()))
                     .build();
         } catch (ExternalServiceException externalServiceException) {
+            LOGGER.infof("AdResource.search() statusCode " + externalServiceException.getStatusCode());
             return Response.status(externalServiceException.getStatusCode())
                     .entity(new ErrorResponse(externalServiceException.getMessage()))
                     .build();
@@ -109,9 +121,9 @@ public class AdResource {
             @HeaderParam("Authorization") String auth
     ) {
         LOGGER.info("Falling back to fallbackAdRecommendations()");
-        if (timezone != null) { // Check if timezone parameter is present
-            // Filter ads based on timezone and return as fallback
+        if (timezone != null || adsIds != null) {
             List<AdRepresentation> fallbackAds = adService.searchAdFallback(auth);
+            LOGGER.info("fallbackAdRecommendations().fallbackAds " + fallbackAds);
 
             return Response.ok().entity(fallbackAds).build();
         }
