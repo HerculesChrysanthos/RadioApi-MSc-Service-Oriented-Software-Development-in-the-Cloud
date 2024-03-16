@@ -12,12 +12,16 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
+import org.eclipse.microprofile.faulttolerance.Bulkhead;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.jboss.logging.Logger;
+
 
 import java.net.URI;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Path(Root.AD_BROADCASTS)
 @Produces(MediaType.APPLICATION_JSON)
@@ -32,6 +36,8 @@ public class AdBroadcastResource {
 
     @Context
     UriInfo uriInfo;
+    private static final Logger LOGGER = Logger.getLogger(AdBroadcastResource.class);
+    private AtomicLong counter = new AtomicLong(0);
 
     @GET
     @Timeout(value = 5, unit = ChronoUnit.SECONDS)
@@ -44,7 +50,7 @@ public class AdBroadcastResource {
         try {
             List<AdBroadcast> found = adBroadcastService.search(date, adId, auth);
             return Response.ok().entity(adBroadcastMapper.toRepresentationList(found)).build();
-        } catch (RadioException re){
+        } catch (RadioException re) {
             int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
             return Response.status(statusCode)
                     .entity(new ErrorResponse(re.getMessage()))
@@ -68,42 +74,43 @@ public class AdBroadcastResource {
         try {
             AdBroadcast adBroadcast = adBroadcastService.find(id, auth);
             return Response.ok().entity(adBroadcastMapper.toRepresentation(adBroadcast)).build();
-        }catch (NotFoundException e){
+        } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode(), e.getMessage()).build();
         } catch (ExternalServiceException externalServiceException) {
             return Response.status(externalServiceException.getStatusCode())
                     .entity(new ErrorResponse(externalServiceException.getMessage()))
                     .build();
-        }  catch (RadioException re){
-        int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
-        return Response.status(statusCode)
-                .entity(new ErrorResponse(re.getMessage()))
-                .build();
+        } catch (RadioException re) {
+            int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
+            return Response.status(statusCode)
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
         }
     }
 
+    @Bulkhead(value = 20)
+    @Timeout(value = 500, unit = ChronoUnit.SECONDS)
     @DELETE
-    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     @Path("/{id}")
     //@RolesAllowed("PRODUCER")
     public Response delete(
             @PathParam("id") Integer id,
             @HeaderParam("Authorization") String auth
-            ) {
+    ) {
         try {
             adBroadcastService.delete(id, auth);
             return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
-        }catch (NotFoundException e){
+        } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode(), e.getMessage()).build();
         } catch (ExternalServiceException externalServiceException) {
             return Response.status(externalServiceException.getStatusCode())
                     .entity(new ErrorResponse(externalServiceException.getMessage()))
                     .build();
-        } catch (RadioException re){
+        } catch (RadioException re) {
             int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
             return Response.status(statusCode)
-                .entity(new ErrorResponse(re.getMessage()))
-                .build();
+                    .entity(new ErrorResponse(re.getMessage()))
+                    .build();
         }
     }
 
@@ -123,7 +130,7 @@ public class AdBroadcastResource {
             return Response.status(externalServiceException.getStatusCode())
                     .entity(new ErrorResponse(externalServiceException.getMessage()))
                     .build();
-        } catch (RadioException re){
+        } catch (RadioException re) {
             int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
             return Response.status(statusCode)
                     .entity(new ErrorResponse(re.getMessage()))
@@ -135,16 +142,20 @@ public class AdBroadcastResource {
         }
     }
 
+    @Retry(maxRetries = 3)
+    @Timeout(value = 500, unit = ChronoUnit.SECONDS)
     @DELETE
-    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     public Response deleteByFilters(
             @HeaderParam("Authorization") String auth,
             @QueryParam("adId") Integer adId
     ) {
         try {
+            final Long invocationNumber = counter.getAndIncrement();
             adBroadcastService.deleteByFilters(auth, adId);
+            LOGGER.infof("AdBroadcast.deleteByFilters() invocation #%d returning successfully", invocationNumber);
+
             return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
-        } catch (RadioException re){
+        } catch (RadioException re) {
             int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
             return Response.status(statusCode)
                     .entity(new ErrorResponse(re.getMessage()))

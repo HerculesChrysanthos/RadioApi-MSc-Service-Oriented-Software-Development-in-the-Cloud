@@ -13,10 +13,9 @@ import java.time.temporal.ChronoUnit;
 @ApplicationScoped
 @RegisterRestClient(configKey="user-api")
 public interface UserApi {
-
+//    @Timeout(unit = ChronoUnit.SECONDS, value = 2)
     @GET
     @Path("/verify-auth")
-    @Timeout(500)
     @Retry(maxRetries = 4, delay = 1000,
             delayUnit = ChronoUnit.MILLIS)
     UserVerifiedRepresentation verifyAuth(

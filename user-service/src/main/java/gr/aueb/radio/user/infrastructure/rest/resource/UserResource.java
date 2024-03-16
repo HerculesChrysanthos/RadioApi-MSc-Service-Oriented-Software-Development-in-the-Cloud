@@ -91,11 +91,11 @@ public class UserResource {
     public Response verifyAuth(){
         String username = securityContext.getUserPrincipal().getName();
         UserBasicRepresentation user = userService.findUserByUsername(username);
-        try {
-           Thread.sleep(3000L);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//           Thread.sleep(3000L);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
         return Response.ok().entity(user).build();
 
     }

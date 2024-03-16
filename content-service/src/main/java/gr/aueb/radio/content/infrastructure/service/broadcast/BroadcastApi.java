@@ -14,7 +14,7 @@ import java.util.List;
 @Path("/api")
 @ApplicationScoped
 @RegisterRestClient(configKey="broadcast-api")
-@Timeout(5000)
+//@Timeout(5000)
 public interface BroadcastApi {
 
     @DELETE

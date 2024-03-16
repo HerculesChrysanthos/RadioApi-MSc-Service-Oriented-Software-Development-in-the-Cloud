@@ -16,6 +16,7 @@ import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
+import org.eclipse.microprofile.faulttolerance.Bulkhead;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -94,6 +95,7 @@ public class SongResource {
         }
     }
 
+    @Bulkhead(value = 20)
     @POST
     //@PermitAll
     public Response create(

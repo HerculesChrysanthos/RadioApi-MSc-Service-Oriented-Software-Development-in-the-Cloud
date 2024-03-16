@@ -16,6 +16,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
+import org.eclipse.microprofile.faulttolerance.Bulkhead;
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.jboss.logging.Logger;
@@ -46,6 +47,7 @@ public class AdResource {
     @Inject
     AdService adService;
 
+    @Bulkhead(value = 2)
     @GET
     @Path("/{id}")
     public Response getAd(@PathParam("id") Integer id,
@@ -116,7 +118,7 @@ public class AdResource {
         return null;
     }
 
-
+    @Bulkhead(value = 20)
     @POST
 //    @RolesAllowed("PRODUCER")
     public Response createAd(
