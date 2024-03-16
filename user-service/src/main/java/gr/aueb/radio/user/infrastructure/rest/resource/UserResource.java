@@ -75,18 +75,27 @@ public class UserResource {
         }
     }
 
+    /*
     @Timeout(10000)
-    @GET
     @RolesAllowed({"USER", "PRODUCER"})
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
     @Counted(name = "performedChecks", description = "How many primality checks have been performed.")
     @Timed(name = "checksTimer", description = "A measure of how long it takes to perform the primality test.", unit = MetricUnits.MILLISECONDS)
+
+     */
+    @GET
+    @Timeout(100)
     @Path("/verify-auth")
     public Response verifyAuth(){
         String username = securityContext.getUserPrincipal().getName();
         UserBasicRepresentation user = userService.findUserByUsername(username);
+        try {
+           Thread.sleep(3000L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return Response.ok().entity(user).build();
 
     }

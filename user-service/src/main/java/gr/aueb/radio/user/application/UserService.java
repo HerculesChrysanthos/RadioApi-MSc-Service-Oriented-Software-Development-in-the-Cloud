@@ -57,7 +57,6 @@ public class UserService {
         if(user == null){
             throw new NotFoundException("User not found");
         }
-
         return userMapper.toBasicRepresentation(user);
     }
 }
