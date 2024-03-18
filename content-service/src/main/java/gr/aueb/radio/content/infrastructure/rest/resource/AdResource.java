@@ -28,7 +28,6 @@ import org.jboss.logging.Logger;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -62,6 +61,7 @@ public class AdResource {
             // trigger content service unavailability - rest for retries
             boolean hasDelay = Boolean.parseBoolean(System.getProperty("CONTENT_HAS_DELAY", "false"));
             if (hasDelay) {
+                LOGGER.infof("findAd().hadDelay set true");
                 if (temp) {
                     temp = false;
                     System.out.println("temp - " + temp);
@@ -70,7 +70,7 @@ public class AdResource {
             }
             System.out.println("temp after - " + temp);
             AdRepresentation adRepresentation = adService.findAd(id, auth);
-            LOGGER.infof("findAd() returning successfully");
+            LOGGER.infof("findAd() returning successfully - id " + id);
             return Response.ok().entity(adRepresentation).build();
         } catch (NotFoundException nfe) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -88,7 +88,7 @@ public class AdResource {
 
     @GET
     @Fallback(fallbackMethod = "fallbackAdRecommendations")
-    @Timeout(100)
+    @Timeout(5000)
     public Response search(
             @QueryParam("timezone") Zone timezone,
             @QueryParam("adsIds") String adsIds,
@@ -105,8 +105,9 @@ public class AdResource {
             if (hasDelay) {
                 LOGGER.infof("Content ads search has delay");
                 try {
+                    LOGGER.infof("search()  thread sleep 10000");
                     // Simulate timeout by sleeping for longer than the timeout duration
-                    Thread.sleep(200);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     // Handle interruption
                     Thread.currentThread().interrupt();
@@ -138,7 +139,7 @@ public class AdResource {
         LOGGER.info("Falling back to fallbackAdRecommendations()");
         if (timezone != null || adsIds != null) {
             List<AdRepresentation> fallbackAds = adService.searchAdFallback(auth);
-            LOGGER.info("fallbackAdRecommendations().fallbackAds " + fallbackAds);
+            LOGGER.info("fallbackAdRecommendations().fallbackAds " + fallbackAds.size());
 
             return Response.ok().entity(fallbackAds).build();
         }

@@ -247,7 +247,6 @@ public class BroadcastResource {
     }
 
     @GET
-    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     @Path("/stats-ads")
     public Response getAdsStats(
             @QueryParam("date") String date,

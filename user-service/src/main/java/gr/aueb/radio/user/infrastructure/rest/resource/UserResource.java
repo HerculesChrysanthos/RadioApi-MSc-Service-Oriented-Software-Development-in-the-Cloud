@@ -25,6 +25,7 @@ import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
+import org.jboss.logging.Logger;
 
 import java.net.URI;
 import java.time.temporal.ChronoUnit;
@@ -46,6 +47,8 @@ public class UserResource {
     @Inject
     public
     SecurityContext securityContext;
+
+    private static final Logger LOGGER = Logger.getLogger(UserResource.class);
 
     @Timeout(20000)
     @Retry(maxRetries = 3, delay = 4,
@@ -96,7 +99,7 @@ public class UserResource {
         boolean hasDelay = Boolean.parseBoolean(System.getProperty("USER_HAS_DELAY", "false"));
 
         if(hasDelay) {
-            Log.info("User verify auth has delay");
+            LOGGER.infof("User verify auth has delay");
             try {
                 Thread.sleep(10000L);
             } catch (InterruptedException e) {
