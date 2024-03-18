@@ -200,7 +200,6 @@ public class BroadcastResource {
     }
 
     @Path("/{id}/suggestions")
-    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     @GET
     //@RolesAllowed("PRODUCER")
     public Response suggest(
