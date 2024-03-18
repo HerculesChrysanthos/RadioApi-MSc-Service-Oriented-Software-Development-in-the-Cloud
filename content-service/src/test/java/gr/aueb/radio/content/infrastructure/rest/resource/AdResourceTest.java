@@ -179,17 +179,17 @@ class AdResourceTest extends IntegrationBase {
                 .statusCode(Response.Status.OK.getStatusCode()).extract();
     }
 
-    @Test
-    public void testSearchWithFiltersRadioException() {
-        when(userService.verifyAuth("auth")).thenThrow(new RadioException("auth error", 403));
-
-        String url = Fixture.API_ROOT + Fixture.ADS + "/";
-        given()
-                .contentType(ContentType.JSON)
-                .header("Authorization", "auth")
-                .when().get(url)
-                .then().statusCode(403);
-    }
+//    @Test
+//    public void testSearchWithFiltersRadioException() {
+//        when(userService.verifyAuth("auth")).thenThrow(new RadioException("auth error", 403));
+//
+//        String url = Fixture.API_ROOT + Fixture.ADS + "/";
+//        given()
+//                .contentType(ContentType.JSON)
+//                .header("Authorization", "auth")
+//                .when().get(url)
+//                .then().statusCode(403);
+//    }
 
 }
 

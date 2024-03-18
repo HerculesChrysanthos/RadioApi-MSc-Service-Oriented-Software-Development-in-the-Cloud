@@ -61,7 +61,7 @@ public class BroadcastServiceImpl implements BroadcastService {
             throw new RadioException("Problem on reaching broadcast api.", 424);
         } catch (ResteasyWebApplicationException error) {
             Log.info("Can't reach broadcast api due to timeout exception");
-            throw new RadioException("Timeout exception.", 400);
+            throw new RadioException("Timeout exception.", 408);
         }
     }
 }

@@ -3,6 +3,7 @@ package gr.aueb.radio.content.infrastructure.rest.resource;
 import gr.aueb.radio.content.common.ErrorResponse;
 import gr.aueb.radio.content.common.ExternalServiceException;
 import gr.aueb.radio.content.infrastructure.rest.ApiPath;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import gr.aueb.radio.content.application.AdService;
 import gr.aueb.radio.content.common.RadioException;
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
 @Path(ApiPath.Root.ADS)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@RequestScoped
+@ApplicationScoped
 public class AdResource {
 
     private static final Logger LOGGER = Logger.getLogger(AdResource.class);
@@ -48,14 +49,21 @@ public class AdResource {
 
     @Inject
     AdService adService;
-
-    @Bulkhead(value = 2)
+    boolean   temp = true;
+    @Timeout(10000)
     @GET
     @Path("/{id}")
     public Response getAd(@PathParam("id") Integer id,
-                          @HeaderParam("Authorization") String auth) {
+                          @HeaderParam("Authorization") String auth) throws InterruptedException {
         try {
             final Long invocationNumber = counter.getAndIncrement();
+            System.out.println("mpika - "+  temp);
+            if (temp ){
+                temp = false;
+                System.out.println("temp - "+  temp);
+                Thread.sleep(12000);
+            }
+            System.out.println("temp after - "+  temp);
             AdRepresentation adRepresentation = adService.findAd(id, auth);
             LOGGER.infof("AdResource.findAd() invocation #%d returning successfully", invocationNumber);
             return Response.ok().entity(adRepresentation).build();

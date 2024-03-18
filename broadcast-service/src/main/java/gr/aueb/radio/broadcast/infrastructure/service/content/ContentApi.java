@@ -19,8 +19,7 @@ import java.util.List;
 public interface ContentApi {
 
     @GET
-    @Retry(maxRetries = 4, delay = 1000, maxDuration = 5000, delayUnit = ChronoUnit.MILLIS)
-    @CircuitBreaker(requestVolumeThreshold = 3, delay = 10000, successThreshold = 2)
+    @Retry(maxRetries = 3, delay = 5000)
     @Path("/ads/{id}")
     AdBasicRepresentation getAd(
             @HeaderParam("Authorization") String basicAuthHeader,
@@ -28,8 +27,6 @@ public interface ContentApi {
     );
 
     @GET
-    @Retry(maxRetries = 4, delay = 1000, maxDuration = 5000, delayUnit = ChronoUnit.MILLIS)
-    @CircuitBreaker(requestVolumeThreshold = 3, delay = 10000, successThreshold = 2)
     @Path("/songs/{id}")
     SongBasicRepresentation getSongId(
             @HeaderParam("Authorization") String basicAuthHeader,

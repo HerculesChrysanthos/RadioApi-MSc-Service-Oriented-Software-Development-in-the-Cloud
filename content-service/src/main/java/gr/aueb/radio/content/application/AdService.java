@@ -41,6 +41,12 @@ public class AdService {
             throw new RadioException("Not Allowed to change this.", 403);
         }
 
+        try {
+            Thread.sleep(6000L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         Ad ad = adRepository.findById(id);
         if (ad == null) {
             throw new NotFoundException("Ad not found");

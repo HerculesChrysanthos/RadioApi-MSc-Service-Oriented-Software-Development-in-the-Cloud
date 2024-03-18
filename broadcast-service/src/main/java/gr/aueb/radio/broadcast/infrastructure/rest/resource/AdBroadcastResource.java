@@ -13,6 +13,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 import org.eclipse.microprofile.faulttolerance.Bulkhead;
+import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.jboss.logging.Logger;
@@ -116,7 +117,6 @@ public class AdBroadcastResource {
 
 
     @POST
-    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     //@RolesAllowed("PRODUCER")
     public Response createAdBroadcast(
             AdBroadcastCreationDTO dto,
@@ -143,7 +143,7 @@ public class AdBroadcastResource {
     }
 
     @Retry(maxRetries = 3)
-    @Timeout(value = 500, unit = ChronoUnit.SECONDS)
+    @Timeout(value = 2, unit = ChronoUnit.SECONDS)
     @DELETE
     public Response deleteByFilters(
             @HeaderParam("Authorization") String auth,
