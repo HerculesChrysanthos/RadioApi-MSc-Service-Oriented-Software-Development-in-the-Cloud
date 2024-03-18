@@ -17,8 +17,7 @@ import java.time.temporal.ChronoUnit;
 public interface UserApi {
 
     @GET
-    @Retry(maxRetries = 3, delay = 2, delayUnit = ChronoUnit.SECONDS)
-    @CircuitBreaker(requestVolumeThreshold = 3, delay = 10000, successThreshold = 2)
+    @CircuitBreaker(requestVolumeThreshold = 2, failureRatio = 0.5, delay = 10000)
     @Path("/verify-auth")
     UserVerifiedRepresentation verifyAuth(
             @HeaderParam("Authorization") String basicAuthHeader
