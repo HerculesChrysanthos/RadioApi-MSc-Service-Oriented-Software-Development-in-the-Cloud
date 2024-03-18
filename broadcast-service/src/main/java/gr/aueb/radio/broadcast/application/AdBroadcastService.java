@@ -16,6 +16,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
+import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.hibernate.annotations.EmbeddableInstantiator;
 
 import java.time.LocalDate;
@@ -104,7 +105,7 @@ public class AdBroadcastService {
         broadcastService.removeAdBroadcast(adBroadcast.getBroadcast().getId(), adBroadcast.getId());
     }
 
-
+    @Timeout(1000)
     @Transactional
     public List<AdBroadcast> search(String date, Integer adId, String auth) {
         String userRole = userService.verifyAuth(auth).role;

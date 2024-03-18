@@ -16,6 +16,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import org.eclipse.microprofile.faulttolerance.Fallback;
+import org.eclipse.microprofile.faulttolerance.Timeout;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -96,8 +97,7 @@ public class SongBroadcastService {
         return songBroadcast;
     }
 
-    public  SongBroadcast findFallback (Integer id, String auth)
-    {
+    public SongBroadcast findFallback(Integer id, String auth) {
         LOG.error("An error occurred while executing find method with ID {}: {}");
         SongBroadcast songBroadcast = songBroadcastRepository.findByIdDetails(id);
         if (songBroadcast == null) {
@@ -122,7 +122,7 @@ public class SongBroadcastService {
         broadcastService.removeSongBroadcast(songBroadcast.getBroadcast().getId(), songBroadcast.getId());
     }
 
-
+    @Timeout(5000)
     @Transactional
     @Fallback(fallbackMethod = "searchFallback")
     public List<SongBroadcast> search(String date, Integer songId, String auth) {
@@ -132,12 +132,19 @@ public class SongBroadcastService {
             throw new RadioException("Not Allowed to access this.", 403);
         }
 
+        try {
+            Thread.sleep(6000L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         LocalDate dateToSearch;
         if (date == null) {
             dateToSearch = null;
         } else {
             dateToSearch = DateUtil.setDate(date);
         }
+
         return songBroadcastRepository.findByFilters(dateToSearch, songId);
     }
 
