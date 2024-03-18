@@ -18,7 +18,6 @@ import java.util.List;
 public interface BroadcastApi {
 
     @DELETE
-    @Retry(maxRetries = 3)
     @Path("/song-broadcasts")
     Response deleteSongBroadcastsBySongId(
             @HeaderParam("Authorization") String basicAuthHeader,

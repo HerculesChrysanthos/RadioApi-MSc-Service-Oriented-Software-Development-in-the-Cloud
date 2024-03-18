@@ -138,7 +138,6 @@ public class AdResource {
         return null;
     }
 
-    @Bulkhead(value = 20)
     @POST
 //    @RolesAllowed("PRODUCER")
     public Response createAd(

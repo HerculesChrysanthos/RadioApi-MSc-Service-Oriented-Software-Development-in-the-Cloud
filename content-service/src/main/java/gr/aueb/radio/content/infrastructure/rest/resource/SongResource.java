@@ -11,6 +11,7 @@ import gr.aueb.radio.content.infrastructure.rest.representation.GenreRepresentat
 import gr.aueb.radio.content.infrastructure.rest.representation.SongInputDTO;
 import gr.aueb.radio.content.infrastructure.rest.representation.SongMapper;
 import gr.aueb.radio.content.infrastructure.rest.representation.SongRepresentation;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 @Path(Root.SONGS)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@RequestScoped
+@ApplicationScoped
 public class SongResource {
 
     @Context
@@ -122,6 +123,7 @@ public class SongResource {
 
     }
 
+    @Bulkhead(value = 2, waitingTaskQueue = 2)
     @DELETE
     @Path("/{id}")
     //@RolesAllowed("PRODUCER")
