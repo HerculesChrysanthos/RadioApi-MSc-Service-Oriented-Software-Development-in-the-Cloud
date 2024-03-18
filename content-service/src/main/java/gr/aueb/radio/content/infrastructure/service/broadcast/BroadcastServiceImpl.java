@@ -10,6 +10,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.ProcessingException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.resteasy.client.exception.ResteasyWebApplicationException;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +26,7 @@ public class BroadcastServiceImpl implements BroadcastService {
     public void deleteSongBroadcastsBySongId(String auth, Integer songId) {
         try {
             broadcastApi.deleteSongBroadcastsBySongId(auth, songId);
-        }  catch (ProcessingException error) {
+        } catch (ProcessingException error) {
             throw new RadioException("Problem on reaching content api.", 424);
         }
     }
@@ -34,7 +35,7 @@ public class BroadcastServiceImpl implements BroadcastService {
     public void deleteAdBroadcastsByAdId(String auth, Integer adId) {
         try {
             broadcastApi.deleteAdBroadcastsByAdId(auth, adId);
-        }  catch (ProcessingException error) {
+        } catch (ProcessingException error) {
             throw new RadioException("Problem on reaching content api.", 424);
         }
     }
@@ -43,17 +44,24 @@ public class BroadcastServiceImpl implements BroadcastService {
     public List<SongBroadcastBasicRepresentation> getSongBroadcastsBySongId(String auth, Integer id) {
         try {
             return broadcastApi.getSongBroadcastsBySongId(auth, id);
-        }  catch (ProcessingException error) {
+        } catch (ProcessingException error) {
             throw new RadioException("Problem on reaching broadcast api.", 424);
+        } catch (ResteasyWebApplicationException error) {
+            Log.info("Can't reach broadcast api due to timeout exception");
+            throw new RadioException("Timeout exception.", 400);
         }
     }
+
 
     @Override
     public List<AdBroadcastBasicRepresentation> getAdBroadcastsByAdId(String auth, Integer id) {
         try {
             return broadcastApi.getAdBroadcastsByAdId(auth, id);
-        }  catch (ProcessingException error) {
+        } catch (ProcessingException error) {
             throw new RadioException("Problem on reaching broadcast api.", 424);
+        } catch (ResteasyWebApplicationException error) {
+            Log.info("Can't reach broadcast api due to timeout exception");
+            throw new RadioException("Timeout exception.", 400);
         }
     }
 }

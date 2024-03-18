@@ -122,9 +122,8 @@ public class SongBroadcastService {
         broadcastService.removeSongBroadcast(songBroadcast.getBroadcast().getId(), songBroadcast.getId());
     }
 
-    @Timeout(5000)
+
     @Transactional
-    @Fallback(fallbackMethod = "searchFallback")
     public List<SongBroadcast> search(String date, Integer songId, String auth) {
         String userRole = userService.verifyAuth(auth).role;
 
@@ -148,23 +147,6 @@ public class SongBroadcastService {
         return songBroadcastRepository.findByFilters(dateToSearch, songId);
     }
 
-    public List<SongBroadcast> searchFallback(String date, Integer songId, String auth) {
-
-        LOG.error("Fallback method triggered for search operation for search method");
-
-        return songBroadcastRepository.findByFilters(null, 0);
-    }
-
-
-//    @Transactional
-//    public List<SongBroadcast> searchBySongId (String date, String auth) {
-//        String userRole = userService.verifyAuth(auth).role;
-//
-//        if(!userRole.equals("PRODUCER")){
-//            throw new RadioException("Not Allowed to access this.", 403);
-//        }
-//        return songBroadcastRepository.searchBySongId(songId);
-//    }
 
     @Transactional
     public void deleteByFilters(String auth, Integer songId) {

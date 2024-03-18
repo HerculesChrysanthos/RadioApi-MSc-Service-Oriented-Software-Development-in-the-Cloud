@@ -34,7 +34,7 @@ public class SongBroadcastResource {
     UriInfo uriInfo;
 
     @GET
-    @Timeout(value = 10, unit = ChronoUnit.SECONDS)
+    @Timeout(value = 2, unit = ChronoUnit.SECONDS)
     //@RolesAllowed("PRODUCER")
     public Response search(
             @QueryParam("date") String date,

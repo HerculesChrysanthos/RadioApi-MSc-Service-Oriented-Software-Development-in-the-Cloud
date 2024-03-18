@@ -40,7 +40,7 @@ public class AdBroadcastResource {
     private AtomicLong counter = new AtomicLong(0);
 
     @GET
-    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
+    @Timeout(value = 2, unit = ChronoUnit.SECONDS)
     //@RolesAllowed("PRODUCER")
     public Response search(
             @QueryParam("date") String date,

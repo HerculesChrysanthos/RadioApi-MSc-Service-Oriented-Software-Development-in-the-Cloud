@@ -105,7 +105,6 @@ public class AdBroadcastService {
         broadcastService.removeAdBroadcast(adBroadcast.getBroadcast().getId(), adBroadcast.getId());
     }
 
-    @Timeout(1000)
     @Transactional
     public List<AdBroadcast> search(String date, Integer adId, String auth) {
         String userRole = userService.verifyAuth(auth).role;
@@ -113,7 +112,11 @@ public class AdBroadcastService {
         if (!userRole.equals("PRODUCER")) {
             throw new RadioException("Not Allowed to access this.", 403);
         }
-
+        try {
+            Thread.sleep(6000L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         LocalDate dateToSearch;
         if (date == null) {
             dateToSearch = null;
