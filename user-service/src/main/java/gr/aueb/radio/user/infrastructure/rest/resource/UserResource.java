@@ -8,6 +8,7 @@ import gr.aueb.radio.user.infrastructure.rest.representation.UserBasicRepresenta
 import gr.aueb.radio.user.infrastructure.rest.representation.UserInputDTO;
 import gr.aueb.radio.user.infrastructure.rest.representation.UserMapper;
 import gr.aueb.radio.user.infrastructure.rest.representation.UserRepresentation;
+import io.quarkus.logging.Log;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -86,16 +87,23 @@ public class UserResource {
 
      */
     @GET
-    @Timeout(100)
+    @Timeout(5000)
     @Path("/verify-auth")
     public Response verifyAuth(){
         String username = securityContext.getUserPrincipal().getName();
         UserBasicRepresentation user = userService.findUserByUsername(username);
-//        try {
-//           Thread.sleep(3000L);
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
+
+        boolean hasDelay = Boolean.parseBoolean(System.getProperty("USER_HAS_DELAY", "false"));
+
+        if(hasDelay) {
+            Log.info("User verify auth has delay");
+            try {
+                Thread.sleep(10000L);
+            } catch (InterruptedException e) {
+
+            }
+        }
+
         return Response.ok().entity(user).build();
 
     }
