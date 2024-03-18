@@ -4,13 +4,11 @@ import gr.aueb.radio.content.application.SongService;
 import gr.aueb.radio.content.common.ErrorResponse;
 import gr.aueb.radio.content.common.ExternalServiceException;
 import gr.aueb.radio.content.common.RadioException;
+import gr.aueb.radio.content.domain.ad.Zone;
 import gr.aueb.radio.content.domain.genre.Genre;
 import gr.aueb.radio.content.domain.song.Song;
 import gr.aueb.radio.content.infrastructure.rest.ApiPath.Root;
-import gr.aueb.radio.content.infrastructure.rest.representation.GenreRepresentation;
-import gr.aueb.radio.content.infrastructure.rest.representation.SongInputDTO;
-import gr.aueb.radio.content.infrastructure.rest.representation.SongMapper;
-import gr.aueb.radio.content.infrastructure.rest.representation.SongRepresentation;
+import gr.aueb.radio.content.infrastructure.rest.representation.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -18,6 +16,9 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 import org.eclipse.microprofile.faulttolerance.Bulkhead;
+import org.eclipse.microprofile.faulttolerance.Fallback;
+import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.jboss.logging.Logger;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -39,6 +40,8 @@ public class SongResource {
 
     @Inject
     SongService songService;
+
+    private static final Logger LOGGER = Logger.getLogger(SongResource.class);
 
     @GET
     @Path("/{id}")
@@ -63,7 +66,8 @@ public class SongResource {
                     .build();
         }
     }
-
+    @Fallback(fallbackMethod = "fallbackSongsRecommendations")
+    @Timeout(5000)
     @GET
     //@PermitAll
     public Response search(
@@ -94,6 +98,23 @@ public class SongResource {
                     .entity(new ErrorResponse(externalServiceException.getMessage()))
                     .build();
         }
+    }
+
+    public Response fallbackSongsRecommendations(
+            @QueryParam("artist") String artist,
+            @QueryParam("genreId") Integer genreId,
+            @QueryParam("genreTitle") String genreTitle, // maybe will be deleted later if not used
+            @QueryParam("title") String title,
+            @QueryParam("songsIds") String songsIds,
+            @HeaderParam("Authorization") String auth
+    ) {
+        LOGGER.info("Falling back to fallbackAdRecommendations()");
+
+            List<SongRepresentation> fallbackSongs = songService.searchSongFallback(auth);
+            LOGGER.info("fallbackSongRecommendations().fallbackSongs " + fallbackSongs.size());
+
+            return Response.ok().entity(fallbackSongs).build();
+
     }
 
     @Bulkhead(value = 20)

@@ -10,6 +10,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.ProcessingException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.logging.Logger;
 import org.jboss.resteasy.client.exception.ResteasyWebApplicationException;
 
 import java.util.List;
@@ -21,6 +22,8 @@ public class BroadcastServiceImpl implements BroadcastService {
     @Inject
     @RestClient
     BroadcastApi broadcastApi;
+
+    private static final Logger LOGGER = Logger.getLogger(BroadcastServiceImpl.class);
 
     @Override
     public void deleteSongBroadcastsBySongId(String auth, Integer songId) {
@@ -60,7 +63,7 @@ public class BroadcastServiceImpl implements BroadcastService {
         } catch (ProcessingException error) {
             throw new RadioException("Problem on reaching broadcast api.", 424);
         } catch (ResteasyWebApplicationException error) {
-            Log.info("Can't reach broadcast api due to timeout exception");
+            LOGGER.infof("Can't reach broadcast api due to timeout exception");
             throw new RadioException("Timeout exception.", 408);
         }
     }

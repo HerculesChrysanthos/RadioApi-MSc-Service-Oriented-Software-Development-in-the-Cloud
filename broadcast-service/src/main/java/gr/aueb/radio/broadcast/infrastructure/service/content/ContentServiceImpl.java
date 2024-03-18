@@ -11,10 +11,10 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.client.exception.ResteasyWebApplicationException;
 
 import java.util.List;
 
@@ -27,6 +27,8 @@ public class ContentServiceImpl implements ContentService {
     @Inject
     @RestClient
     ContentApi contentApi;
+
+    private static final Logger LOGGER = Logger.getLogger(ContentServiceImpl.class);
 
     @Override
     public AdBasicRepresentation getAd(String auth, Integer adId) {
@@ -59,6 +61,10 @@ public class ContentServiceImpl implements ContentService {
             throw new RadioException("Problem on reaching content api.", 424);
         } catch (NotFoundException error) {
             throw new RadioException("not found", 404);
+        } catch (
+                ResteasyWebApplicationException error) {
+            LOGGER.infof("Can't reach content api due to timeout exception");
+            throw new RadioException("Timeout exception.", 408);
         }
     }
 
@@ -70,6 +76,10 @@ public class ContentServiceImpl implements ContentService {
             throw new RadioException("Problem on reaching content api.", 424);
         } catch (NotFoundException error) {
             throw new RadioException("not found", 404);
+        } catch (
+                ResteasyWebApplicationException error) {
+            LOGGER.infof("Can't reach content api due to timeout exception");
+            throw new RadioException("Timeout exception.", 408);
         }
     }
 

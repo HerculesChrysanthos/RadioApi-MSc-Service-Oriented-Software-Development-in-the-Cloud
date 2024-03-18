@@ -20,7 +20,7 @@ public class AdRepository implements PanacheRepositoryBase <Ad, Integer> {
     }
 
     public List<Ad> findFirst10Ads() {
-        PanacheQuery<Ad> query = find("select a from Ad a order by a.id").range(0, 10);
+        PanacheQuery<Ad> query = find("select a from Ad a order by a.id").range(0, 9);
         return query.list();
     }
 

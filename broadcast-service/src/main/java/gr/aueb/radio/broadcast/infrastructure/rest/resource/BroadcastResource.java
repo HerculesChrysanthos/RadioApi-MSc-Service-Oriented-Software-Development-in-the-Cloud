@@ -2,6 +2,7 @@ package gr.aueb.radio.broadcast.infrastructure.rest.resource;
 
 import gr.aueb.radio.broadcast.application.BroadcastService;
 import gr.aueb.radio.broadcast.application.StatService;
+import gr.aueb.radio.broadcast.application.SuggestionsService;
 import gr.aueb.radio.broadcast.common.ErrorResponse;
 import gr.aueb.radio.broadcast.common.ExternalServiceException;
 import gr.aueb.radio.broadcast.common.RadioException;
@@ -22,6 +23,7 @@ import jakarta.ws.rs.core.UriBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.jboss.logging.Logger;
 
 import java.net.URI;
 import java.time.temporal.ChronoUnit;
@@ -45,6 +47,8 @@ public class BroadcastResource {
 
     @Inject
     OutputBroadcastMapper outputBroadcastMapper;
+
+    private static final Logger LOGGER = Logger.getLogger(BroadcastResource.class);
 
     @GET
     @Timeout(value = 5, unit = ChronoUnit.SECONDS)
@@ -207,6 +211,7 @@ public class BroadcastResource {
             @HeaderParam("Authorization") String auth
     ) {
         try {
+            LOGGER.infof("suggestions process starts");
             SuggestionsDTO dto = broadcastService.suggestions(id, auth);
             return Response.ok().entity(dto).build();
         } catch (NotFoundException e) {

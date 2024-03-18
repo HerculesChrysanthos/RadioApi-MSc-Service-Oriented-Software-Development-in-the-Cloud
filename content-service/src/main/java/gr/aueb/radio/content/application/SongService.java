@@ -1,6 +1,7 @@
 package gr.aueb.radio.content.application;
 
 import gr.aueb.radio.content.common.RadioException;
+import gr.aueb.radio.content.domain.ad.Ad;
 import gr.aueb.radio.content.domain.genre.Genre;
 import gr.aueb.radio.content.domain.song.Song;
 import gr.aueb.radio.content.infrastructure.persistence.SongRepository;
@@ -106,5 +107,19 @@ public class SongService {
 
         songRepository.persist(song);
         return song;
+    }
+
+    @Transactional
+    public List<SongRepresentation> searchSongFallback(String auth) {
+
+        // verify user role - producer
+        String userRole = userService.verifyAuth(auth).role;
+
+        if (!userRole.equals("PRODUCER")) {
+            throw new RadioException("Not Allowed to change this.", 403);
+        }
+
+        List<Song> songs = songRepository.findFirst10Songs();
+        return songMapper.toRepresentationList(songs);
     }
 }
