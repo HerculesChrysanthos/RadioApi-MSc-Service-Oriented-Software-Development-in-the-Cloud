@@ -3,6 +3,7 @@ package gr.aueb.radio.content.infrastructure.rest.resource;
 import gr.aueb.radio.content.common.ErrorResponse;
 import gr.aueb.radio.content.common.ExternalServiceException;
 import gr.aueb.radio.content.infrastructure.rest.ApiPath;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import gr.aueb.radio.content.application.AdService;
@@ -39,7 +40,6 @@ import java.util.stream.Collectors;
 public class AdResource {
 
     private static final Logger LOGGER = Logger.getLogger(AdResource.class);
-    private AtomicLong counter = new AtomicLong(0);
 
     @Context
     UriInfo uriInfo;
@@ -49,23 +49,28 @@ public class AdResource {
 
     @Inject
     AdService adService;
-    boolean   temp = true;
+    boolean temp = true;
+
     @Timeout(10000)
     @GET
     @Path("/{id}")
     public Response getAd(@PathParam("id") Integer id,
                           @HeaderParam("Authorization") String auth) throws InterruptedException {
         try {
-            final Long invocationNumber = counter.getAndIncrement();
-            System.out.println("mpika - "+  temp);
-            if (temp ){
-                temp = false;
-                System.out.println("temp - "+  temp);
-                Thread.sleep(12000);
+            System.out.println("mpika - " + temp);
+
+            // trigger content service unavailability - rest for retries
+            boolean hasDelay = Boolean.parseBoolean(System.getProperty("CONTENT_HAS_DELAY", "false"));
+            if (hasDelay) {
+                if (temp) {
+                    temp = false;
+                    System.out.println("temp - " + temp);
+                    Thread.sleep(12000);
+                }
             }
-            System.out.println("temp after - "+  temp);
+            System.out.println("temp after - " + temp);
             AdRepresentation adRepresentation = adService.findAd(id, auth);
-            LOGGER.infof("AdResource.findAd() invocation #%d returning successfully", invocationNumber);
+            LOGGER.infof("findAd() returning successfully");
             return Response.ok().entity(adRepresentation).build();
         } catch (NotFoundException nfe) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -90,23 +95,25 @@ public class AdResource {
             @HeaderParam("Authorization") String auth
     ) {
         try {
-            long started = System.currentTimeMillis();
-            final long invocationNumber = counter.getAndIncrement();
-
             List<Integer> convertedAdsId = new ArrayList<>();
             if (adsIds != null) {
                 convertedAdsId = Arrays.stream(adsIds.split(","))
                         .map(Integer::parseInt)
                         .collect(Collectors.toList());
             }
-            try {
-                // Simulate timeout by sleeping for longer than the timeout duration
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                // Handle interruption
-                Thread.currentThread().interrupt();
+            boolean hasDelay = Boolean.parseBoolean(System.getProperty("CONTENT_HAS_DELAY", "false"));
+            if (hasDelay) {
+                LOGGER.infof("Content ads search has delay");
+                try {
+                    // Simulate timeout by sleeping for longer than the timeout duration
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    // Handle interruption
+                    Thread.currentThread().interrupt();
+                }
             }
-            LOGGER.infof("AdResource.search() invocation #%d returning successfully", invocationNumber);
+
+            LOGGER.infof("search()  returning successfully");
             List<AdRepresentation> adsFound = adService.search(timezone, convertedAdsId, auth);
             return Response.ok().entity(adsFound).build();
         } catch (RadioException re) {
