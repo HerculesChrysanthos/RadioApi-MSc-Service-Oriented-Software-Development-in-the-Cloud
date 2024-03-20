@@ -15,7 +15,7 @@ spec:
         app: user
     spec:
       containers:
-        - name: quizzical_bardeen
+        - name: user
           image: sifavs/user:1.0     # Docker image name and tag
           ports:
             - containerPort: 8080         # Port on which your Quarkus application listens

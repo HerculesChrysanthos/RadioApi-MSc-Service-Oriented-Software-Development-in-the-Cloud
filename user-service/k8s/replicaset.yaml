@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: user
+  labels:
+    api: user-service
+    app: user
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      api: user-service
+      app: user
+  template:
+    metadata:
+    # pod specification ...
