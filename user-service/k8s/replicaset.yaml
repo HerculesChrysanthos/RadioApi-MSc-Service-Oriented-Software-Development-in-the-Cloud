@@ -3,14 +3,22 @@ kind: ReplicaSet
 metadata:
   name: user
   labels:
-    api: user-service
+    api: user
     app: user
 spec:
   replicas: 3
   selector:
     matchLabels:
-      api: user-service
+      api: user
       app: user
   template:
     metadata:
-    # pod specification ...
+      labels:
+        api: user
+        app: user
+    spec:
+      containers:
+        - name: user
+          image: sifavs/user:1.0
+          ports:
+            - containerPort: 80
