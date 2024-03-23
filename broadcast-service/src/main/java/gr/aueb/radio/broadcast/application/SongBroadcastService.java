@@ -17,6 +17,7 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.jboss.logging.Logger;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -45,7 +46,7 @@ public class SongBroadcastService {
 
 //    @Inject
 //    SongRepository songRepository;
-
+    private static final Logger LOGGER = Logger.getLogger(SongBroadcastService.class);
     @Transactional
     public SongBroadcast create(SongBroadcastCreationDTO dto, String auth) {
         // verify auth
@@ -131,10 +132,15 @@ public class SongBroadcastService {
             throw new RadioException("Not Allowed to access this.", 403);
         }
 
-        try {
-            Thread.sleep(6000L);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        boolean hasDelay = Boolean.parseBoolean(System.getProperty("SONGBR_SEARCH_HAS_DELAY", "false"));
+
+        if(hasDelay) {
+            LOGGER.infof("SongBroadcastService search has delay");
+            try {
+                Thread.sleep(10000L);
+            } catch (InterruptedException e) {
+
+            }
         }
 
         LocalDate dateToSearch;
