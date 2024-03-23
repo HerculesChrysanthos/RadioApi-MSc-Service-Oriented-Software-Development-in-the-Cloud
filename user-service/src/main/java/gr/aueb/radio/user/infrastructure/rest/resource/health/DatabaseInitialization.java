@@ -25,6 +25,6 @@ public class DatabaseInitialization implements HealthCheck {
             //return HealthCheckResponse.up("Startup logic executed successfully").withData("status", "UP");
         }
 
-        return responseBuilder.up().withData("status", "DOWN").build();
+        return responseBuilder.down().withData("status", "DOWN").build();
     }
 }
