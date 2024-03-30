@@ -19,7 +19,7 @@ public class DatabaseInitialization implements HealthCheck {
     public HealthCheckResponse call() {
         HealthCheckResponseBuilder responseBuilder = HealthCheckResponse.named("Startup check");
 
-        if(songRepository.I){
+        if(songRepository.findById(-1) == null){
             return responseBuilder.up().withData("status", "UP").build();
         }
 
