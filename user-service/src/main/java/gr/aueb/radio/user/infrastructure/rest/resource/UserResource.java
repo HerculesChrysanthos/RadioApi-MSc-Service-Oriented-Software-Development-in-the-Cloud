@@ -29,6 +29,7 @@ import org.jboss.logging.Logger;
 
 import java.net.URI;
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 @RequestScoped
 @Path(Root.USERS)
@@ -49,6 +50,7 @@ public class UserResource {
     SecurityContext securityContext;
 
     private static final Logger LOGGER = Logger.getLogger(UserResource.class);
+    private AtomicLong counter = new AtomicLong(0);
 
     @Timeout(20000)
     @Retry(maxRetries = 3, delay = 4,
@@ -57,6 +59,7 @@ public class UserResource {
     @GET
     @Path("/{id}")
     public Response getUser(@PathParam("id") Integer id){
+        final Long invocationNumber = counter.getAndIncrement();
         try {
             UserRepresentation userRepresentation = userService.findUser(id);
             return Response.ok().entity(userRepresentation).build();
@@ -93,13 +96,15 @@ public class UserResource {
     @Timeout(5000)
     @Path("/verify-auth")
     public Response verifyAuth(){
+        final Long invocationNumber = counter.getAndIncrement();
         String username = securityContext.getUserPrincipal().getName();
         UserBasicRepresentation user = userService.findUserByUsername(username);
 
         boolean hasDelay = Boolean.parseBoolean(System.getProperty("USER_HAS_DELAY", "false"));
 
+        LOGGER.infof("User verify auth called, invocation #%d ", invocationNumber);
         if(hasDelay) {
-            LOGGER.infof("User verify auth has delay");
+            LOGGER.infof("User verify auth has delay invocation #%d ", invocationNumber);
             try {
                 Thread.sleep(10000L);
             } catch (InterruptedException e) {

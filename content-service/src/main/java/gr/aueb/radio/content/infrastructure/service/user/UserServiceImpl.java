@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
     public UserVerifiedRepresentation verifyAuth(String auth) {
         try {
             UserVerifiedRepresentation user = userApi.verifyAuth(auth);
-            System.out.println("returned id "+ user.id);
+//            System.out.println("returned id "+ user.id);
 
             return user;
         } catch(ProcessingException error) {
