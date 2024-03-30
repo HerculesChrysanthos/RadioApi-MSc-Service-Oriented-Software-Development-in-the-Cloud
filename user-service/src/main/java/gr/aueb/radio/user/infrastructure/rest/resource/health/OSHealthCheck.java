@@ -13,7 +13,7 @@ import org.eclipse.microprofile.health.Liveness;
 @ApplicationScoped
 public class OSHealthCheck implements HealthCheck {
     @Inject
-    @ConfigProperty(name = "freememory.threshold", defaultValue = " 42949672964294967296") // 4gb
+    @ConfigProperty(name = "freememory.threshold", defaultValue = "10485760") // 10mb
     private long threshold;
     @Override
     public HealthCheckResponse call() {
