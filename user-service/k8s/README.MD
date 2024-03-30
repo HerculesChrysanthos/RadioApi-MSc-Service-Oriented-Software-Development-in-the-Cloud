@@ -7,9 +7,10 @@ INSTRUCTION TO RUN KUBERNTES CLUSTER
 5) minikube start 
 6) kubectl apply -f target/kubernetes/kubernetes.yml
 7) kubectl get svc
-7) minikube start service  <to onoma pou tha ferei to kubectl get svc>
-8)prod.quarkus.hibernate-orm.sql-load-script=import.sql
-9)done
+7) minikube start service  to onoma pou tha ferei to kubectl get svc
+8) prod.quarkus.hibernate-orm.sql-load-script=import.sql
+9) done
+
 
 
 useful commands gia ton elegxo tou cluster
