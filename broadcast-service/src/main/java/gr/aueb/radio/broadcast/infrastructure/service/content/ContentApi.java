@@ -9,9 +9,11 @@ import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+import org.jboss.logging.Logger;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Path("/api")
 @ApplicationScoped
@@ -23,7 +25,8 @@ public interface ContentApi {
     @Path("/ads/{id}")
     AdBasicRepresentation getAd(
             @HeaderParam("Authorization") String basicAuthHeader,
-            @PathParam("id") Integer id
+            @PathParam("id")
+            Integer id
     );
 
     @GET
@@ -34,7 +37,6 @@ public interface ContentApi {
     );
 
     @GET
-    @CircuitBreaker(requestVolumeThreshold = 3, delay = 10000, successThreshold = 2)
     @Path("/songs")
     List<SongBasicRepresentation> getSongsByFilters(
             @HeaderParam("Authorization") String basicAuthHeader,
@@ -46,8 +48,6 @@ public interface ContentApi {
     );
 
     @GET
-    @Retry(maxRetries = 4, delay = 1000, maxDuration = 5000, delayUnit = ChronoUnit.MILLIS)
-    @CircuitBreaker(requestVolumeThreshold = 3, delay = 10000, successThreshold = 2)
     @Path("/ads")
     List<AdBasicRepresentation> getAdsByFilters(
             @HeaderParam("Authorization") String basicAuthHeader,
@@ -56,16 +56,12 @@ public interface ContentApi {
     );
 
     @GET
-    @Retry(maxRetries = 4, delay = 1000, maxDuration = 5000, delayUnit = ChronoUnit.MILLIS)
-    @CircuitBreaker(requestVolumeThreshold = 3, delay = 10000, successThreshold = 2)
     @Path("/genres")
     List<GenreBasicRepresentation> getAllGenres(
             @HeaderParam("Authorization") String basicAuthHeader
     );
 
     @GET
-    @Retry(maxRetries = 4, delay = 1000, maxDuration = 5000, delayUnit = ChronoUnit.MILLIS)
-    @CircuitBreaker(requestVolumeThreshold = 3, delay = 10000, successThreshold = 2)
     @Path("/genres/{id}")
     GenreBasicRepresentation getGenreById(
             @PathParam("id") Integer id,
