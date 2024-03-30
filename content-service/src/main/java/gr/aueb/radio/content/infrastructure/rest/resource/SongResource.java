@@ -18,7 +18,9 @@ import jakarta.ws.rs.core.*;
 import org.eclipse.microprofile.faulttolerance.Bulkhead;
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.eclipse.microprofile.faulttolerance.exceptions.BulkheadException;
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.client.exception.ResteasyWebApplicationException;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -144,7 +146,7 @@ public class SongResource {
 
     }
 
-    @Bulkhead(value = 2, waitingTaskQueue = 2)
+    @Bulkhead(value = 1)
     @DELETE
     @Path("/{id}")
     //@RolesAllowed("PRODUCER")
