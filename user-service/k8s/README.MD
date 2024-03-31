@@ -21,5 +21,5 @@ kubectl delete -f .  --diagrafh ta panta\
 minikube kubectl -- expose deployment user-service --type=NodePort --port=8080--dhmiourgei nodeport 8080 gia to cluster useful for tuneling
 
 forward ip
-kubectl port-forward service/user-service 8080:8080
-kubectl port-forward service/content-service 8081:8081
+kubectl port-forward service/user-service 30030:8080
+kubectl port-forward service/content-service 30031:8081
