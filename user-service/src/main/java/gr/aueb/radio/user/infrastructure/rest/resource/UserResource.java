@@ -53,9 +53,6 @@ public class UserResource {
     private AtomicLong counter = new AtomicLong(0);
 
     @Timeout(20000)
-    @Retry(maxRetries = 3, delay = 4,
-            delayUnit = ChronoUnit.SECONDS)
-    @CircuitBreaker(requestVolumeThreshold = 4, failureRatio = 0.5, delay = 3000, successThreshold = 2)
     @GET
     @Path("/{id}")
     public Response getUser(@PathParam("id") Integer id){
