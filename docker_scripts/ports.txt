@@ -1,0 +1,72 @@
+"spec" : {
+    "ports" : [ {
+      "name" : "http",
+      "port" : 8080,
+      "protocol" : "TCP",
+      "targetPort" : 8080,
+      "nodePort": 30030
+    } ],
+    "selector" : {
+      "app.kubernetes.io/name" : "user-service",
+      "app.kubernetes.io/version" : "1.0.0"
+    },
+    "type" : "NodePort"
+  }
+
+
+spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+      nodePort: 30030
+  selector:
+    app.kubernetes.io/name: user-service
+    app.kubernetes.io/version: 1.0.0
+  type: NodePort
+
+
+
+"spec" : {
+    "ports" : [ {
+      "name" : "http",
+      "port" : 8081,
+      "protocol" : "TCP",
+      "targetPort" : 8081,
+      "nodePort": 30031
+    } ],
+    "selector" : {
+      "app.kubernetes.io/name" : "content-service",
+      "app.kubernetes.io/version" : "1.0.0"
+    },
+    "type" : "NodePort"
+  }
+
+
+spec:
+  ports:
+    - name: http
+      port: 8081
+      protocol: TCP
+      targetPort: 8081
+      nodePort: 30031
+  selector:
+    app.kubernetes.io/name: content-service
+    app.kubernetes.io/version: 1.0.0
+  type: NodePort
+
+
+
+  spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+      nodePort: 30030
+  selector:
+    app.kubernetes.io/name: user-service
+    app.kubernetes.io/version: 1.0.0
+  type: NodePort
+

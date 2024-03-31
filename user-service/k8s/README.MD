@@ -23,3 +23,7 @@ minikube kubectl -- expose deployment user-service --type=NodePort --port=8080--
 forward ip
 kubectl port-forward service/user-service 30030:8080
 kubectl port-forward service/content-service 30031:8081
+kubectl port-forward service/broadcast-service 30032:8082
+
+update ports on ymls
+
