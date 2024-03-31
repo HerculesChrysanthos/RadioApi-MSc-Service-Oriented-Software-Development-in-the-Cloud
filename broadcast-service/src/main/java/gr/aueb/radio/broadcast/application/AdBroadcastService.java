@@ -52,8 +52,8 @@ public class AdBroadcastService {
         }
         // call content
         AdBasicRepresentation ad = contentService.getAd(auth, dto.adId);
-        System.out.println("adId " + ad.id);
-        System.out.println("adId " + ad.timezone);
+//        System.out.println("adId " + ad.id);
+//        System.out.println("adId " + ad.timezone);
         if (ad == null) {
             throw new NotFoundException("Ad does not exist");
         }

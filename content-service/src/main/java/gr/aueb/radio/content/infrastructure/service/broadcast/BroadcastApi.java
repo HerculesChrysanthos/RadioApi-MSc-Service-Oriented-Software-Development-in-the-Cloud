@@ -5,10 +5,13 @@ import gr.aueb.radio.content.infrastructure.service.broadcast.representation.Son
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+import org.jboss.logging.Logger;
 
+import java.util.Collections;
 import java.util.List;
 
 @Path("/api")
@@ -32,8 +35,9 @@ public interface BroadcastApi {
             @QueryParam("adId") Integer adId
     );
 
+
     @GET
-    @Retry(maxRetries = 4)
+//    @Retry(maxRetries = 4, delay = 3000)
     @Path("/song-broadcasts")
     List<SongBroadcastBasicRepresentation> getSongBroadcastsBySongId(
             @HeaderParam("Authorization") String basicAuthHeader,
@@ -41,7 +45,7 @@ public interface BroadcastApi {
     );
 
     @GET
-    @Retry(maxRetries = 4)
+    @Retry(maxRetries = 1, delay = 5000)
     @Path("/ad-broadcasts")
     List<AdBroadcastBasicRepresentation> getAdBroadcastsByAdId(
             @HeaderParam("Authorization") String basicAuthHeader,

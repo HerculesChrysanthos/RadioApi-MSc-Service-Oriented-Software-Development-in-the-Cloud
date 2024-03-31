@@ -8,14 +8,12 @@ import gr.aueb.radio.broadcast.domain.adBroadcast.AdBroadcast;
 import gr.aueb.radio.broadcast.infrastructure.rest.ApiPath.Root;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.AdBroadcastCreationDTO;
 import gr.aueb.radio.broadcast.infrastructure.rest.representation.AdBroadcastMapper;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
-import org.eclipse.microprofile.faulttolerance.Bulkhead;
-import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
-import org.eclipse.microprofile.faulttolerance.Retry;
-import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.eclipse.microprofile.faulttolerance.*;
 import org.jboss.logging.Logger;
 
 
@@ -27,7 +25,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Path(Root.AD_BROADCASTS)
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@RequestScoped
+@ApplicationScoped
 public class AdBroadcastResource {
 
     @Inject
@@ -38,17 +36,32 @@ public class AdBroadcastResource {
     @Context
     UriInfo uriInfo;
     private static final Logger LOGGER = Logger.getLogger(AdBroadcastResource.class);
-    private AtomicLong counter = new AtomicLong(0);
+    private AtomicLong counter = new AtomicLong(1);
+
+    boolean temp = true;
 
     @GET
-    @Timeout(value = 2, unit = ChronoUnit.SECONDS)
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
+    @Fallback(fallbackMethod = "handleTimeout")
     //@RolesAllowed("PRODUCER")
     public Response search(
             @QueryParam("date") String date,
             @QueryParam("adId") Integer adId,
             @HeaderParam("Authorization") String auth
     ) {
+        final Long invocationNumber = counter.getAndIncrement();
+        long started = System.currentTimeMillis();
         try {
+            boolean hasDelay = Boolean.parseBoolean(System.getProperty("ADBR_SEARCH_HAS_DELAY", "false"));
+
+            LOGGER.infof("AdBroadcast search called");
+            if (hasDelay) {
+                LOGGER.infof("AdBroadcast search has delay invocation #%d ", invocationNumber);
+                if (temp) {
+                    temp = false;
+                    Thread.sleep(20000L);
+                }
+            }
             List<AdBroadcast> found = adBroadcastService.search(date, adId, auth);
             return Response.ok().entity(adBroadcastMapper.toRepresentationList(found)).build();
         } catch (RadioException re) {
@@ -60,9 +73,19 @@ public class AdBroadcastResource {
             return Response.status(externalServiceException.getStatusCode())
                     .entity(new ErrorResponse(externalServiceException.getMessage()))
                     .build();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
+    public Response handleTimeout(@QueryParam("date") String date,
+                                  @QueryParam("adId") Integer adId,
+                                  @HeaderParam("Authorization") String auth) {
+        LOGGER.infof("Fallback - AdBroadcast The request timed out.");
+        return Response.status(Response.Status.REQUEST_TIMEOUT)
+                .entity("The request timed out. Please try again later.")
+                .build();
+    }
 
     @GET
     @Timeout(value = 5, unit = ChronoUnit.SECONDS)
