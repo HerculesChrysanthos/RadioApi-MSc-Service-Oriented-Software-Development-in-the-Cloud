@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 public class AdResource {
 
     private static final Logger LOGGER = Logger.getLogger(AdResource.class);
+    AtomicLong counter = new AtomicLong(1);
 
     @Context
     UriInfo uriInfo;
@@ -50,25 +51,25 @@ public class AdResource {
     AdService adService;
     boolean temp = true;
 
-    @Timeout(10000)
+    @Timeout(12000)
+    @Fallback(fallbackMethod = "handleTimeout")
     @GET
     @Path("/{id}")
     public Response getAd(@PathParam("id") Integer id,
                           @HeaderParam("Authorization") String auth) throws InterruptedException {
         try {
-            System.out.println("mpika - " + temp);
-
+            final Long invocationNumber = counter.getAndIncrement();
+            LOGGER.infof("Call content api getAd");
             // trigger content service unavailability - rest for retries
-            boolean hasDelay = Boolean.parseBoolean(System.getProperty("CONTENT_HAS_DELAY", "false"));
+            boolean hasDelay = Boolean.parseBoolean(System.getProperty("AD_CONTENT_HAS_DELAY", "false"));
             if (hasDelay) {
-                LOGGER.infof("findAd().hadDelay set true");
+                LOGGER.infof("getAd has delay invocation #%d", invocationNumber);
                 if (temp) {
                     temp = false;
-                    System.out.println("temp - " + temp);
                     Thread.sleep(12000);
                 }
             }
-            System.out.println("temp after - " + temp);
+//            System.out.println("temp after - " + temp);
             AdRepresentation adRepresentation = adService.findAd(id, auth);
             LOGGER.infof("findAd() returning successfully - id " + id);
             return Response.ok().entity(adRepresentation).build();
@@ -86,6 +87,14 @@ public class AdResource {
         }
     }
 
+    public Response handleTimeout(@PathParam("id") Integer id,
+                                  @HeaderParam("Authorization") String auth) {
+        LOGGER.infof("Fallback - Ad The request timed out.");
+        return Response.status(Response.Status.REQUEST_TIMEOUT)
+                .entity("The request timed out. Please try again later.")
+                .build();
+    }
+
     @GET
     @Fallback(fallbackMethod = "fallbackAdRecommendations")
     @Timeout(5000)
@@ -94,9 +103,11 @@ public class AdResource {
             @QueryParam("adsIds") String adsIds,
             @HeaderParam("Authorization") String auth
     ) {
+        final Long invocationNumber = counter.getAndIncrement();
+        LOGGER.infof("Call in content api searchAds");
         try {
             List<Integer> convertedAdsId = new ArrayList<>();
-            if (adsIds != null) {
+            if (adsIds != null && !adsIds.isEmpty()) {
                 convertedAdsId = Arrays.stream(adsIds.split(","))
                         .map(Integer::parseInt)
                         .collect(Collectors.toList());
@@ -114,12 +125,11 @@ public class AdResource {
                 }
             }
 
-            LOGGER.infof("search()  returning successfully");
+//            LOGGER.infof("search()  returning successfully");
             List<AdRepresentation> adsFound = adService.search(timezone, convertedAdsId, auth);
             return Response.ok().entity(adsFound).build();
         } catch (RadioException re) {
             int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
-            LOGGER.infof("AdResource.search() statusCode");
             return Response.status(statusCode)
                     .entity(new ErrorResponse(re.getMessage()))
                     .build();
@@ -139,7 +149,7 @@ public class AdResource {
         LOGGER.info("Falling back to fallbackAdRecommendations()");
         if (timezone != null || adsIds != null) {
             List<AdRepresentation> fallbackAds = adService.searchAdFallback(auth);
-            LOGGER.info("fallbackAdRecommendations().fallbackAds " + fallbackAds.size());
+            LOGGER.info("fallbackAdRecommendations() fallbackAds = " + fallbackAds.size());
 
             return Response.ok().entity(fallbackAds).build();
         }

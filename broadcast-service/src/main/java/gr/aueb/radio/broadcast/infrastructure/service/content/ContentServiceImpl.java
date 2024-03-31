@@ -30,12 +30,12 @@ public class ContentServiceImpl implements ContentService {
     ContentApi contentApi;
 
     private static final Logger LOGGER = Logger.getLogger(ContentServiceImpl.class);
-    private AtomicLong counter = new AtomicLong(0);
+    private AtomicLong counter = new AtomicLong(1);
 
     @Override
     public AdBasicRepresentation getAd(String auth, Integer adId) {
         final Long invocationNumber = counter.getAndIncrement();
-        LOGGER.infof("Call content api getAd, invocation #%d ", invocationNumber);
+        LOGGER.infof("Call content api invocation #%d, getAd", invocationNumber);
         try {
             return contentApi.getAd(auth, adId);
         } catch (ProcessingException error) {

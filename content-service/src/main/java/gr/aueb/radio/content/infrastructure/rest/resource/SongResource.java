@@ -81,14 +81,27 @@ public class SongResource {
             @QueryParam("songsIds") String songsIds,
             @HeaderParam("Authorization") String auth
     ) {
+        LOGGER.infof("Call in content api searchSongs");
         try {
             List<Integer> convertedSongsId = new ArrayList<>();
-            if (songsIds != null) {
+            if (songsIds != null && !songsIds.isEmpty()) {
                 convertedSongsId = Arrays.stream(songsIds.split(","))
                         .map(Integer::parseInt)
                         .collect(Collectors.toList());
             }
 
+            boolean hasDelay = Boolean.parseBoolean(System.getProperty("CONTENT_HAS_DELAY", "false"));
+            if (hasDelay) {
+                LOGGER.infof("Content songs search has delay");
+                try {
+                    LOGGER.infof("search()  thread sleep 10000");
+                    // Simulate timeout by sleeping for longer than the timeout duration
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    // Handle interruption
+                    Thread.currentThread().interrupt();
+                }
+            }
             List<SongRepresentation> found = songService.search(artist, genreId, genreTitle, title, convertedSongsId, auth);
             return Response.ok().entity(found).build();
         } catch (RadioException re) {
@@ -114,7 +127,7 @@ public class SongResource {
         LOGGER.info("Falling back to fallbackSongRecommendations()");
 
         List<SongRepresentation> fallbackSongs = songService.searchSongFallback(auth);
-        LOGGER.info("fallbackSongRecommendations().fallbackSongs " + fallbackSongs.size());
+        LOGGER.info("fallbackSongRecommendations().fallbackSongs = " + fallbackSongs.size());
 
         return Response.ok().entity(fallbackSongs).build();
 
