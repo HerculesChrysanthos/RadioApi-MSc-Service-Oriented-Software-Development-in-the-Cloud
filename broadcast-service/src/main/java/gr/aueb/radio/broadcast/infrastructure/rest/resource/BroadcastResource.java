@@ -2,6 +2,7 @@ package gr.aueb.radio.broadcast.infrastructure.rest.resource;
 
 import gr.aueb.radio.broadcast.application.BroadcastService;
 import gr.aueb.radio.broadcast.application.StatService;
+import gr.aueb.radio.broadcast.application.SuggestionsService;
 import gr.aueb.radio.broadcast.common.ErrorResponse;
 import gr.aueb.radio.broadcast.common.ExternalServiceException;
 import gr.aueb.radio.broadcast.common.RadioException;
@@ -20,10 +21,17 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.faulttolerance.Bulkhead;
+import org.eclipse.microprofile.faulttolerance.Fallback;
+import org.eclipse.microprofile.faulttolerance.Retry;
+import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.jboss.logging.Logger;
 
 import java.net.URI;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Path(Root.BROADCASTS)
 @Produces(MediaType.APPLICATION_JSON)
@@ -43,7 +51,11 @@ public class BroadcastResource {
     @Inject
     OutputBroadcastMapper outputBroadcastMapper;
 
+    private static final Logger LOGGER = Logger.getLogger(BroadcastResource.class);
+    private AtomicLong counter = new AtomicLong(1);
+
     @GET
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     @Path("/{id}")
     //@PermitAll
     @Transactional
@@ -68,6 +80,7 @@ public class BroadcastResource {
     }
 
     @GET
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     //@PermitAll
     public Response searchBroadcasts(@QueryParam("from") String from,
                                      @QueryParam("to") String to,
@@ -96,6 +109,7 @@ public class BroadcastResource {
     }
 
     @GET
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     @Path("now")
     //@PermitAll
     public Response getNow(
@@ -115,13 +129,16 @@ public class BroadcastResource {
                     .build();
         }
     }
-
+    @Fallback (fallbackMethod = "createConcurrentFallback")
+    @Bulkhead(value = 3)
     @POST
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
 //    @RolesAllowed("PRODUCER")
     public Response create(
             @Valid BroadcastRepresentation broadcastRepresentation,
             @HeaderParam("Authorization") String auth
     ) {
+        LOGGER.infof("Create Broadcast ");
         try{
             Broadcast broadcast = broadcastService.create(broadcastRepresentation, auth);
             URI uri = UriBuilder.fromResource(BroadcastResource.class).path(String.valueOf(broadcast.getId())).build();
@@ -137,9 +154,19 @@ public class BroadcastResource {
                     .build();
         }
     }
+
+    public Response createConcurrentFallback(
+            @Valid BroadcastRepresentation broadcastRepresentation,
+            @HeaderParam("Authorization") String auth
+    ) throws InterruptedException {
+        LOGGER.info("Falling back to createConcurrentFallback() - failed to create broadcast too many requests");
+        return Response.status(429, "Too many requests").build();
+
+    }
 //
 //
     @PUT
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     @Path("/{id}")
     //@RolesAllowed("PRODUCER")
     public Response update(
@@ -166,6 +193,7 @@ public class BroadcastResource {
     }
 
     @Path("/{id}")
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     @DELETE
     //@RolesAllowed("PRODUCER")
     public Response delete(
@@ -198,6 +226,7 @@ public class BroadcastResource {
             @HeaderParam("Authorization") String auth
     ) {
         try {
+            LOGGER.infof("suggestions process starts");
             SuggestionsDTO dto = broadcastService.suggestions(id, auth);
             return Response.ok().entity(dto).build();
         } catch (NotFoundException e) {
@@ -215,6 +244,7 @@ public class BroadcastResource {
         }
     }
     @GET
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
     @Path("/stats-daily")
     public Response getDailySchedule(
             @QueryParam("date") String date,

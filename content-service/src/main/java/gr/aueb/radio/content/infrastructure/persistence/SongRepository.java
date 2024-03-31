@@ -1,5 +1,6 @@
 package gr.aueb.radio.content.infrastructure.persistence;
 
+import gr.aueb.radio.content.domain.ad.Ad;
 import gr.aueb.radio.content.domain.song.Song;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
@@ -26,6 +27,11 @@ public class SongRepository implements PanacheRepositoryBase<Song, Integer> {
         PanacheQuery<Song> query = find("select s from Song s left join fetch s.genre where s.id IN :ids ", Parameters.with("ids", ids).map());
 
         return query.list();
+    }
+
+    public List<Song> findFirst10Songs() {
+        PanacheQuery<Song> query = find("select s from Song s order by s.id");
+        return query.range(0, 9).list();
     }
 
     public List<Song> findByFilters(String artist, Integer genreId, String genreTitle, String title, List<Integer> songsIds) {

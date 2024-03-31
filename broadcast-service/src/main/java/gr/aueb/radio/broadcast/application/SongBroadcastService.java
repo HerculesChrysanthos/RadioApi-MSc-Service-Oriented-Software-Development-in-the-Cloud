@@ -15,10 +15,17 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
+import org.eclipse.microprofile.faulttolerance.Fallback;
+import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.jboss.logging.Logger;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
+
+import static com.arjuna.ats.jbossatx.logging.jbossatxLogger.logger;
+import static io.quarkus.arc.ComponentsProvider.LOG;
 
 @RequestScoped
 public class SongBroadcastService {
@@ -37,8 +44,9 @@ public class SongBroadcastService {
     @Inject
     ContentService contentService;
 
-//    @Inject
-//    SongRepository songRepository;
+    boolean temp = true;
+
+    private static final Logger LOGGER = Logger.getLogger(SongBroadcastService.class);
 
     @Transactional
     public SongBroadcast create(SongBroadcastCreationDTO dto, String auth) {
@@ -76,6 +84,7 @@ public class SongBroadcastService {
     }
 
     @Transactional
+    @Fallback(fallbackMethod = "findFallback")
     public SongBroadcast find(Integer id, String auth) {
         String userRole = userService.verifyAuth(auth).role;
 
@@ -83,6 +92,15 @@ public class SongBroadcastService {
             throw new RadioException("Not Allowed to access this.", 403);
         }
 
+        SongBroadcast songBroadcast = songBroadcastRepository.findByIdDetails(id);
+        if (songBroadcast == null) {
+            throw new NotFoundException("Song Broadcast does not exist");
+        }
+        return songBroadcast;
+    }
+
+    public SongBroadcast findFallback(Integer id, String auth) {
+        LOG.error("An error occurred while executing find method with ID {}: {}");
         SongBroadcast songBroadcast = songBroadcastRepository.findByIdDetails(id);
         if (songBroadcast == null) {
             throw new NotFoundException("Song Broadcast does not exist");
@@ -115,25 +133,26 @@ public class SongBroadcastService {
             throw new RadioException("Not Allowed to access this.", 403);
         }
 
+        boolean hasDelay = Boolean.parseBoolean(System.getProperty("SONGBR_SEARCH_HAS_DELAY", "false"));
+
+        if (hasDelay) {
+            LOGGER.infof("SongBroadcastService search has delay");
+            try {
+                Thread.sleep(10000L);
+            } catch (InterruptedException e) {
+            }
+        }
+
         LocalDate dateToSearch;
         if (date == null) {
             dateToSearch = null;
         } else {
             dateToSearch = DateUtil.setDate(date);
         }
+
         return songBroadcastRepository.findByFilters(dateToSearch, songId);
     }
 
-
-//    @Transactional
-//    public List<SongBroadcast> searchBySongId (String date, String auth) {
-//        String userRole = userService.verifyAuth(auth).role;
-//
-//        if(!userRole.equals("PRODUCER")){
-//            throw new RadioException("Not Allowed to access this.", 403);
-//        }
-//        return songBroadcastRepository.searchBySongId(songId);
-//    }
 
     @Transactional
     public void deleteByFilters(String auth, Integer songId) {

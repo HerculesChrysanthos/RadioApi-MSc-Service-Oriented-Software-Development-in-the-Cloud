@@ -11,6 +11,9 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
+import org.eclipse.microprofile.faulttolerance.Retry;
+
+import java.time.temporal.ChronoUnit;
 
 @RequestScoped
 public class UserService {
@@ -35,6 +38,8 @@ public class UserService {
     }
 
     @Transactional
+    @Retry(maxRetries = 3, delay = 2,
+            delayUnit = ChronoUnit.SECONDS)
     public UserRepresentation findUser(Integer id){
         User user = userRepository.findById(id);
         if (user == null) {
@@ -44,13 +49,14 @@ public class UserService {
     }
 
     @Transactional
+    @Retry(maxRetries = 3, delay = 2,
+            delayUnit = ChronoUnit.SECONDS)
     public UserBasicRepresentation findUserByUsername(String username){
         User user = userRepository.findByUsername(username);
 
         if(user == null){
             throw new NotFoundException("User not found");
         }
-
         return userMapper.toBasicRepresentation(user);
     }
 }

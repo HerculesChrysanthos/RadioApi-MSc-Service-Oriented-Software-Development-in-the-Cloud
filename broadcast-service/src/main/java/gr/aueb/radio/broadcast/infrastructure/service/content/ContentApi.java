@@ -5,9 +5,15 @@ import gr.aueb.radio.broadcast.infrastructure.service.content.representation.Gen
 import gr.aueb.radio.broadcast.infrastructure.service.content.representation.SongBasicRepresentation;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.*;
+import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
+import org.eclipse.microprofile.faulttolerance.Retry;
+import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+import org.jboss.logging.Logger;
 
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Path("/api")
 @ApplicationScoped
@@ -15,10 +21,12 @@ import java.util.List;
 public interface ContentApi {
 
     @GET
+    @Retry(maxRetries = 3, delay = 5000)
     @Path("/ads/{id}")
     AdBasicRepresentation getAd(
             @HeaderParam("Authorization") String basicAuthHeader,
-            @PathParam("id") Integer id
+            @PathParam("id")
+            Integer id
     );
 
     @GET

@@ -16,6 +16,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
+import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.hibernate.annotations.EmbeddableInstantiator;
 
 import java.time.LocalDate;
@@ -51,8 +52,8 @@ public class AdBroadcastService {
         }
         // call content
         AdBasicRepresentation ad = contentService.getAd(auth, dto.adId);
-        System.out.println("adId " + ad.id);
-        System.out.println("adId " + ad.timezone);
+//        System.out.println("adId " + ad.id);
+//        System.out.println("adId " + ad.timezone);
         if (ad == null) {
             throw new NotFoundException("Ad does not exist");
         }
@@ -104,7 +105,6 @@ public class AdBroadcastService {
         broadcastService.removeAdBroadcast(adBroadcast.getBroadcast().getId(), adBroadcast.getId());
     }
 
-
     @Transactional
     public List<AdBroadcast> search(String date, Integer adId, String auth) {
         String userRole = userService.verifyAuth(auth).role;
@@ -112,7 +112,11 @@ public class AdBroadcastService {
         if (!userRole.equals("PRODUCER")) {
             throw new RadioException("Not Allowed to access this.", 403);
         }
-
+        try {
+            Thread.sleep(6000L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         LocalDate dateToSearch;
         if (date == null) {
             dateToSearch = null;

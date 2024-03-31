@@ -3,6 +3,8 @@ package gr.aueb.radio.content.infrastructure.rest.resource;
 import gr.aueb.radio.content.common.ErrorResponse;
 import gr.aueb.radio.content.common.ExternalServiceException;
 import gr.aueb.radio.content.infrastructure.rest.ApiPath;
+import io.quarkus.logging.Log;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import gr.aueb.radio.content.application.AdService;
 import gr.aueb.radio.content.common.RadioException;
@@ -12,23 +14,32 @@ import gr.aueb.radio.content.infrastructure.rest.ApiPath.Root;
 import gr.aueb.radio.content.infrastructure.rest.representation.AdInputDTO;
 import gr.aueb.radio.content.infrastructure.rest.representation.AdMapper;
 import gr.aueb.radio.content.infrastructure.rest.representation.AdRepresentation;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
+import org.eclipse.microprofile.faulttolerance.Bulkhead;
+
+import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.eclipse.microprofile.faulttolerance.Fallback;
+import org.eclipse.microprofile.faulttolerance.Retry;
+import org.jboss.logging.Logger;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Path(ApiPath.Root.ADS)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@RequestScoped
+@ApplicationScoped
 public class AdResource {
+
+    private static final Logger LOGGER = Logger.getLogger(AdResource.class);
+    AtomicLong counter = new AtomicLong(1);
 
     @Context
     UriInfo uriInfo;
@@ -38,17 +49,33 @@ public class AdResource {
 
     @Inject
     AdService adService;
+    boolean temp = true;
+
+    @Timeout(12000)
+    @Fallback(fallbackMethod = "handleTimeout")
     @GET
     @Path("/{id}")
-//    @RolesAllowed("PRODUCER")
     public Response getAd(@PathParam("id") Integer id,
-                          @HeaderParam("Authorization") String auth) {
+                          @HeaderParam("Authorization") String auth) throws InterruptedException {
         try {
+            final Long invocationNumber = counter.getAndIncrement();
+            LOGGER.infof("Call content api getAd");
+            // trigger content service unavailability - rest for retries
+            boolean hasDelay = Boolean.parseBoolean(System.getProperty("AD_CONTENT_HAS_DELAY", "false"));
+            if (hasDelay) {
+                LOGGER.infof("getAd has delay invocation #%d", invocationNumber);
+                if (temp) {
+                    temp = false;
+                    Thread.sleep(12000);
+                }
+            }
+//            System.out.println("temp after - " + temp);
             AdRepresentation adRepresentation = adService.findAd(id, auth);
+            LOGGER.infof("findAd() returning successfully - id " + id);
             return Response.ok().entity(adRepresentation).build();
         } catch (NotFoundException nfe) {
             return Response.status(Response.Status.NOT_FOUND).build();
-        } catch (RadioException re){
+        } catch (RadioException re) {
             int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
             return Response.status(statusCode)
                     .entity(new ErrorResponse(re.getMessage()))
@@ -60,32 +87,73 @@ public class AdResource {
         }
     }
 
+    public Response handleTimeout(@PathParam("id") Integer id,
+                                  @HeaderParam("Authorization") String auth) {
+        LOGGER.infof("Fallback - Ad The request timed out.");
+        return Response.status(Response.Status.REQUEST_TIMEOUT)
+                .entity("The request timed out. Please try again later.")
+                .build();
+    }
+
     @GET
-//    @RolesAllowed("PRODUCER")
+    @Fallback(fallbackMethod = "fallbackAdRecommendations")
+    @Timeout(5000)
     public Response search(
             @QueryParam("timezone") Zone timezone,
             @QueryParam("adsIds") String adsIds,
             @HeaderParam("Authorization") String auth
     ) {
+        final Long invocationNumber = counter.getAndIncrement();
+        LOGGER.infof("Call in content api searchAds");
         try {
             List<Integer> convertedAdsId = new ArrayList<>();
-            if(adsIds != null) {
+            if (adsIds != null && !adsIds.isEmpty()) {
                 convertedAdsId = Arrays.stream(adsIds.split(","))
                         .map(Integer::parseInt)
                         .collect(Collectors.toList());
             }
+            boolean hasDelay = Boolean.parseBoolean(System.getProperty("CONTENT_HAS_DELAY", "false"));
+            if (hasDelay) {
+                LOGGER.infof("Content ads search has delay");
+                try {
+                    LOGGER.infof("search()  thread sleep 10000");
+                    // Simulate timeout by sleeping for longer than the timeout duration
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    // Handle interruption
+                    Thread.currentThread().interrupt();
+                }
+            }
+
+//            LOGGER.infof("search()  returning successfully");
             List<AdRepresentation> adsFound = adService.search(timezone, convertedAdsId, auth);
             return Response.ok().entity(adsFound).build();
-        } catch (RadioException re){
+        } catch (RadioException re) {
             int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
             return Response.status(statusCode)
                     .entity(new ErrorResponse(re.getMessage()))
                     .build();
         } catch (ExternalServiceException externalServiceException) {
+            LOGGER.infof("AdResource.search() statusCode " + externalServiceException.getStatusCode());
             return Response.status(externalServiceException.getStatusCode())
                     .entity(new ErrorResponse(externalServiceException.getMessage()))
                     .build();
         }
+    }
+
+    public Response fallbackAdRecommendations(
+            @QueryParam("timezone") Zone timezone,
+            @QueryParam("adsIds") String adsIds,
+            @HeaderParam("Authorization") String auth
+    ) {
+        LOGGER.info("Falling back to fallbackAdRecommendations()");
+        if (timezone != null || adsIds != null) {
+            List<AdRepresentation> fallbackAds = adService.searchAdFallback(auth);
+            LOGGER.info("fallbackAdRecommendations() fallbackAds = " + fallbackAds.size());
+
+            return Response.ok().entity(fallbackAds).build();
+        }
+        return null;
     }
 
     @POST
@@ -98,7 +166,7 @@ public class AdResource {
             Ad ad = adService.create(adRepresentation.toRepresentation(), auth);
             URI uri = UriBuilder.fromResource(AdResource.class).path(String.valueOf(ad.getId())).build();
             return Response.created(uri).entity(adMapper.toRepresentation(ad)).build();
-        } catch (RadioException re){
+        } catch (RadioException re) {
             int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
             return Response.status(statusCode)
                     .entity(new ErrorResponse(re.getMessage()))
@@ -120,10 +188,10 @@ public class AdResource {
     ) {
         try {
             adService.update(id, adRepresentation.toRepresentation(), auth);
-            return  Response.noContent().build();
-        } catch (NotFoundException re){
+            return Response.noContent().build();
+        } catch (NotFoundException re) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
-        } catch (RadioException re){
+        } catch (RadioException re) {
             int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
             return Response.status(statusCode)
                     .entity(new ErrorResponse(re.getMessage()))
@@ -145,9 +213,9 @@ public class AdResource {
         try {
             adService.delete(id, auth);
             return Response.status(Response.Status.NO_CONTENT.getStatusCode()).build();
-        }catch (NotFoundException re){
+        } catch (NotFoundException re) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
-        } catch (RadioException re){
+        } catch (RadioException re) {
             int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
             return Response.status(statusCode)
                     .entity(new ErrorResponse(re.getMessage()))

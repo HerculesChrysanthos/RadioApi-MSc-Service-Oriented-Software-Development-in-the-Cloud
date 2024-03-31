@@ -12,8 +12,11 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
+import org.eclipse.microprofile.faulttolerance.Retry;
+import org.eclipse.microprofile.faulttolerance.Timeout;
 
 import java.net.URI;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Path(Root.SONG_BROADCASTS)
@@ -31,6 +34,7 @@ public class SongBroadcastResource {
     UriInfo uriInfo;
 
     @GET
+    @Timeout(value = 2, unit = ChronoUnit.SECONDS)
     //@RolesAllowed("PRODUCER")
     public Response search(
             @QueryParam("date") String date,
@@ -53,6 +57,7 @@ public class SongBroadcastResource {
     }
 
     @GET
+    @Timeout(value = 10, unit = ChronoUnit.SECONDS)
     @Path("/{id}")
     //@RolesAllowed("PRODUCER")
     public Response find(
@@ -75,6 +80,7 @@ public class SongBroadcastResource {
     }
 
     @DELETE
+    @Timeout(value = 10, unit = ChronoUnit.SECONDS)
     @Path("/{id}")
     //@RolesAllowed("PRODUCER")
     public Response delete(

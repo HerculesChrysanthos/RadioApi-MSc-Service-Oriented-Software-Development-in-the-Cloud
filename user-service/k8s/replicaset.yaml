@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: user
+  labels:
+    api: user
+    app: user
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      api: user
+      app: user
+  template:
+    metadata:
+      labels:
+        api: user
+        app: user
+    spec:
+      containers:
+        - name: user
+          image: sifavs/user:1.0
+          ports:
+            - containerPort: 80

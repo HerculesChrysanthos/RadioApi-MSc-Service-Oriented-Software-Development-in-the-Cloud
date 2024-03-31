@@ -15,12 +15,17 @@ import gr.aueb.radio.broadcast.infrastructure.rest.representation.AdStatsDTO;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.jboss.logging.Logger;
+
 
 import java.time.LocalDate;
 import java.util.*;
 
 @RequestScoped
 public class StatService {
+
+    private static final Logger LOGGER = Logger.getLogger(StatService.class);
+
 
     @Inject
     BroadcastRepository broadcastRepository;
@@ -108,6 +113,8 @@ public class StatService {
         List<AdBroadcast> broadcastsOfDay = adBroadcastRepository.findByDate(dateToSearch);
         if (broadcastsOfDay.size() != 0) {
             List<AdBasicRepresentation> ads = extractFromAdBroadcast(broadcastsOfDay, auth);
+            LOGGER.info("extractFromAdBroadcast " + ads);
+
             dto.totalDailyAds = ads.size();
         }
         return dto;

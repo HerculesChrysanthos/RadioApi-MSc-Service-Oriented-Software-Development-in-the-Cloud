@@ -36,13 +36,7 @@ public class BroadcastService {
 
     @Inject
     BroadcastMapper broadcastMapper;
-    //
-//    @Inject
-//    SongMapper songMapper;
-//
-//    @Inject
-//    AdMapper adMapper;
-//
+
     @Inject
     OutputBroadcastMapper outputBroadcastMapper;
 
