@@ -57,7 +57,7 @@ public class SongResource {
             return Response.ok().entity(found).build();
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
-        } catch (RadioException re){
+        } catch (RadioException re) {
             int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
             return Response.status(statusCode)
                     .entity(new ErrorResponse(re.getMessage()))
@@ -68,6 +68,7 @@ public class SongResource {
                     .build();
         }
     }
+
     @Fallback(fallbackMethod = "fallbackSongsRecommendations")
     @Timeout(5000)
     @GET
@@ -82,7 +83,7 @@ public class SongResource {
     ) {
         try {
             List<Integer> convertedSongsId = new ArrayList<>();
-            if(songsIds != null) {
+            if (songsIds != null) {
                 convertedSongsId = Arrays.stream(songsIds.split(","))
                         .map(Integer::parseInt)
                         .collect(Collectors.toList());
@@ -90,7 +91,7 @@ public class SongResource {
 
             List<SongRepresentation> found = songService.search(artist, genreId, genreTitle, title, convertedSongsId, auth);
             return Response.ok().entity(found).build();
-        } catch (RadioException re){
+        } catch (RadioException re) {
             int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
             return Response.status(statusCode)
                     .entity(new ErrorResponse(re.getMessage()))
@@ -110,12 +111,12 @@ public class SongResource {
             @QueryParam("songsIds") String songsIds,
             @HeaderParam("Authorization") String auth
     ) {
-        LOGGER.info("Falling back to fallbackAdRecommendations()");
+        LOGGER.info("Falling back to fallbackSongRecommendations()");
 
-            List<SongRepresentation> fallbackSongs = songService.searchSongFallback(auth);
-            LOGGER.info("fallbackSongRecommendations().fallbackSongs " + fallbackSongs.size());
+        List<SongRepresentation> fallbackSongs = songService.searchSongFallback(auth);
+        LOGGER.info("fallbackSongRecommendations().fallbackSongs " + fallbackSongs.size());
 
-            return Response.ok().entity(fallbackSongs).build();
+        return Response.ok().entity(fallbackSongs).build();
 
     }
 
@@ -133,7 +134,7 @@ public class SongResource {
             URI uri = UriBuilder.fromResource(SongResource.class).path(String.valueOf(song.getId())).build();
             SongRepresentation createdSongRepresentation = songMapper.toRepresentation(song);
             return Response.created(uri).entity(createdSongRepresentation).build();
-        } catch (RadioException re){
+        } catch (RadioException re) {
             int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
             return Response.status(statusCode)
                     .entity(new ErrorResponse(re.getMessage()))
@@ -147,6 +148,7 @@ public class SongResource {
     }
 
     @Bulkhead(value = 1)
+    @Fallback(fallbackMethod = "deleteConcurrentFallback")
     @DELETE
     @Path("/{id}")
     //@RolesAllowed("PRODUCER")
@@ -156,7 +158,7 @@ public class SongResource {
         try {
             songService.delete(id, auth);
             return Response.noContent().build();
-        } catch (RadioException re){
+        } catch (RadioException re) {
             int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
             return Response.status(statusCode)
                     .entity(new ErrorResponse(re.getMessage()))
@@ -168,6 +170,16 @@ public class SongResource {
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode(), e.getMessage()).build();
         }
+    }
+
+
+    public Response deleteConcurrentFallback(
+            @PathParam("id") Integer id,
+            @HeaderParam("Authorization") String auth
+    ) throws InterruptedException {
+        LOGGER.info("Falling back to DeleteConcurrent() - failed to delete songId = " + id);
+        return Response.status(429, "Too many requests").build();
+
     }
 
     @PUT
@@ -185,7 +197,7 @@ public class SongResource {
             return Response.status(externalServiceException.getStatusCode())
                     .entity(new ErrorResponse(externalServiceException.getMessage()))
                     .build();
-        } catch (RadioException re){
+        } catch (RadioException re) {
             int statusCode = re.getStatusCode() != 0 ? re.getStatusCode() : Response.Status.BAD_REQUEST.getStatusCode();
             return Response.status(statusCode)
                     .entity(new ErrorResponse(re.getMessage()))
