@@ -1,2 +1,2 @@
 #docker pull namespace of repository/image
-docker pull ksif/user:1.0
+docker pull herculeschrysanthos/content-service:1.0
