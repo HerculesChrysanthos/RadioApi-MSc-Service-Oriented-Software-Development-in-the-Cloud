@@ -17,6 +17,7 @@ import org.jboss.logging.Logger;
 import org.jboss.resteasy.client.exception.ResteasyWebApplicationException;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @ApplicationScoped
 public class ContentServiceImpl implements ContentService {
@@ -29,12 +30,14 @@ public class ContentServiceImpl implements ContentService {
     ContentApi contentApi;
 
     private static final Logger LOGGER = Logger.getLogger(ContentServiceImpl.class);
+    private AtomicLong counter = new AtomicLong(0);
 
     @Override
     public AdBasicRepresentation getAd(String auth, Integer adId) {
+        final Long invocationNumber = counter.getAndIncrement();
+        LOGGER.infof("Call content api getAd, invocation #%d ", invocationNumber);
         try {
             return contentApi.getAd(auth, adId);
-
         } catch (ProcessingException error) {
             throw new ExternalServiceException("Problem on reaching content api.");
         } catch (WebApplicationException webApplicationException) {
@@ -56,6 +59,8 @@ public class ContentServiceImpl implements ContentService {
     @Override
     public List<SongBasicRepresentation> getSongsByFilters(String auth, String artist, Integer genreId, String genreTitle, String title, String songsIds) {
         try {
+            final Long invocationNumber = counter.getAndIncrement();
+            LOGGER.infof("Call content api invocation #%d, getSongsByFilters ", invocationNumber);
             return contentApi.getSongsByFilters(auth, artist, genreId, genreTitle, title, songsIds);
         } catch (ProcessingException error) {
             throw new RadioException("Problem on reaching content api.", 424);
@@ -71,6 +76,8 @@ public class ContentServiceImpl implements ContentService {
     @Override
     public List<AdBasicRepresentation> getAdsByFilters(String auth, String timezone, String adsIds) {
         try {
+            final Long invocationNumber = counter.getAndIncrement();
+            LOGGER.infof("Call content api invocation #%d, getAdsByFilters", invocationNumber);
             return contentApi.getAdsByFilters(auth, timezone, adsIds);
         } catch (ProcessingException error) {
             throw new RadioException("Problem on reaching content api.", 424);

@@ -44,9 +44,10 @@ public class SongBroadcastService {
     @Inject
     ContentService contentService;
 
-//    @Inject
-//    SongRepository songRepository;
+    boolean temp = true;
+
     private static final Logger LOGGER = Logger.getLogger(SongBroadcastService.class);
+
     @Transactional
     public SongBroadcast create(SongBroadcastCreationDTO dto, String auth) {
         // verify auth
@@ -134,12 +135,11 @@ public class SongBroadcastService {
 
         boolean hasDelay = Boolean.parseBoolean(System.getProperty("SONGBR_SEARCH_HAS_DELAY", "false"));
 
-        if(hasDelay) {
+        if (hasDelay) {
             LOGGER.infof("SongBroadcastService search has delay");
             try {
                 Thread.sleep(10000L);
             } catch (InterruptedException e) {
-
             }
         }
 

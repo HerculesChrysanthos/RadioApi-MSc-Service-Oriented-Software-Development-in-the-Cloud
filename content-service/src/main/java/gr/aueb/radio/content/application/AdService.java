@@ -113,6 +113,7 @@ public class AdService {
         }
 
         List<AdBroadcastBasicRepresentation> adBroadcast = broadcastService.getAdBroadcastsByAdId(auth, id);
+        System.out.println("adBroadcast" +adBroadcast.size() );
         if (adBroadcast.size() != 0) {
             throw new RadioException("Ad is immutable, it has scheduled broadcasts");
         }
