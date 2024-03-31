@@ -37,12 +37,15 @@ public class PlaylistService {
         boolean adScheduled = adCanBeScheduled(broadcast);
 
         List<SongBasicRepresentation> possibleSongs = contentService.getSongsByFilters(auth, null, broadcast.getGenreId(), null, null, null);
+        System.out.println("possibleSongs " + possibleSongs.size());
         Collections.shuffle(possibleSongs);
         Iterator<SongBasicRepresentation> songsIterator = possibleSongs.iterator();
         List<SongBasicRepresentation> songsAdded = new ArrayList<>();
 
         List<AdBasicRepresentation> possibleAds = contentService.getAdsByFilters(auth, broadcast.getTimezone().toString(), null);
         Collections.shuffle(possibleAds);
+        System.out.println("possibleAds " + possibleAds.size());
+
         Iterator<AdBasicRepresentation> adsIterator = possibleAds.iterator();
         List<AdBasicRepresentation> adsAdded = new ArrayList<>();
 
@@ -50,11 +53,14 @@ public class PlaylistService {
         //first loop
         while(songsIterator.hasNext() && broadcast.getAllocatedTime(possibleAds, possibleSongs) < broadcast.getDuration()){
             SongBasicRepresentation song = songsIterator.next();
+//            System.out.println("song in iterator " + song);
+
             // get songBroadcasts of this song ? maybe not. we want the sb of br until now. Are they attached with broadcast?
             // maybe when creating a sb in line 70 we can push it into an array of sb and use it as songBroadcastsOfBr. Same about ads below
            // List<SongBroadcast> songBroadcastsOfBr = broadcast.getSongBroadcasts();
             // get song's songBroadcasts of the day of broadcast
             List<SongBroadcast> songBroadcastsOfDay = songBroadcastRepository.findBySongIdDate(song.id, broadcast.getStartingDate());
+//            System.out.println("ssongBroadcastsOfDay " + songBroadcastsOfDay);
 
             SongBroadcast sb = broadcast.createSongBroadcast(song, trackedTime, songBroadcastsOfDay, songsAdded);
 
@@ -69,8 +75,11 @@ public class PlaylistService {
                 // time to add an ad
                 while (!adScheduled && adsIterator.hasNext()){
                     AdBasicRepresentation ad = adsIterator.next();
+//                    System.out.println("ad in iterator " + ad);
 
                     List<AdBroadcast> adBroadcastsOfDay = adBroadcastRepository.findByAdId(ad.id);
+//                    System.out.println("adBroadcastsOfDay " + adBroadcastsOfDay);
+
 
                     AdBroadcast ab = broadcast.createAdBroadcast(ad, trackedTime, adBroadcastsOfDay, adsAdded);
                     if(ab != null){

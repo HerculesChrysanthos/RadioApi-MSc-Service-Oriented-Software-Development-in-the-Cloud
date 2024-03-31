@@ -21,6 +21,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.faulttolerance.Bulkhead;
+import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.jboss.logging.Logger;
@@ -29,6 +31,7 @@ import java.net.URI;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Path(Root.BROADCASTS)
 @Produces(MediaType.APPLICATION_JSON)
@@ -49,6 +52,7 @@ public class BroadcastResource {
     OutputBroadcastMapper outputBroadcastMapper;
 
     private static final Logger LOGGER = Logger.getLogger(BroadcastResource.class);
+    private AtomicLong counter = new AtomicLong(1);
 
     @GET
     @Timeout(value = 5, unit = ChronoUnit.SECONDS)
@@ -125,7 +129,8 @@ public class BroadcastResource {
                     .build();
         }
     }
-
+    @Fallback (fallbackMethod = "createConcurrentFallback")
+    @Bulkhead(value = 3)
     @POST
     @Timeout(value = 5, unit = ChronoUnit.SECONDS)
 //    @RolesAllowed("PRODUCER")
@@ -133,6 +138,7 @@ public class BroadcastResource {
             @Valid BroadcastRepresentation broadcastRepresentation,
             @HeaderParam("Authorization") String auth
     ) {
+        LOGGER.infof("Create Broadcast ");
         try{
             Broadcast broadcast = broadcastService.create(broadcastRepresentation, auth);
             URI uri = UriBuilder.fromResource(BroadcastResource.class).path(String.valueOf(broadcast.getId())).build();
@@ -147,6 +153,15 @@ public class BroadcastResource {
                     .entity(new ErrorResponse(externalServiceException.getMessage()))
                     .build();
         }
+    }
+
+    public Response createConcurrentFallback(
+            @Valid BroadcastRepresentation broadcastRepresentation,
+            @HeaderParam("Authorization") String auth
+    ) throws InterruptedException {
+        LOGGER.info("Falling back to createConcurrentFallback() - failed to create broadcast too many requests");
+        return Response.status(429, "Too many requests").build();
+
     }
 //
 //
