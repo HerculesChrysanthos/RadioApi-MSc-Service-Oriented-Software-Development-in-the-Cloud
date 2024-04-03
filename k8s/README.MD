@@ -24,6 +24,6 @@ forward ip
 kubectl port-forward service/user-service 30030:8080
 kubectl port-forward service/content-service 30031:8081
 kubectl port-forward service/broadcast-service 30032:8082
-
+kubectl port-forward service/jaeger 30033:16686
 update ports on ymls
 
