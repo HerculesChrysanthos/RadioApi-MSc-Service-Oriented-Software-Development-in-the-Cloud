@@ -1,0 +1,493 @@
+{
+	"info": {
+		"_postman_id": "83649b72-8dd8-49f0-b6f3-289409685329",
+		"name": "Content",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26307753",
+		"_collection_link": "https://orange-trinity-501749.postman.co/workspace/Cook-Hub~24c720ca-9185-4158-be3d-3c1b5c3e7b27/collection/26307753-83649b72-8dd8-49f0-b6f3-289409685329?action=share&source=collection_link&creator=26307753"
+	},
+	"item": [
+		{
+			"name": "get song by id",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "user",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/api/songs/7001",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"songs",
+						"7001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get genre by id",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/api/genres/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"genres",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete song by id",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/api/songs/7001",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"songs",
+						"7001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete ad by id",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/api/ads/1001",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"ads",
+						"1001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get songs by filters",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "user1",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/api/songs?songsIds=7001,7002&genreId=1",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"songs"
+					],
+					"query": [
+						{
+							"key": "songsIds",
+							"value": "7001,7002"
+						},
+						{
+							"key": "genreId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get ads by filters",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/api/ads?timezone=EarlyMorning",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"ads"
+					],
+					"query": [
+						{
+							"key": "timezone",
+							"value": "EarlyMorning"
+						},
+						{
+							"key": "adsIds",
+							"value": "1001,1002",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get ad by id",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/api/ads/1001",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"ads",
+						"1001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create ad",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"duration\": 1,\n    \"repPerZone\": 2,\n    \"timezone\": \"EarlyMorning\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8081/api/ads",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"ads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create song",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Hard Times\",\n    \"artist\": \"Paramore\",\n    \"year\": \"2017\",\n    \"duration\": 4,\n    \"genreId\": 2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8081/api/songs",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"songs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update ad",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"duration\": 1,\n    \"repPerZone\": 2,\n    \"timezone\": \"EarlyMorning\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8081/api/ads/1001",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"ads",
+						"1001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update song",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Hard Times\",\n    \"artist\": \"Paramore\",\n    \"year\": \"2017\",\n    \"duration\": 4,\n    \"genreId\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8081/api/songs/7003",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"songs",
+						"7003"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete ad",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"duration\": 1,\n    \"repPerZone\": 2,\n    \"timezone\": \"EarlyMorning\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8081/api/ads/1001",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"ads",
+						"1001"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

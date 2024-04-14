@@ -1,0 +1,876 @@
+{
+	"info": {
+		"_postman_id": "07368cda-84a9-449f-91e7-070b8c9228ee",
+		"name": "Broadcast",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26307753",
+		"_collection_link": "https://orange-trinity-501749.postman.co/workspace/Cook-Hub~24c720ca-9185-4158-be3d-3c1b5c3e7b27/collection/26307753-07368cda-84a9-449f-91e7-070b8c9228ee?action=share&source=collection_link&creator=26307753"
+	},
+	"item": [
+		{
+			"name": "search song broadcast",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "producer1",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8082/api/song-broadcasts?songId=7001",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"song-broadcasts"
+					],
+					"query": [
+						{
+							"key": "date",
+							"value": "01-02-2022",
+							"disabled": true
+						},
+						{
+							"key": "songId",
+							"value": "7001"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "search ad broadcast by filters",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8082/api/ad-broadcasts",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"ad-broadcasts"
+					],
+					"query": [
+						{
+							"key": "date",
+							"value": "01-02-2022",
+							"disabled": true
+						},
+						{
+							"key": "adId",
+							"value": "1001",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "search song broadcast by id",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8082/api/song-broadcasts",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"song-broadcasts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get broadcast by id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8082/api/broadcasts/3002",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"broadcasts",
+						"3002"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get broadcast suggestions",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8082/api/broadcasts/3001/suggestions",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"broadcasts",
+						"3001",
+						"suggestions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get broadcast by filters",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "producer1",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8082/api/broadcasts",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"broadcasts"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "to",
+							"value": "{to}",
+							"disabled": true
+						},
+						{
+							"key": "date",
+							"value": "{date}",
+							"disabled": true
+						},
+						{
+							"key": "type",
+							"value": "PLAYLISTde",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get stats by date",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8082/api/broadcasts/stats?date=01-02-2022",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"broadcasts",
+						"stats"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "to",
+							"value": "{to}",
+							"disabled": true
+						},
+						{
+							"key": "date",
+							"value": "{date}",
+							"disabled": true
+						},
+						{
+							"key": "date",
+							"value": "01-02-2022"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get ad stats by date",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8082/api/broadcasts/stats-ads?date=01-02-2022",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"broadcasts",
+						"stats-ads"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "to",
+							"value": "{to}",
+							"disabled": true
+						},
+						{
+							"key": "date",
+							"value": "{date}",
+							"disabled": true
+						},
+						{
+							"key": "date",
+							"value": "01-02-2022"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get now broadcast",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "producer1",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8082/api/broadcasts/now",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"broadcasts",
+						"now"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "search ad broadcast by id",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8082/api/song-broadcasts/5001",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"song-broadcasts",
+						"5001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete ad broadcast",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8082/api/ad-broadcasts/4002",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"ad-broadcasts",
+						"4002"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete ad broadcast by filters",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8082/api/ad-broadcasts?adId=1001",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"ad-broadcasts"
+					],
+					"query": [
+						{
+							"key": "adId",
+							"value": "1001"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete song broadcast",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8082/api/song-broadcasts/5001",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"song-broadcasts",
+						"5001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete song broadcasts by filters",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8082/api/song-broadcasts?songId=7001",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"song-broadcasts"
+					],
+					"query": [
+						{
+							"key": "songId",
+							"value": "7001"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete broadcast",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8082/api/broadcasts/3001",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"broadcasts",
+						"3001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create adBroadcast",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"broadcastId\": 3001,\n    \"adId\": 1074,\n    \"startingTime\": \"00:20\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8082/api/ad-broadcasts",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"ad-broadcasts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create songBroadcast",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"broadcastId\": 3001,\n    \"songId\": 7003,\n    \"startingTime\": \"00:06\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8082/api/song-broadcasts",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"song-broadcasts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create broadcast",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\": \"PLAYLIST\",\n    \"genreId\": 2,\n    \"startingDate\": \"11-02-2023\",\n    \"startingTime\": \"10:00\",\n    \"duration\": 30\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8082/api/broadcasts/",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"broadcasts",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update broadcast",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "producer",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "producer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\": \"PLAYLIST\",\n    \"genreId\": 21,\n    \"startingDate\": \"01-01-2022\",\n    \"startingTime\": \"00:00\",\n    \"duration\": 100\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8082/api/broadcasts/3002",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"broadcasts",
+						"3002"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
